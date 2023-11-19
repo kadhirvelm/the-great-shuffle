@@ -26,6 +26,6 @@ export interface IBackendService extends IService {
 
 export const backendService: IServiceImplementation<IBackendService> = {
   helloWorld: {
-    endpoint: "/hello-world",
+    endpoint: "hello-world",
   },
 };

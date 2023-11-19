@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./page.module.css";
+import styles from "./page.module.scss";
 import { networkCalls } from "../lib/network";
 import { useEffect, useState } from "react";
 
