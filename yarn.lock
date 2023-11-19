@@ -539,6 +539,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@great-shuffle/api@workspace:^, @great-shuffle/api@workspace:packages/api":
+  version: 0.0.0-use.local
+  resolution: "@great-shuffle/api@workspace:packages/api"
+  dependencies:
+    typescript: "npm:^5.2.2"
+  languageName: unknown
+  linkType: soft
+
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -2568,6 +2576,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@great-shuffle/api": "workspace:^"
     "@nestjs/cli": "npm:^10.0.0"
     "@nestjs/common": "npm:^10.0.0"
     "@nestjs/core": "npm:^10.0.0"
@@ -4447,6 +4456,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "frontend@workspace:packages/frontend"
   dependencies:
+    "@great-shuffle/api": "workspace:^"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
