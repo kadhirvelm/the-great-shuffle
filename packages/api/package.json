@@ -1,0 +1,14 @@
+{
+  "name": "@great-shuffle/api",
+  "packageManager": "yarn@4.0.2",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint . --fix"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
