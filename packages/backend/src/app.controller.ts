@@ -19,6 +19,7 @@ export class AppController implements IServiceImplementation<IBackendService> {
 
   @Get("health-check")
   healthCheck() {
+    this.appService.testSpeech();
     return { status: "ok" };
   }
 
