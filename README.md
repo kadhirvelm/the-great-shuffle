@@ -1,44 +1,30 @@
-# the-great-shuffle
-The great shuffle game
+# The tower of cultivation
 
-## Things to try generate
+## Technical exploration
 
-* Flavor text
-* Narration - speech to text
-* Colors
-* Images
+I'm attempting to define the constraints of a world and get ChatGPT to generate all the fun bits, like the story, powers, loot and what not. What we're aiming for here is a lot of freedom to explore with different combinations of skills and the excitement of seeing what the AI generates
 
-## How to play
+## Game breakdown
 
-### Overview
-The great shuffle is a team-based competitive game where two teams vie to accumulate the most points before time runs out. The team with the highest score at the end of the game is declared the winner.
+The player takes on the role of a new cultivator looking to ascend the mysterious tower. The player first chooses one of three weapons: hand wraps, a sword, or a spear. They then go through the basic tutorial teaching them how to jump, attack, and defeat monsters.
 
-### Objective
-Players aim to collect specific artifacts to earn points for their team. Each player is assigned a unique mission to retrieve a designated artifact. Successfully completing this mission by possessing the correct artifact at the game's conclusion scores points for their team.
+They next identify the cultivation path they want to purse, where the player has the freedom to explore whatever inspired element(s) they want. The game then generates a helpful list of "paths" they can purse related to this element. Each path will have a different set of powers that the character will get, however all paths will have the same basic 3 categories:
 
-### Starting the Game:
-Players are randomly distributed across various locations within the game area.
-These locations correspond to real-world locations that players must physically travel to.
+1. An enforcement technique - that improves their characters stats and skills in a specific way
+2. A short range aura blast - that attacks all monsters in an area surrounding the area
+3. A long ranged attack - that blasts forward attacking monsters that are far away
 
-### Artifacts and Locations:
-Each location contains an artifact that players can collect.
-Upon arriving at a location, players are presented with a set of options, each leading to a different location.
+The game has access to lots of different aspects that govern the system the game takes place in, which will reflect in the effects of the weapon with the path.
 
-### Missions and Scoring:
-Each player is assigned a mission to retrieve a specific artifact.
-Points are awarded to the team based on the number of players who successfully complete their missions.
-Up to 10 points can be scored, depending on mission completions.
+## Game play
+Once the player has their weapon and their path selected, they begin the climb. Each level more or less breaks down the same way. There are a number of enemies on the floor that need to be defeated. Once defeated, the player will be able to advance further up the tower.
 
-### Player Interaction:
-Players can only communicate and trade artifacts with others who are present at the same location.
-Each player can carry only one artifact at a time.
+Every level has a distinct personality to it (color, monsters, and ideally music) and will provide a boost to the player. That could come in the form of a new weapon, consumables, power upgrades, etc. In addition, the player will level up each time they defeat all the monsters, which will allocate them an extra stat point and skill point they can allocate to their character's stats and powers.
 
-### Movement Restrictions:
-Not all players will have access to all locations, creating strategic challenges.
+The monsters will get bigger and stronger as the levels climb, but so will the player.
 
-### Team Discovery:
-Players are initially unaware of their team alignments.
-Identifying team members is a crucial part of the strategy as the game progresses.
+## Things to figure out later
 
-### Winning the Game
-The team with the most points at the end of the allotted time is declared the winner. Strategic collaboration, effective communication, and successful mission completions are key to securing victory in the great shuffle.
+* Rogue-like? Do we want to make things easier in subsequent runs?
+* How many levels do we go up?
+* Do we want boss fights?
