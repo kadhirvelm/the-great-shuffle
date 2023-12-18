@@ -539,14 +539,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@great-shuffle/api@workspace:^, @great-shuffle/api@workspace:packages/api":
-  version: 0.0.0-use.local
-  resolution: "@great-shuffle/api@workspace:packages/api"
-  dependencies:
-    typescript: "npm:^5.2.2"
-  languageName: unknown
-  linkType: soft
-
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -1278,6 +1270,14 @@ __metadata:
   checksum: c29df3bcec6fc3bdec2b17981d89d9c9fc9bd7d0c9bcfe92821dc533f4440bc890ccde79971838b4ceed1921d456973c4180d7175ee1d0023ad0562240a58d95
   languageName: node
   linkType: hard
+
+"@tower/api@workspace:^, @tower/api@workspace:packages/api":
+  version: 0.0.0-use.local
+  resolution: "@tower/api@workspace:packages/api"
+  dependencies:
+    typescript: "npm:^5.2.2"
+  languageName: unknown
+  linkType: soft
 
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.9
@@ -2619,7 +2619,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
-    "@great-shuffle/api": "workspace:^"
     "@nestjs/cli": "npm:^10.0.0"
     "@nestjs/common": "npm:^10.0.0"
     "@nestjs/config": "npm:^3.1.1"
@@ -2627,6 +2626,7 @@ __metadata:
     "@nestjs/platform-express": "npm:^10.0.0"
     "@nestjs/schematics": "npm:^10.0.0"
     "@nestjs/testing": "npm:^10.0.0"
+    "@tower/api": "workspace:^"
     "@types/express": "npm:^4.17.17"
     "@types/jest": "npm:^29.5.2"
     "@types/node": "npm:^20.3.1"
@@ -4563,7 +4563,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "frontend@workspace:packages/frontend"
   dependencies:
-    "@great-shuffle/api": "workspace:^"
+    "@tower/api": "workspace:^"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"

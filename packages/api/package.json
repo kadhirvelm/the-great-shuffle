@@ -1,5 +1,5 @@
 {
-  "name": "@great-shuffle/api",
+  "name": "@tower/api",
   "packageManager": "yarn@4.0.2",
   "scripts": {
     "build": "tsc",

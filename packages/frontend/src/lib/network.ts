@@ -3,7 +3,7 @@ import {
   IService,
   RemoveString,
   backendService,
-} from "@great-shuffle/api";
+} from "@tower/api";
 
 type NetworkImplementation<Service extends IService> = {
   [Key in keyof RemoveString<Service>]: (
