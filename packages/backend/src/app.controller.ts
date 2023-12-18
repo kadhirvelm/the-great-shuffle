@@ -5,7 +5,7 @@ import {
   IService,
   RemoveString,
   backendService,
-} from "@great-shuffle/api";
+} from "@tower/api";
 
 type IServiceImplementation<Service extends IService> = {
   [Key in keyof RemoveString<Service>]: (
@@ -19,7 +19,6 @@ export class AppController implements IServiceImplementation<IBackendService> {
 
   @Get("health-check")
   healthCheck() {
-    this.appService.testSpeech();
     return { status: "ok" };
   }
 

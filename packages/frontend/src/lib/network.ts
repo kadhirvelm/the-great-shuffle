@@ -18,7 +18,7 @@ export const networkCalls: NetworkImplementation<IBackendService> =
         endpoint,
         async (payload: any) => {
           const response = await fetch(
-            `http://localhost:3002/${definition.endpoint}`,
+            `http://localhost:8080/${definition.endpoint}`,
             {
               method: "POST",
               headers: {

@@ -4,8 +4,8 @@ import { Grandstander } from "next/font/google";
 const grandstander = Grandstander({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "The great shuffle",
-  description: "A random AI game",
+  title: "The Tower of Cultivation",
+  description: "Climb to the top, seek answers",
 };
 
 export default function RootLayout({

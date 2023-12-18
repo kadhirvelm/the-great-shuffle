@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15.3
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  pgAdmin:
+    image: dpage/pgadmin4:8.0
+    ports:
+      - "2000:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+      - PGADMIN_DEFAULT_PASSWORD=admin
+  yarn-container:
+    image: node:21.4.0
+    volumes:
+      - ./:/home/tower:rw
+    working_dir: /home/tower
+    tty: true
+    stop_grace_period: 1s
+    command: tail -f /dev/null
+  api:
+    image: node:21.4.0
+    volumes:
+      - ./:/home/tower:rw
+    working_dir: /home/tower/packages/api
+    command: bash -c "yarn && cd ../../ && yarn dev api"
+  backend:
+    image: node:21.4.0
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./:/home/tower:rw
+    working_dir: /home/tower/packages/backend
+    environment:
+      - PORT=8080
+      - DATABASE=postgresql://postgres@host.docker.internal:5432/tower?schema=public
+    command: bash -c "yarn && cd ../../ && yarn dev backend"
+  frontend:
+    image: node:21.4.0
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/home/tower:rw
+    working_dir: /home/tower/packages/frontend
+    command: bash -c "yarn && cd ../../ && yarn dev frontend"
