@@ -41,8 +41,13 @@ class TutorialScene extends Scene {
     this.load.image("ground", "platform.png");
     this.load.image("star", "star.png");
     this.load.image("bomb", "bomb.png");
-    this.load.spritesheet("dude", "dude.png", {
-      frameWidth: 32,
+
+    this.load.spritesheet("run", "run.png", {
+      frameWidth: 48,
+      frameHeight: 48,
+    });
+    this.load.spritesheet("idle", "idle.png", {
+      frameWidth: 48,
       frameHeight: 48,
     });
   }
@@ -80,27 +85,21 @@ class TutorialScene extends Scene {
   }
 
   private createPlayer() {
-    const player = this.physics.add.sprite(100, 450, "dude");
+    const player = this.physics.add.sprite(100, 450, "idle").setScale(2);
 
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
     this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+      key: "run",
+      frames: this.anims.generateFrameNumbers("run", { start: 0, end: 7 }),
       frameRate: 10,
       repeat: -1,
     });
 
     this.anims.create({
-      key: "turn",
-      frames: [{ key: "dude", frame: 4 }],
-      frameRate: 20,
-    });
-
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+      key: "idle",
+      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 3 }),
       frameRate: 10,
       repeat: -1,
     });
@@ -130,21 +129,21 @@ class TutorialScene extends Scene {
   }
 
   public update() {
-    console.log("Setting the cursors", this.cursors);
-
     if (this.cursors === undefined || this.player === undefined) {
       return;
     }
 
     if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-160);
-      this.player.anims.play("left", true);
+      this.player.setVelocityX(-200);
+      this.player.setFlipX(true);
+      this.player.anims.play("run", true);
     } else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(160);
-      this.player.anims.play("right", true);
+      this.player.setVelocityX(200);
+      this.player.setFlipX(false);
+      this.player.anims.play("run", true);
     } else {
       this.player.setVelocityX(0);
-      this.player.anims.play("turn");
+      this.player.anims.play("idle", true);
     }
 
     if (this.cursors.up.isDown && this.player.body.touching.down) {
