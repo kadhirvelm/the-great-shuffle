@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Grandstander } from "next/font/google";
+import clsx from "clsx";
+import styles from "./layout.module.scss";
 
 const grandstander = Grandstander({ subsets: ["latin"] });
 
@@ -15,7 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={grandstander.className}>{children}</body>
+      <body className={clsx(grandstander.className, styles.body)}>
+        {children}
+      </body>
     </html>
   );
 }
