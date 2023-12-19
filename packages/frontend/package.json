@@ -8,12 +8,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.0.1",
     "@tower/api": "workspace:^",
     "clsx": "^2.0.0",
     "next": "14.0.3",
     "phaser": "^3.70.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-redux": "^9.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",
