@@ -1,11 +1,31 @@
 "use client";
 
+import { Store } from "@reduxjs/toolkit";
 import { Game, Scene } from "phaser";
+import { State } from "../store/configureStore";
+
+let store: Store<State> | undefined;
+
+const getStore = () => {
+  if (store === undefined) {
+    throw Error("Attempted to access the Redux store before initializing.");
+  }
+
+  return store;
+};
+
+const removeStore = () => (store = undefined);
+const setStore = (setStore: Store<State>) => (store = setStore);
 
 export class TutorialGame {
   private game: Game;
 
-  constructor(private parent: HTMLElement) {
+  constructor(
+    private parent: HTMLElement,
+    store: Store<State>,
+  ) {
+    setStore(store);
+
     this.game = new Game({
       height: 600,
       width: 800,
@@ -23,16 +43,20 @@ export class TutorialGame {
   }
 
   public destroyGame() {
+    removeStore();
     this.game.destroy(true);
   }
 }
 
 class TutorialScene extends Scene {
+  private store: Store<State>;
   private player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | undefined;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
 
   public constructor() {
     super();
+
+    this.store = getStore();
   }
 
   public preload() {
