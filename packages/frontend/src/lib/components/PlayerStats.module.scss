@@ -1,0 +1,43 @@
+@import "../../styles/variables";
+
+.playerStats {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.allBars {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.barContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.barBackground {
+  display: flex;
+  width: 250px;
+  background: $dark-background;
+  border-radius: 5px;
+  height: 30px;
+}
+
+.textContainer {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.remainingHealth {
+  background: $red;
+  border-radius: 5px;
+}
+
+.remainingChi {
+  background: $white;
+  border-radius: 5px;
+}

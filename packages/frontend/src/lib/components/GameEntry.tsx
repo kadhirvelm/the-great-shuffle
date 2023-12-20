@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
-import { TutorialGame } from "../game/Game";
+import { PrimaryGame } from "../game/PrimaryGame";
 import styles from "./GameEntry.module.scss";
 import { useTowerStore } from "../store/configureStore";
+import { PlayerStats } from "./PlayerStats";
+
+// @refresh reset
 
 const GameEntry = () => {
   const gameCanvas = useRef<HTMLDivElement>(null);
@@ -12,13 +15,20 @@ const GameEntry = () => {
       return;
     }
 
-    const tutorialGame = new TutorialGame(gameCanvas.current, store);
+    const primaryGame = new PrimaryGame(gameCanvas.current, store);
     return () => {
-      tutorialGame.destroyGame();
+      primaryGame.destroyGame();
     };
   }, [gameCanvas, store]);
 
-  return <div className={styles.gameContainer} ref={gameCanvas} />;
+  return (
+    <div className={styles.rootContainer}>
+      <div className={styles.statsContainer}>
+        <PlayerStats />
+      </div>
+      <div className={styles.gameContainer} ref={gameCanvas} />
+    </div>
+  );
 };
 
 export default GameEntry;
