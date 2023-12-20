@@ -47,38 +47,45 @@ class TutorialScene extends Scene {
 
   public preload() {
     this.load.setBaseURL("http://localhost:8080");
-    this.load.image("sky", "sky.png");
-    this.load.image("ground", "platform.png");
-    this.load.image("star", "star.png");
-    this.load.image("bomb", "bomb.png");
 
-    this.load.spritesheet("run", "run.png", {
-      frameWidth: 48,
-      frameHeight: 48,
-    });
+    this.load.image("woods", "woods.jpg");
+    this.load.image("temple", "temple.jpg");
+    this.load.image("lava", "lava.jpg");
+
+    this.load.image("block", "block.png");
+
     this.load.spritesheet("idle", "idle.png", {
-      frameWidth: 48,
-      frameHeight: 48,
+      frameWidth: 55,
+      frameHeight: 70,
+    });
+    this.load.spritesheet("jump", "jump.png", {
+      frameWidth: 55,
+      frameHeight: 70,
+    });
+    this.load.spritesheet("walk", "walk.png", {
+      frameWidth: 55,
+      frameHeight: 70,
+    });
+
+    this.load.spritesheet("monster", "monster.png", {
+      frameWidth: 40,
+      frameHeight: 40,
     });
   }
 
   public create() {
-    const background = this.add.image(0, 0, "sky").setOrigin(0, 0);
+    const background = this.add.image(0, 0, "woods").setOrigin(0, 0);
+    this.physics.world.setBounds(
+      0,
+      0,
+      background.displayWidth,
+      background.displayHeight,
+    );
 
-    const platforms = this.createPlatforms();
+    const platforms = this.createPlatforms(background);
     this.player = this.createPlayer();
-    const stars = this.createStars();
 
     this.physics.add.collider(this.player, platforms);
-    this.physics.add.collider(stars, platforms);
-
-    this.physics.add.overlap(
-      this.player,
-      stars,
-      (_player, star) => (star as any).disableBody(true, true),
-      undefined,
-      this,
-    );
 
     this.createKeyboard();
 
@@ -89,38 +96,49 @@ class TutorialScene extends Scene {
       background.displayHeight,
     );
     this.cameras.main.startFollow(this.player);
-    this.cameras.main.setZoom(1.5);
+    this.cameras.main.setZoom(1);
   }
 
-  private createPlatforms() {
+  private createPlatforms(background: Phaser.GameObjects.Image) {
     const platforms = this.physics.add.staticGroup();
 
-    platforms.create(400, 568, "ground").setScale(2).refreshBody();
-    platforms.create(600, 400, "ground");
-    platforms.create(50, 250, "ground");
-    platforms.create(750, 220, "ground");
+    const bottom = platforms.create(
+      background.displayWidth / 2,
+      background.displayHeight,
+      undefined,
+      undefined,
+      false,
+    );
+    bottom.displayWidth = background.displayWidth;
+    bottom.displayHeight = 5;
+    bottom.refreshBody();
 
     return platforms;
   }
 
   private createPlayer() {
-    const player = this.physics.add.sprite(100, 450, "idle").setScale(2);
+    const player = this.physics.add.sprite(500, 800, "idle");
 
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
     this.anims.create({
-      key: "run",
-      frames: this.anims.generateFrameNumbers("run", { start: 0, end: 7 }),
+      key: "walk",
+      frames: this.anims.generateFrameNumbers("walk", { start: 0, end: 7 }),
+      frameRate: 25,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "jump",
+      frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 1 }),
       frameRate: 10,
       repeat: -1,
     });
 
     this.anims.create({
       key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 3 }),
-      frameRate: 10,
-      repeat: -1,
+      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 0 }),
     });
 
     return player;
@@ -130,36 +148,25 @@ class TutorialScene extends Scene {
     this.cursors = this.input.keyboard?.createCursorKeys();
   }
 
-  private createStars() {
-    const stars = this.physics.add.group({
-      key: "star",
-      repeat: 11,
-      setXY: { x: 12, y: 0, stepX: 70 },
-    });
-
-    stars.children.iterate((child) => {
-      const childBody = child as unknown as Phaser.Physics.Arcade.Body;
-      childBody.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
-      return null;
-    });
-
-    return stars;
-  }
-
   public update() {
     if (this.cursors === undefined || this.player === undefined) {
       return;
     }
 
+    if (!this.player.body.touching.down) {
+      this.player.setVelocityX(this.player.body.velocity.x * 0.995);
+      this.player.anims.play("jump", true);
+      return;
+    }
+
     if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-200);
+      this.player.setVelocityX(-300);
       this.player.setFlipX(true);
-      this.player.anims.play("run", true);
+      this.player.anims.play("walk", true);
     } else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(200);
+      this.player.setVelocityX(300);
       this.player.setFlipX(false);
-      this.player.anims.play("run", true);
+      this.player.anims.play("walk", true);
     } else {
       this.player.setVelocityX(0);
       this.player.anims.play("idle", true);
@@ -167,6 +174,7 @@ class TutorialScene extends Scene {
 
     if (this.cursors.up.isDown && this.player.body.touching.down) {
       this.player.setVelocityY(-330);
+      return;
     }
   }
 }
