@@ -77,7 +77,7 @@ class TutorialScene extends Scene {
   }
 
   public create() {
-    this.add.image(400, 300, "sky");
+    const background = this.add.image(0, 0, "sky").setOrigin(0, 0);
 
     const platforms = this.createPlatforms();
     this.player = this.createPlayer();
@@ -95,6 +95,15 @@ class TutorialScene extends Scene {
     );
 
     this.createKeyboard();
+
+    this.cameras.main.setBounds(
+      0,
+      0,
+      background.displayWidth,
+      background.displayHeight,
+    );
+    this.cameras.main.startFollow(this.player);
+    this.cameras.main.setZoom(1.5);
   }
 
   private createPlatforms() {
