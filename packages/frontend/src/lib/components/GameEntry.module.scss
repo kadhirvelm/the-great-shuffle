@@ -1,9 +1,17 @@
+.rootContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px;
+}
+
+.statsContainer {
+  display: flex;
+}
+
 .gameContainer {
   display: flex;
   flex: 1;
-  margin: 20px;
-  padding: 20px;
   justify-content: center;
-  overflow: hidden;
   align-items: center;
 }

@@ -1,6 +1,9 @@
+@import "../styles/variables";
+
 .entryPoint {
   display: flex;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  background: $background;
 }
