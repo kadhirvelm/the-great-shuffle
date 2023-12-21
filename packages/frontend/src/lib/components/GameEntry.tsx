@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { PrimaryGame } from "../game/PrimaryGame";
 import styles from "./GameEntry.module.scss";
 import { useTowerStore } from "../store/configureStore";
-import { PlayerStats } from "./PlayerStats";
+import { Bars } from "./stats/Bars";
 
 // @refresh reset
 
@@ -24,7 +24,7 @@ const GameEntry = () => {
   return (
     <div className={styles.rootContainer}>
       <div className={styles.statsContainer}>
-        <PlayerStats />
+        <Bars />
       </div>
       <div className={styles.gameContainer} ref={gameCanvas} />
     </div>

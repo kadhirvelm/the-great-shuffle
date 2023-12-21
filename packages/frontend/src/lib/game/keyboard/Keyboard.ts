@@ -6,6 +6,8 @@ export class Keyboard {
   public shift: Phaser.Input.Keyboard.Key;
   public space: Phaser.Input.Keyboard.Key;
 
+  public attack: Phaser.Input.Keyboard.Key;
+
   constructor(scene: Phaser.Scene) {
     if (scene.input.keyboard == null) {
       throw new Error(
@@ -21,5 +23,7 @@ export class Keyboard {
     this.right = cursorKeys.right;
     this.shift = cursorKeys.shift;
     this.space = cursorKeys.space;
+
+    this.attack = scene.input.keyboard.addKey("q");
   }
 }

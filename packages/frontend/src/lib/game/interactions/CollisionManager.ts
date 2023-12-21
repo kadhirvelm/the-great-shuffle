@@ -44,7 +44,20 @@ export class CollisionManager {
       this.interactingObjects.monsterGroup,
       this.interactingObjects.player,
       (player) => {
-        (player as Player).takeDamage(10);
+        const typedPlayer: Player = player as Player;
+        typedPlayer.takeDamage(10);
+      },
+      (player) => {
+        const typedPlayer: Player = player as Player;
+        if (typedPlayer.currentState?.type === "dashing") {
+          return false;
+        }
+
+        if (typedPlayer.currentState?.type === "recently-damaged") {
+          return false;
+        }
+
+        return true;
       },
     );
   }

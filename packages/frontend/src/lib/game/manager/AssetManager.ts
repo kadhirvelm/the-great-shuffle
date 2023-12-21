@@ -23,6 +23,10 @@ export class AssetManager {
       frameWidth: 55,
       frameHeight: 70,
     });
+    this.scene.load.spritesheet("dash", "dash.png", {
+      frameWidth: 55,
+      frameHeight: 70,
+    });
     this.scene.load.spritesheet("jump", "jump.png", {
       frameWidth: 55,
       frameHeight: 70,

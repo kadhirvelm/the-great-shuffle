@@ -1,6 +1,10 @@
 import { Store } from "@reduxjs/toolkit";
 import { State } from "../../store/configureStore";
-import { updateChi, updateHealth } from "../../store/reducer/gameState";
+import {
+  updateChi,
+  updateHealth,
+  updateStamina,
+} from "../../store/reducer/gameState";
 import { getStore } from "../store/storeManager";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { Keyboard } from "../keyboard/Keyboard";
@@ -14,8 +18,22 @@ export interface PlayerInteractions {
   rangedAttackGroup: RangedAttackGroup;
 }
 
+interface DashingState {
+  currentDashDistance: number;
+  direction: "left" | "right";
+  totalDashDistance: number;
+  type: "dashing";
+}
+
+interface RecentlyDamagedState {
+  takenOn: number;
+  invulnerableUntil: number;
+  type: "recently-damaged";
+}
+
 export class Player extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
+  public currentState: DashingState | RecentlyDamagedState | undefined;
 
   private store: Store<State>;
 
@@ -35,21 +53,6 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     this.initializePhysics();
     this.setAnimations();
-  }
-
-  public update() {
-    this.handleAttacking();
-
-    if (!this.typedBody.touching.down) {
-      return this.handleAirborneMovement();
-    }
-
-    this.handleGroundMovement();
-    this.handleEnvironmentInteractions();
-  }
-
-  public takeDamage(damage: number) {
-    this.store.dispatch(updateHealth(-damage));
   }
 
   private initializePhysics() {
@@ -78,11 +81,79 @@ export class Player extends Phaser.GameObjects.Sprite {
       key: "idle",
       frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 0 }),
     });
+
+    this.anims.create({
+      key: "dash",
+      frames: this.anims.generateFrameNumbers("dash", { start: 0, end: 0 }),
+    });
+  }
+
+  public takeDamage(damage: number) {
+    this.store.dispatch(updateHealth(-damage));
+
+    const invulnerableDuration = 1000;
+
+    this.currentState = {
+      takenOn: this.scene.time.now,
+      invulnerableUntil: this.scene.time.now + invulnerableDuration,
+      type: "recently-damaged",
+    };
+
+    let isFlashing = true;
+    const flashEvent = this.scene.time.addEvent({
+      delay: 200,
+      repeat: invulnerableDuration / 200 - 1,
+      callback: () => {
+        this.setTint(isFlashing ? 0xff0000 : 0xffffff);
+        isFlashing = !isFlashing;
+      },
+    });
+
+    this.scene.time.delayedCall(invulnerableDuration, () => {
+      if (
+        this.currentState?.type !== "recently-damaged" ||
+        this.currentState.invulnerableUntil > this.scene.time.now
+      ) {
+        return;
+      }
+
+      flashEvent.remove();
+      this.clearTint();
+      this.currentState = undefined;
+    });
+  }
+
+  public update() {
+    if (this.currentState?.type === "dashing") {
+      return this.handleDashing(this.currentState);
+    }
+
+    this.handleAttacking();
+
+    if (!this.typedBody.touching.down) {
+      return this.handleAirborneMovement();
+    }
+
+    this.handleGroundMovement();
+    this.handleEnvironmentInteractions();
+  }
+
+  private handleDashing(dashingState: DashingState) {
+    this.anims.play("dash", true);
+
+    const direction = dashingState.direction === "left" ? -1 : 1;
+    this.typedBody.setVelocityX(direction * Movement.player_dash_x);
+    dashingState.currentDashDistance +=
+      Movement.player_dash_x / this.scene.game.loop.actualFps;
+
+    if (dashingState.currentDashDistance >= dashingState.totalDashDistance) {
+      this.currentState = undefined;
+    }
   }
 
   private handleAttacking() {
     if (
-      Phaser.Input.Keyboard.JustDown(this.playerInteractions.keyboard.shift)
+      Phaser.Input.Keyboard.JustDown(this.playerInteractions.keyboard.attack)
     ) {
       this.fireProjectile();
     }
@@ -109,6 +180,14 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private handleGroundMovement() {
+    const maybeDash = this.maybeStartDashing();
+    if (maybeDash !== undefined) {
+      this.currentState = maybeDash;
+      this.typedBody;
+      this.store.dispatch(updateStamina(-10));
+      return;
+    }
+
     if (this.playerInteractions.keyboard.left.isDown) {
       this.typedBody.setVelocityX(-Movement.player_x);
       this.setFlipX(true);
@@ -123,6 +202,35 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
+  private maybeStartDashing(): DashingState | undefined {
+    if (!this.playerInteractions.keyboard.shift.isDown) {
+      return;
+    }
+
+    const canDash = this.store.getState().gameState.player.stamina.current > 10;
+    if (!canDash) {
+      return;
+    }
+
+    if (this.playerInteractions.keyboard.left.isDown) {
+      return {
+        currentDashDistance: 0,
+        totalDashDistance: 250,
+        direction: "left",
+        type: "dashing",
+      };
+    }
+
+    if (this.playerInteractions.keyboard.right.isDown) {
+      return {
+        currentDashDistance: 0,
+        totalDashDistance: 250,
+        direction: "right",
+        type: "dashing",
+      };
+    }
+  }
+
   private handleEnvironmentInteractions() {
     if (
       this.playerInteractions.keyboard.space.isDown &&
@@ -133,7 +241,7 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private fireProjectile() {
-    const playerChi = this.store.getState().gameState.player.chi;
+    const playerChi = this.store.getState().gameState.player.chi.current;
     if (playerChi < 10) {
       return;
     }
