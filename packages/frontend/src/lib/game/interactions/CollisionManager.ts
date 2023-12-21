@@ -1,13 +1,13 @@
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
-import { Monster } from "../monster/Monster";
+import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
 
 export interface InteractingObjects {
   player: Player;
   environment: TreeEnvironment;
   rangedAttacks: RangedAttackGroup;
-  monster: Monster;
+  monsterGroup: MonsterGroup;
 }
 
 export class CollisionManager {
@@ -25,14 +25,14 @@ export class CollisionManager {
       this.interactingObjects.environment,
     );
     this.scene.physics.add.collider(
-      this.interactingObjects.monster,
+      this.interactingObjects.monsterGroup,
       this.interactingObjects.environment,
     );
   }
 
   private addRangedAttacks() {
     this.scene.physics.add.collider(
-      this.interactingObjects.monster,
+      this.interactingObjects.monsterGroup,
       this.interactingObjects.rangedAttacks,
       undefined,
       (_monster, rangedAttack) => {
@@ -41,9 +41,9 @@ export class CollisionManager {
     );
 
     this.scene.physics.add.collider(
-      this.interactingObjects.monster,
+      this.interactingObjects.monsterGroup,
       this.interactingObjects.player,
-      (_monster, player) => {
+      (player) => {
         (player as Player).takeDamage(10);
       },
     );

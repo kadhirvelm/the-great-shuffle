@@ -15,7 +15,7 @@ export function useRegeneratePlayerStats() {
       return;
     }
 
-    dispatch(updateHealth(2));
+    dispatch(updateHealth(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [health === 100]);
 
@@ -24,7 +24,7 @@ export function useRegeneratePlayerStats() {
       return;
     }
 
-    dispatch(updateChi(2));
+    dispatch(updateChi(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chi === 100]);
 

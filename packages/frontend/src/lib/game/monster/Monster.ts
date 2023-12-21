@@ -1,13 +1,23 @@
 import { Store } from "@reduxjs/toolkit";
 import { State } from "../../store/configureStore";
 import { getStore } from "../store/storeManager";
+import { Player } from "../player/Player";
+
+export interface MonsterInteraction {
+  player: Player;
+}
 
 export class Monster extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
 
   private store: Store<State>;
 
-  public constructor(scene: Phaser.Scene, x: number, y: number) {
+  public constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    private monsterInteractions: MonsterInteraction,
+  ) {
     super(scene, x, y, "monster");
 
     scene.add.existing(this);
@@ -20,12 +30,25 @@ export class Monster extends Phaser.GameObjects.Sprite {
     this.setAnimations();
   }
 
+  public update() {
+    const distanceToPlayer = Phaser.Math.Distance.Between(
+      this.x,
+      this.y,
+      this.monsterInteractions.player.x,
+      this.monsterInteractions.player.y,
+    );
+
+    if (distanceToPlayer < 200) {
+      const direction = Math.sign(this.monsterInteractions.player.x - this.x);
+      this.typedBody.setVelocityX(100 * direction);
+    } else {
+      this.typedBody.setVelocityX(0);
+    }
+  }
+
   private initializePhysics() {
     this.typedBody.setBounce(0.2);
     this.typedBody.setCollideWorldBounds(true);
-
-    this.typedBody.setMass(10);
-    this.typedBody.setMaxVelocityX(10);
   }
 
   private setAnimations() {
