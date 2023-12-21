@@ -11,7 +11,7 @@ import { Keyboard } from "./keyboard/Keyboard";
 import { AssetManager } from "./manager/AssetManager";
 import { Monster } from "./monster/Monster";
 import { Player } from "./player/Player";
-import { removeStore, setStore } from "./store/reduxStore";
+import { removeStore, setStore } from "./store/storeManager";
 
 export class PrimaryGame {
   private game: Game;

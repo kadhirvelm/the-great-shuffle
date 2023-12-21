@@ -1,7 +1,7 @@
 import { Store } from "@reduxjs/toolkit";
 import { State } from "../../store/configureStore";
 import { updateChi, updateHealth } from "../../store/reducer/gameState";
-import { getStore } from "../store/reduxStore";
+import { getStore } from "../store/storeManager";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { Keyboard } from "../keyboard/Keyboard";
 
@@ -64,7 +64,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.playerInteractions.keyboard.space.isDown &&
       this.typedBody.touching.down
     ) {
-      this.typedBody.setVelocityY(-200);
+      this.typedBody.setVelocityY(-350);
       return;
     }
   }
