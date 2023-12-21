@@ -9,9 +9,9 @@ export class AssetManager {
   }
 
   private loadBackground() {
-    this.scene.load.image("woods", "woods.jpg");
-    // this.scene.load.image("temple", "temple.jpg");
-    // this.scene.load.image("lava", "lava.jpg");
+    this.scene.load.image("tree", "tree.jpg");
+
+    this.scene.load.image("platform_texture", "platform_texture.jpg");
   }
 
   private loadAttacks() {
