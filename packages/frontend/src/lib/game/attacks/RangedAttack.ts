@@ -8,6 +8,8 @@ export interface RangedAttackAttributes {
 export class RangedAttack extends Phaser.GameObjects.Sprite {
   public attributes: RangedAttackAttributes | undefined;
 
+  private initialPosition: { x: number; y: number } | undefined;
+
   public constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, "ranged_attack");
 
@@ -21,10 +23,11 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
     (this.body as Phaser.Physics.Arcade.Body).world.on(
       "worldbounds",
       (body: Phaser.Physics.Arcade.Body) => {
-        if (body.gameObject === this) {
-          this.setActive(false);
-          this.setVisible(false);
+        if (body.gameObject !== this) {
+          return;
         }
+
+        this.destroy();
       },
     );
 
@@ -41,6 +44,7 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
     attributes: RangedAttackAttributes,
   ) {
     this.attributes = attributes;
+    this.initialPosition = { x, y };
     this.setPosition(x, y);
 
     this.setActive(true);
@@ -53,5 +57,30 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
     );
 
     (this.body as Phaser.Physics.Arcade.Body).setAngularVelocity(200);
+  }
+
+  public update() {
+    if (this.initialPosition === undefined || this.attributes === undefined) {
+      return;
+    }
+
+    const distanceTraveled = Phaser.Math.Distance.Between(
+      this.initialPosition.x,
+      this.initialPosition.y,
+      this.x,
+      this.y,
+    );
+
+    const percentageDistanceTraveled = distanceTraveled / this.attributes.range;
+
+    if (percentageDistanceTraveled >= 1) {
+      this.destroy();
+    }
+
+    if (percentageDistanceTraveled >= 0.75) {
+      this.setAlpha(
+        (1 * (1 - percentageDistanceTraveled)) / percentageDistanceTraveled,
+      );
+    }
   }
 }

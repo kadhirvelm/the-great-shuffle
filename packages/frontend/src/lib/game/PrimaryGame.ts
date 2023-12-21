@@ -47,6 +47,7 @@ export class PrimaryGame {
 class TutorialScene extends Scene {
   private player: Player | undefined;
   private monsterGroup: MonsterGroup | undefined;
+  private rangedAttackGroup: RangedAttackGroup | undefined;
 
   public preload() {
     new AssetManager(this);
@@ -54,10 +55,10 @@ class TutorialScene extends Scene {
 
   public create() {
     const environment = new TreeEnvironment(this);
-    const rangedAttackGroup = new RangedAttackGroup(this);
+    this.rangedAttackGroup = new RangedAttackGroup(this);
     this.player = new Player(this, 500, 2900, {
       keyboard: new Keyboard(this),
-      rangedAttackGroup,
+      rangedAttackGroup: this.rangedAttackGroup,
     });
     this.monsterGroup = new MonsterGroup(this);
 
@@ -68,7 +69,7 @@ class TutorialScene extends Scene {
     new CollisionManager(this, {
       player: this.player,
       environment: environment,
-      rangedAttacks: rangedAttackGroup,
+      rangedAttacks: this.rangedAttackGroup,
       monsterGroup: this.monsterGroup,
     });
 
@@ -77,11 +78,16 @@ class TutorialScene extends Scene {
   }
 
   public update() {
-    if (this.player === undefined || this.monsterGroup === undefined) {
+    if (
+      this.player === undefined ||
+      this.monsterGroup === undefined ||
+      this.rangedAttackGroup === undefined
+    ) {
       return;
     }
 
     this.player.update();
     this.monsterGroup.update();
+    this.rangedAttackGroup.update();
   }
 }
