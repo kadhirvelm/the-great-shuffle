@@ -146,9 +146,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     dashingState.currentDashDistance +=
       Movement.player_dash_x / this.scene.game.loop.actualFps;
 
-    if (dashingState.currentDashDistance >= dashingState.totalDashDistance) {
-      this.currentState = undefined;
+    if (dashingState.currentDashDistance < dashingState.totalDashDistance) {
+      return;
     }
+
+    this.currentState = undefined;
   }
 
   private handleAttacking() {
@@ -252,7 +254,10 @@ export class Player extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    maybeRangedAttack.fire(this.x, this.y, this.flipX ? 180 : 0);
+    maybeRangedAttack.fire(this.x, this.y, this.flipX ? 180 : 0, {
+      damage: 10,
+      range: 300,
+    });
     this.store.dispatch(updateChi(-10));
   }
 }

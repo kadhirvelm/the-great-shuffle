@@ -1,5 +1,7 @@
+import { RangedAttack } from "../attacks/RangedAttack";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
+import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
 
@@ -34,26 +36,45 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.rangedAttacks,
-      undefined,
-      (_monster, rangedAttack) => {
+      (monster, rangedAttack) => {
+        const typedMonster = monster as Monster;
+        const typedAttack = rangedAttack as RangedAttack;
+
+        typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0);
+
         rangedAttack.destroy();
+      },
+      (monster) => {
+        const typedMonster = monster as Monster;
+        if (!typedMonster.isAlive()) {
+          return false;
+        }
+
+        return true;
       },
     );
 
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.player,
-      (player) => {
+      (player, monster) => {
         const typedPlayer: Player = player as Player;
-        typedPlayer.takeDamage(10);
+        const typedMonster: Monster = monster as Monster;
+
+        typedPlayer.takeDamage(typedMonster.stats.damage);
       },
-      (player) => {
+      (player, monster) => {
         const typedPlayer: Player = player as Player;
         if (typedPlayer.currentState?.type === "dashing") {
           return false;
         }
 
         if (typedPlayer.currentState?.type === "recently-damaged") {
+          return false;
+        }
+
+        const typedMonster = monster as Monster;
+        if (!typedMonster.isAlive()) {
           return false;
         }
 
