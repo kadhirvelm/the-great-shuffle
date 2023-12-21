@@ -5,7 +5,7 @@ import { Game, Scene } from "phaser";
 import { State } from "../store/configureStore";
 import { setStore, removeStore, getStore } from "./store/reduxStore";
 import { RangedAttack } from "./attacks/RangedAttack";
-import { updateChi } from "../store/reducer/gameState";
+import { updateChi, updateHealth } from "../store/reducer/gameState";
 
 export class PrimaryGame {
   private game: Game;
@@ -96,7 +96,10 @@ class TutorialScene extends Scene {
       allowGravity: false,
     });
 
+    const monster = this.createMonster();
+
     this.physics.add.collider(this.player, platforms);
+    this.physics.add.collider(monster, platforms);
 
     this.createKeyboard();
 
@@ -159,6 +162,44 @@ class TutorialScene extends Scene {
     this.cursors = this.input.keyboard?.createCursorKeys();
   }
 
+  private createMonster() {
+    const monster = this.physics.add.sprite(700, 800, "monster");
+
+    monster.setCollideWorldBounds(true);
+    monster.setBounce(0.2);
+
+    monster.body.setMass(10);
+    monster.body.setMaxVelocityX(10);
+
+    this.anims.create({
+      key: "monster",
+      frames: this.anims.generateFrameNumbers("monster", { start: 0, end: 11 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    monster.anims.play("monster", true);
+
+    if (this.rangedAttacks === undefined || this.player === undefined) {
+      return monster;
+    }
+
+    this.physics.add.collider(
+      monster,
+      this.rangedAttacks,
+      undefined,
+      (_monster, rangedAttack) => {
+        rangedAttack.destroy();
+      },
+    );
+
+    this.physics.add.collider(monster, this.player, undefined, () => {
+      this.store.dispatch(updateHealth(-10));
+    });
+
+    return monster;
+  }
+
   private fireProjectile() {
     if (this.rangedAttacks === undefined || this.player === undefined) {
       return;
@@ -187,6 +228,10 @@ class TutorialScene extends Scene {
       return;
     }
 
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.shift)) {
+      this.fireProjectile();
+    }
+
     if (!this.player.body.touching.down) {
       this.player.setVelocityX(this.player.body.velocity.x * 0.995);
       this.player.anims.play("jump", true);
@@ -207,11 +252,7 @@ class TutorialScene extends Scene {
       this.player.anims.play("idle", true);
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.shift)) {
-      this.fireProjectile();
-    }
-
-    if (this.cursors.up.isDown && this.player.body.touching.down) {
+    if (this.cursors.space.isDown && this.player.body.touching.down) {
       this.player.setVelocityY(-200);
       return;
     }
