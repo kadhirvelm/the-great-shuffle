@@ -12,6 +12,7 @@ import { AssetManager } from "./manager/AssetManager";
 import { Monster } from "./monster/Monster";
 import { Player } from "./player/Player";
 import { removeStore, setStore } from "./store/storeManager";
+import { MonsterGroup } from "./monster/MonsterGroup";
 
 export class PrimaryGame {
   private game: Game;
@@ -44,6 +45,7 @@ export class PrimaryGame {
 
 class TutorialScene extends Scene {
   private player: Player | undefined;
+  private monsterGroup: MonsterGroup | undefined;
 
   public preload() {
     new AssetManager(this);
@@ -56,13 +58,26 @@ class TutorialScene extends Scene {
       keyboard: new Keyboard(this),
       rangedAttackGroup,
     });
-    const monster = new Monster(this, 700, 2900);
+    this.monsterGroup = new MonsterGroup(this);
+
+    this.monsterGroup.add(
+      new Monster(this, 900, 2900, { player: this.player }),
+    );
+    this.monsterGroup.add(
+      new Monster(this, 800, 2900, { player: this.player }),
+    );
+    this.monsterGroup.add(
+      new Monster(this, 700, 2900, { player: this.player }),
+    );
+    this.monsterGroup.add(
+      new Monster(this, 600, 2900, { player: this.player }),
+    );
 
     new CollisionManager(this, {
       player: this.player,
       environment: environment,
       rangedAttacks: rangedAttackGroup,
-      monster,
+      monsterGroup: this.monsterGroup,
     });
 
     const camera = new Camera(this, environment.background);
@@ -70,10 +85,11 @@ class TutorialScene extends Scene {
   }
 
   public update() {
-    if (this.player === undefined) {
+    if (this.player === undefined || this.monsterGroup === undefined) {
       return;
     }
 
     this.player.update();
+    this.monsterGroup.update();
   }
 }
