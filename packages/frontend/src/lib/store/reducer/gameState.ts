@@ -28,10 +28,16 @@ const gameStateSlice = createSlice({
       state.stage = action.payload;
     },
     updateHealth: (state, action: PayloadAction<number>) => {
-      state.player.health = Math.min(state.player.health + action.payload, 100);
+      state.player.health = Math.max(
+        0,
+        Math.min(state.player.health + action.payload, 100),
+      );
     },
     updateChi: (state, action: PayloadAction<number>) => {
-      state.player.chi = Math.min(state.player.chi + action.payload, 100);
+      state.player.chi = Math.max(
+        0,
+        Math.min(state.player.chi + action.payload, 100),
+      );
     },
   },
 });
