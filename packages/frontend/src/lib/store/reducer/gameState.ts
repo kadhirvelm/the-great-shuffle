@@ -2,11 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type GameStage = "tutorial";
 
-export interface PlayerStats {
-  health: number;
-  chi: number;
+export interface SinglePlayerStat {
+  current: number;
+  max: number;
 }
 
+export interface PlayerStats {
+  health: SinglePlayerStat;
+  chi: SinglePlayerStat;
+  stamina: SinglePlayerStat;
+}
 export interface GameState {
   stage: GameStage;
   player: PlayerStats;
@@ -15,8 +20,18 @@ export interface GameState {
 const initialState: GameState = {
   stage: "tutorial",
   player: {
-    health: 75,
-    chi: 50,
+    health: {
+      current: 100,
+      max: 100,
+    },
+    chi: {
+      current: 100,
+      max: 100,
+    },
+    stamina: {
+      current: 100,
+      max: 100,
+    },
   },
 };
 
@@ -28,20 +43,36 @@ const gameStateSlice = createSlice({
       state.stage = action.payload;
     },
     updateHealth: (state, action: PayloadAction<number>) => {
-      state.player.health = Math.max(
+      state.player.health.current = Math.max(
         0,
-        Math.min(state.player.health + action.payload, 100),
+        Math.min(
+          state.player.health.current + action.payload,
+          state.player.health.max,
+        ),
       );
     },
     updateChi: (state, action: PayloadAction<number>) => {
-      state.player.chi = Math.max(
+      state.player.chi.current = Math.max(
         0,
-        Math.min(state.player.chi + action.payload, 100),
+        Math.min(
+          state.player.chi.current + action.payload,
+          state.player.chi.max,
+        ),
+      );
+    },
+    updateStamina: (state, action: PayloadAction<number>) => {
+      state.player.stamina.current = Math.max(
+        0,
+        Math.min(
+          state.player.stamina.current + action.payload,
+          state.player.stamina.max,
+        ),
       );
     },
   },
 });
 
-export const { setStage, updateHealth, updateChi } = gameStateSlice.actions;
+export const { setStage, updateHealth, updateStamina, updateChi } =
+  gameStateSlice.actions;
 
 export const GameStateReducer = gameStateSlice.reducer;
