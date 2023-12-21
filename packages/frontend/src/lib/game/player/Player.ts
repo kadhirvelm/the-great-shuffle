@@ -4,6 +4,10 @@ import { updateChi, updateHealth } from "../../store/reducer/gameState";
 import { getStore } from "../store/storeManager";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { Keyboard } from "../keyboard/Keyboard";
+import { clamp } from "lodash-es";
+import { Gravity } from "../constants/Gravity";
+import { Movement } from "../constants/Movement";
+import { RangedAttack } from "../attacks/RangedAttack";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
@@ -34,39 +38,14 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   public update() {
-    if (
-      Phaser.Input.Keyboard.JustDown(this.playerInteractions.keyboard.shift)
-    ) {
-      this.fireProjectile();
-    }
+    this.handleAttacking();
 
     if (!this.typedBody.touching.down) {
-      this.typedBody.setVelocityX(this.typedBody.velocity.x * 0.995);
-      this.anims.play("jump", true);
-      return;
+      return this.handleAirborneMovement();
     }
 
-    if (this.playerInteractions.keyboard.left.isDown) {
-      this.typedBody.setVelocityX(-300);
-      this.setFlipX(true);
-      this.anims.play("walk", true);
-    } else if (this.playerInteractions.keyboard.right.isDown) {
-      this.typedBody.setVelocityX(300);
-      this.setFlipX(false);
-      this.setAngle(0);
-      this.anims.play("walk", true);
-    } else {
-      this.typedBody.setVelocityX(0);
-      this.anims.play("idle", true);
-    }
-
-    if (
-      this.playerInteractions.keyboard.space.isDown &&
-      this.typedBody.touching.down
-    ) {
-      this.typedBody.setVelocityY(-350);
-      return;
-    }
+    this.handleGroundMovement();
+    this.handleEnvironmentInteractions();
   }
 
   public takeDamage(damage: number) {
@@ -74,8 +53,10 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private initializePhysics() {
-    this.typedBody.setBounce(0.2);
+    this.typedBody.setBounce(0.05);
     this.typedBody.setCollideWorldBounds(true);
+
+    this.typedBody.setGravityY(Gravity.playerY);
   }
 
   private setAnimations() {
@@ -99,13 +80,66 @@ export class Player extends Phaser.GameObjects.Sprite {
     });
   }
 
+  private handleAttacking() {
+    if (
+      Phaser.Input.Keyboard.JustDown(this.playerInteractions.keyboard.shift)
+    ) {
+      this.fireProjectile();
+    }
+  }
+
+  private handleAirborneMovement() {
+    this.anims.play("jump", true);
+
+    const adjustDirection = (direction: "left" | "right") => {
+      const intendedDiretion = direction === "left" ? -1 : 1;
+      const deltaInSpeed = Math.abs(this.typedBody.velocity.x) * 0.05;
+      const finalDelta = intendedDiretion * clamp(deltaInSpeed, 0.25, 1.25);
+
+      return this.typedBody.velocity.x + finalDelta;
+    };
+
+    if (this.playerInteractions.keyboard.left.isDown) {
+      this.typedBody.setVelocityX(adjustDirection("left"));
+    } else if (this.playerInteractions.keyboard.right.isDown) {
+      this.typedBody.setVelocityX(adjustDirection("right"));
+    } else {
+      this.typedBody.setVelocityX(this.typedBody.velocity.x * 0.995);
+    }
+  }
+
+  private handleGroundMovement() {
+    if (this.playerInteractions.keyboard.left.isDown) {
+      this.typedBody.setVelocityX(-Movement.player_x);
+      this.setFlipX(true);
+      this.anims.play("walk", true);
+    } else if (this.playerInteractions.keyboard.right.isDown) {
+      this.typedBody.setVelocityX(Movement.player_x);
+      this.setFlipX(false);
+      this.anims.play("walk", true);
+    } else {
+      this.typedBody.setVelocityX(0);
+      this.anims.play("idle", true);
+    }
+  }
+
+  private handleEnvironmentInteractions() {
+    if (
+      this.playerInteractions.keyboard.space.isDown &&
+      this.typedBody.touching.down
+    ) {
+      this.typedBody.setVelocityY(-Movement.player_y);
+    }
+  }
+
   private fireProjectile() {
     const playerChi = this.store.getState().gameState.player.chi;
     if (playerChi < 10) {
       return;
     }
 
-    const maybeRangedAttack = this.playerInteractions.rangedAttackGroup.get();
+    const maybeRangedAttack: RangedAttack | undefined =
+      this.playerInteractions.rangedAttackGroup.get();
     if (maybeRangedAttack === undefined) {
       return;
     }

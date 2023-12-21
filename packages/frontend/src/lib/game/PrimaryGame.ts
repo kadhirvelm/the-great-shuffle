@@ -13,6 +13,7 @@ import { Monster } from "./monster/Monster";
 import { Player } from "./player/Player";
 import { removeStore, setStore } from "./store/storeManager";
 import { MonsterGroup } from "./monster/MonsterGroup";
+import { Gravity } from "./constants/Gravity";
 
 export class PrimaryGame {
   private game: Game;
@@ -29,7 +30,7 @@ export class PrimaryGame {
       physics: {
         default: "arcade",
         arcade: {
-          gravity: { y: 300 },
+          gravity: { y: Gravity.generic },
         },
       },
       backgroundColor: "#000",
@@ -62,15 +63,6 @@ class TutorialScene extends Scene {
 
     this.monsterGroup.add(
       new Monster(this, 900, 2900, { player: this.player }),
-    );
-    this.monsterGroup.add(
-      new Monster(this, 800, 2900, { player: this.player }),
-    );
-    this.monsterGroup.add(
-      new Monster(this, 700, 2900, { player: this.player }),
-    );
-    this.monsterGroup.add(
-      new Monster(this, 600, 2900, { player: this.player }),
     );
 
     new CollisionManager(this, {

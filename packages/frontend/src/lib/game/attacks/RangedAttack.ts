@@ -1,3 +1,5 @@
+import { Movement } from "../constants/Movement";
+
 export class RangedAttack extends Phaser.GameObjects.Sprite {
   public constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, "ranged_attack");
@@ -33,7 +35,7 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
 
     this.scene.physics.velocityFromAngle(
       angle,
-      300,
+      Movement.projectile_x,
       (this.body?.velocity ?? undefined) as Phaser.Math.Vector2 | undefined,
     );
 
