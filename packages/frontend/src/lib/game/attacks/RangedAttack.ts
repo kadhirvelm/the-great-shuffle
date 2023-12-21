@@ -33,8 +33,10 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
 
     this.scene.physics.velocityFromAngle(
       angle,
-      1200,
+      300,
       (this.body?.velocity ?? undefined) as Phaser.Math.Vector2 | undefined,
     );
+
+    (this.body as Phaser.Physics.Arcade.Body).setAngularVelocity(200);
   }
 }

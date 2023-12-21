@@ -115,7 +115,7 @@ class TutorialScene extends Scene {
 
     const bottom = platforms.create(
       background.displayWidth / 2,
-      background.displayHeight,
+      background.displayHeight - 100,
       undefined,
       undefined,
       false,
@@ -212,7 +212,7 @@ class TutorialScene extends Scene {
     }
 
     if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
+      this.player.setVelocityY(-200);
       return;
     }
   }
