@@ -1,6 +1,6 @@
 import { Store } from "@reduxjs/toolkit";
 import { State } from "../../store/configureStore";
-import { getStore } from "../store/reduxStore";
+import { getStore } from "../store/storeManager";
 
 export class Monster extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
