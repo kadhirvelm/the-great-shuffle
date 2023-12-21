@@ -256,7 +256,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     maybeRangedAttack.fire(this.x, this.y, this.flipX ? 180 : 0, {
       damage: 10,
-      range: 300,
+      range: 200,
     });
     this.store.dispatch(updateChi(-10));
   }

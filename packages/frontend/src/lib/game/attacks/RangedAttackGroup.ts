@@ -10,4 +10,10 @@ export class RangedAttackGroup extends Phaser.Physics.Arcade.Group {
       allowGravity: false,
     });
   }
+
+  public update() {
+    this.getChildren().forEach((rangedAttack) =>
+      (rangedAttack as RangedAttack).update(),
+    );
+  }
 }
