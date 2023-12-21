@@ -1,11 +1,11 @@
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
-import { WoodsEnvironment } from "../environment/WoodsEnvironment";
+import { TreeEnvironment } from "../environment/TreeEnvironment";
 import { Monster } from "../monster/Monster";
 import { Player } from "../player/Player";
 
 export interface InteractingObjects {
   player: Player;
-  woodsEnvironment: WoodsEnvironment;
+  environment: TreeEnvironment;
   rangedAttacks: RangedAttackGroup;
   monster: Monster;
 }
@@ -22,11 +22,11 @@ export class CollisionManager {
   private addPlatformCollisions() {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
-      this.interactingObjects.woodsEnvironment,
+      this.interactingObjects.environment,
     );
     this.scene.physics.add.collider(
       this.interactingObjects.monster,
-      this.interactingObjects.woodsEnvironment,
+      this.interactingObjects.environment,
     );
   }
 

@@ -5,7 +5,7 @@ import { Game, Scene } from "phaser";
 import { State } from "../store/configureStore";
 import { RangedAttackGroup } from "./attacks/RangedAttackGroup";
 import { Camera } from "./camera/Camera";
-import { WoodsEnvironment } from "./environment/WoodsEnvironment";
+import { TreeEnvironment } from "./environment/TreeEnvironment";
 import { CollisionManager } from "./interactions/CollisionManager";
 import { Keyboard } from "./keyboard/Keyboard";
 import { AssetManager } from "./manager/AssetManager";
@@ -50,17 +50,17 @@ class TutorialScene extends Scene {
   }
 
   public create() {
-    const environment = new WoodsEnvironment(this);
+    const environment = new TreeEnvironment(this);
     const rangedAttackGroup = new RangedAttackGroup(this);
-    this.player = new Player(this, 500, 800, {
+    this.player = new Player(this, 500, 2900, {
       keyboard: new Keyboard(this),
       rangedAttackGroup,
     });
-    const monster = new Monster(this, 700, 800);
+    const monster = new Monster(this, 700, 2900);
 
     new CollisionManager(this, {
       player: this.player,
-      woodsEnvironment: environment,
+      environment: environment,
       rangedAttacks: rangedAttackGroup,
       monster,
     });
