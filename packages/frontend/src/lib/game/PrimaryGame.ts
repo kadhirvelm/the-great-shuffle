@@ -4,6 +4,8 @@ import { Store } from "@reduxjs/toolkit";
 import { Game, Scene } from "phaser";
 import { State } from "../store/configureStore";
 import { setStore, removeStore, getStore } from "./store/reduxStore";
+import { RangedAttack } from "./attacks/RangedAttack";
+import { updateChi } from "../store/reducer/gameState";
 
 export class PrimaryGame {
   private game: Game;
@@ -37,6 +39,7 @@ export class PrimaryGame {
 class TutorialScene extends Scene {
   private store: Store<State>;
   private player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | undefined;
+  private rangedAttacks: Phaser.Physics.Arcade.Group | undefined;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
 
   public constructor() {
@@ -52,7 +55,7 @@ class TutorialScene extends Scene {
     this.load.image("temple", "temple.jpg");
     this.load.image("lava", "lava.jpg");
 
-    this.load.image("block", "block.png");
+    this.load.image("ranged_attack", "ranged_attack.png");
 
     this.load.spritesheet("idle", "idle.png", {
       frameWidth: 55,
@@ -84,6 +87,14 @@ class TutorialScene extends Scene {
 
     const platforms = this.createPlatforms(background);
     this.player = this.createPlayer();
+
+    this.rangedAttacks = this.physics.add.group({
+      classType: RangedAttack,
+      maxSize: 5,
+      runChildUpdate: true,
+      collideWorldBounds: true,
+      allowGravity: false,
+    });
 
     this.physics.add.collider(this.player, platforms);
 
@@ -148,6 +159,29 @@ class TutorialScene extends Scene {
     this.cursors = this.input.keyboard?.createCursorKeys();
   }
 
+  private fireProjectile() {
+    if (this.rangedAttacks === undefined || this.player === undefined) {
+      return;
+    }
+
+    const playerChi = this.store.getState().gameState.player.chi;
+    if (playerChi < 10) {
+      return;
+    }
+
+    const maybeRangedAttack = this.rangedAttacks.get();
+    if (maybeRangedAttack === undefined) {
+      return;
+    }
+
+    maybeRangedAttack.fire(
+      this.player.x,
+      this.player.y,
+      this.player.flipX ? 180 : 0,
+    );
+    this.store.dispatch(updateChi(-10));
+  }
+
   public update() {
     if (this.cursors === undefined || this.player === undefined) {
       return;
@@ -166,10 +200,15 @@ class TutorialScene extends Scene {
     } else if (this.cursors.right.isDown) {
       this.player.setVelocityX(300);
       this.player.setFlipX(false);
+      this.player.setAngle(0);
       this.player.anims.play("walk", true);
     } else {
       this.player.setVelocityX(0);
       this.player.anims.play("idle", true);
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.shift)) {
+      this.fireProjectile();
     }
 
     if (this.cursors.up.isDown && this.player.body.touching.down) {
