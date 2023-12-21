@@ -3,6 +3,8 @@ import { State } from "../../store/configureStore";
 import { getStore } from "../store/storeManager";
 import { Player } from "../player/Player";
 import { AllMonsterStats, MonsterStats } from "./MonsterStats";
+import { Movement } from "../constants/Movement";
+import { Distance } from "../constants/Distance";
 
 export interface MonsterInteraction {
   player: Player;
@@ -68,9 +70,13 @@ export class Monster extends Phaser.GameObjects.Sprite {
       this.monsterInteractions.player.y,
     );
 
-    if (distanceToPlayer < 100) {
+    if (distanceToPlayer <= Distance.monster_aggro) {
       const direction = Math.sign(this.monsterInteractions.player.x - this.x);
-      this.typedBody.setVelocityX(100 * direction);
+      this.typedBody.setVelocityX(Movement.monster_x * direction);
+
+      if (this.typedBody.touching.down) {
+        this.typedBody.setVelocityY(-Movement.monster_y);
+      }
     } else {
       this.typedBody.setVelocityX(0);
     }

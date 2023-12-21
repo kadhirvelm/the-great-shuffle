@@ -25,6 +25,8 @@ export class PrimaryGame {
     setStore(store);
 
     this.game = new Game({
+      width: "100%",
+      height: "100%",
       type: Phaser.AUTO,
       parent: this.parent,
       physics: {
