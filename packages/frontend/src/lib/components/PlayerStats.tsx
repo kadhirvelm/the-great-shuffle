@@ -1,7 +1,10 @@
+import { useRegeneratePlayerStats } from "../hooks/regeneratePlayerStats";
 import { useTowerSelector } from "../store/configureStore";
 import styles from "./PlayerStats.module.scss";
 
 export const PlayerStats = () => {
+  useRegeneratePlayerStats();
+
   const { health, chi } = useTowerSelector((s) => s.gameState.player);
 
   return (
