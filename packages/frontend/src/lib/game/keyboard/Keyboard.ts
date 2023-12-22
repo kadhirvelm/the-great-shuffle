@@ -6,7 +6,8 @@ export class Keyboard {
   public shift: Phaser.Input.Keyboard.Key;
   public space: Phaser.Input.Keyboard.Key;
 
-  public attack: Phaser.Input.Keyboard.Key;
+  public ranged_attack: Phaser.Input.Keyboard.Key;
+  public aura_attack: Phaser.Input.Keyboard.Key;
 
   constructor(scene: Phaser.Scene) {
     if (scene.input.keyboard == null) {
@@ -24,6 +25,7 @@ export class Keyboard {
     this.shift = cursorKeys.shift;
     this.space = cursorKeys.space;
 
-    this.attack = scene.input.keyboard.addKey("q");
+    this.ranged_attack = scene.input.keyboard.addKey("q");
+    this.aura_attack = scene.input.keyboard.addKey("w");
   }
 }

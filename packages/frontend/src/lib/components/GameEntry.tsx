@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { PrimaryGame } from "../game/PrimaryGame";
-import styles from "./GameEntry.module.scss";
 import { useTowerStore } from "../store/configureStore";
+import styles from "./GameEntry.module.scss";
 import { Bars } from "./stats/Bars";
 
 // @refresh reset
@@ -11,7 +11,10 @@ const GameEntry = () => {
   const store = useTowerStore();
 
   useEffect(() => {
-    if (gameCanvas.current == null) {
+    if (
+      gameCanvas.current == null ||
+      gameCanvas.current?.clientWidth !== window.innerWidth
+    ) {
       return;
     }
 
@@ -19,13 +22,11 @@ const GameEntry = () => {
     return () => {
       primaryGame.destroyGame();
     };
-  }, [gameCanvas, store]);
+  }, [gameCanvas, store, gameCanvas.current?.clientWidth]);
 
   return (
     <div className={styles.rootContainer}>
-      <div className={styles.statsContainer}>
-        <Bars />
-      </div>
+      <Bars />
       <div className={styles.gameContainer} ref={gameCanvas} />
     </div>
   );
