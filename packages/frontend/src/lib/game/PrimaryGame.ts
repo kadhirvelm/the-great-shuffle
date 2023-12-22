@@ -38,6 +38,11 @@ export class PrimaryGame {
       backgroundColor: "#000",
       scene: TutorialScene,
     });
+
+    console.log(
+      this.parent.getBoundingClientRect(),
+      this.game.canvas.getBoundingClientRect(),
+    );
   }
 
   public destroyGame() {

@@ -41,12 +41,16 @@ export class CollisionManager {
         const typedAttack = rangedAttack as RangedAttack;
 
         typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0);
-
         rangedAttack.destroy();
       },
-      (monster) => {
+      (monster, rangedAttack) => {
         const typedMonster = monster as Monster;
         if (!typedMonster.isAlive()) {
+          return false;
+        }
+
+        const typedRangedAttack = rangedAttack as RangedAttack;
+        if (typedRangedAttack.isDestroyed) {
           return false;
         }
 

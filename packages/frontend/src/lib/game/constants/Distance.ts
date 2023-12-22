@@ -1,4 +1,4 @@
 export enum Distance {
-  monster_aggro = 400,
+  monster_aggro = 100,
   player_projectile = 500,
 }
