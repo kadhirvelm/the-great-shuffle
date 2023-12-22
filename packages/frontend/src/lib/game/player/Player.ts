@@ -13,10 +13,14 @@ import { Gravity } from "../constants/Gravity";
 import { Movement } from "../constants/Movement";
 import { RangedAttack } from "../attacks/RangedAttack";
 import { Distance } from "../constants/Distance";
+import { AuraAttack } from "../attacks/AuraAttack";
+import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
+import { Scale } from "../constants/Scale";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
   rangedAttackGroup: RangedAttackGroup;
+  auraAttackGroup: AuraAttackGroup;
 }
 
 interface DashingState {
@@ -156,9 +160,19 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private handleAttacking() {
     if (
-      Phaser.Input.Keyboard.JustDown(this.playerInteractions.keyboard.attack)
+      Phaser.Input.Keyboard.JustDown(
+        this.playerInteractions.keyboard.ranged_attack,
+      )
     ) {
-      this.fireProjectile();
+      this.fireRangedAttack();
+    }
+
+    if (
+      Phaser.Input.Keyboard.JustDown(
+        this.playerInteractions.keyboard.aura_attack,
+      )
+    ) {
+      this.fireAuraAttack();
     }
   }
 
@@ -243,7 +257,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
-  private fireProjectile() {
+  private fireRangedAttack() {
     const playerChi = this.store.getState().gameState.player.chi.current;
     if (playerChi < 10) {
       return;
@@ -260,5 +274,25 @@ export class Player extends Phaser.GameObjects.Sprite {
       range: Distance.player_projectile,
     });
     this.store.dispatch(updateChi(-10));
+  }
+
+  private fireAuraAttack() {
+    const playerChi = this.store.getState().gameState.player.chi.current;
+    if (playerChi < 20) {
+      return;
+    }
+
+    const maybeAuraAttack: AuraAttack | undefined =
+      this.playerInteractions.auraAttackGroup.get();
+    if (maybeAuraAttack === undefined) {
+      return;
+    }
+
+    maybeAuraAttack.fire(this.x, this.y, {
+      damage: 25,
+      duration: 300,
+      scale: Scale.player_aura_attack,
+    });
+    this.store.dispatch(updateChi(-20));
   }
 }

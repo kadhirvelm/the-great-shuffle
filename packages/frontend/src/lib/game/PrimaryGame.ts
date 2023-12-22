@@ -6,7 +6,7 @@ import { State } from "../store/configureStore";
 import { RangedAttackGroup } from "./attacks/RangedAttackGroup";
 import { Camera } from "./camera/Camera";
 import { TreeEnvironment } from "./environment/TreeEnvironment";
-import { CollisionManager } from "./interactions/CollisionManager";
+import { CollisionManager } from "./manager/CollisionManager";
 import { Keyboard } from "./keyboard/Keyboard";
 import { AssetManager } from "./manager/AssetManager";
 import { Monster } from "./monster/Monster";
@@ -14,6 +14,7 @@ import { Player } from "./player/Player";
 import { removeStore, setStore } from "./store/storeManager";
 import { MonsterGroup } from "./monster/MonsterGroup";
 import { Gravity } from "./constants/Gravity";
+import { AuraAttackGroup } from "./attacks/AuraAttackGroup";
 
 export class PrimaryGame {
   private game: Game;
@@ -55,6 +56,7 @@ class TutorialScene extends Scene {
   private player: Player | undefined;
   private monsterGroup: MonsterGroup | undefined;
   private rangedAttackGroup: RangedAttackGroup | undefined;
+  private auraAttackGroup: AuraAttackGroup | undefined;
 
   public preload() {
     new AssetManager(this);
@@ -63,9 +65,12 @@ class TutorialScene extends Scene {
   public create() {
     const environment = new TreeEnvironment(this);
     this.rangedAttackGroup = new RangedAttackGroup(this);
+    this.auraAttackGroup = new AuraAttackGroup(this);
+
     this.player = new Player(this, 500, 2900, {
       keyboard: new Keyboard(this),
       rangedAttackGroup: this.rangedAttackGroup,
+      auraAttackGroup: this.auraAttackGroup,
     });
     this.monsterGroup = new MonsterGroup(this);
 
@@ -75,9 +80,10 @@ class TutorialScene extends Scene {
 
     new CollisionManager(this, {
       player: this.player,
+      monsterGroup: this.monsterGroup,
       environment: environment,
       rangedAttacks: this.rangedAttackGroup,
-      monsterGroup: this.monsterGroup,
+      auraAttacks: this.auraAttackGroup,
     });
 
     const camera = new Camera(this, environment.background);
@@ -88,7 +94,8 @@ class TutorialScene extends Scene {
     if (
       this.player === undefined ||
       this.monsterGroup === undefined ||
-      this.rangedAttackGroup === undefined
+      this.rangedAttackGroup === undefined ||
+      this.auraAttackGroup === undefined
     ) {
       return;
     }
@@ -96,5 +103,6 @@ class TutorialScene extends Scene {
     this.player.update();
     this.monsterGroup.update();
     this.rangedAttackGroup.update();
+    this.auraAttackGroup.update();
   }
 }

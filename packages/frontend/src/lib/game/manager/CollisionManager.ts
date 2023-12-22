@@ -1,3 +1,5 @@
+import { AuraAttack } from "../attacks/AuraAttack";
+import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
 import { RangedAttack } from "../attacks/RangedAttack";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
@@ -6,10 +8,11 @@ import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
 
 export interface InteractingObjects {
-  player: Player;
   environment: TreeEnvironment;
-  rangedAttacks: RangedAttackGroup;
+  player: Player;
   monsterGroup: MonsterGroup;
+  rangedAttacks: RangedAttackGroup;
+  auraAttacks: AuraAttackGroup;
 }
 
 export class CollisionManager {
@@ -17,11 +20,13 @@ export class CollisionManager {
     private scene: Phaser.Scene,
     private interactingObjects: InteractingObjects,
   ) {
-    this.addPlatformCollisions();
+    this.addPlatform();
+    this.addPlayerAndMonster();
     this.addRangedAttacks();
+    this.addAuraAttacks();
   }
 
-  private addPlatformCollisions() {
+  private addPlatform() {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
       this.interactingObjects.environment,
@@ -29,6 +34,36 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.environment,
+    );
+  }
+
+  private addPlayerAndMonster() {
+    this.scene.physics.add.collider(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.player,
+      (player, monster) => {
+        const typedPlayer: Player = player as Player;
+        const typedMonster: Monster = monster as Monster;
+
+        typedPlayer.takeDamage(typedMonster.stats.damage);
+      },
+      (player, monster) => {
+        const typedPlayer: Player = player as Player;
+        if (typedPlayer.currentState?.type === "dashing") {
+          return false;
+        }
+
+        if (typedPlayer.currentState?.type === "recently-damaged") {
+          return false;
+        }
+
+        const typedMonster = monster as Monster;
+        if (!typedMonster.isAlive()) {
+          return false;
+        }
+
+        return true;
+      },
     );
   }
 
@@ -57,32 +92,31 @@ export class CollisionManager {
         return true;
       },
     );
+  }
 
+  private addAuraAttacks() {
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
-      this.interactingObjects.player,
-      (player, monster) => {
-        const typedPlayer: Player = player as Player;
-        const typedMonster: Monster = monster as Monster;
+      this.interactingObjects.auraAttacks,
+      (monster, auraAttack) => {
+        const typedMonster = monster as Monster;
+        const typedAttack = auraAttack as AuraAttack;
 
-        typedPlayer.takeDamage(typedMonster.stats.damage);
+        typedMonster.takeDamage(
+          typedAttack.attributes?.damage ?? 0,
+          typedAttack.auraAttackId,
+        );
       },
-      (player, monster) => {
-        const typedPlayer: Player = player as Player;
-        if (typedPlayer.currentState?.type === "dashing") {
-          return false;
-        }
-
-        if (typedPlayer.currentState?.type === "recently-damaged") {
-          return false;
-        }
-
+      (monster, auraAttack) => {
         const typedMonster = monster as Monster;
         if (!typedMonster.isAlive()) {
           return false;
         }
 
-        return true;
+        const typedAuraAttack = auraAttack as AuraAttack;
+        return typedMonster.canTakeDamageFromAuraAttack(
+          typedAuraAttack.auraAttackId,
+        );
       },
     );
   }
