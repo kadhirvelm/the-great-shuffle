@@ -39,7 +39,7 @@ export function useRegeneratePlayerStats() {
 
     dispatch(updateStamina(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chi.current === chi.max]);
+  }, [stamina.current === stamina.max]);
 
   useEffect(() => {
     if (existingPid.current !== undefined) {
@@ -55,5 +55,5 @@ export function useRegeneratePlayerStats() {
     return () => {
       clearTimeout(existingPid.current);
     };
-  }, [regenerateHealth, regenerateChi]);
+  }, [regenerateHealth, regenerateChi, regenerateStamina]);
 }

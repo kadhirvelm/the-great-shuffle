@@ -186,7 +186,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     const maybeDash = this.maybeStartDashing();
     if (maybeDash !== undefined) {
       this.currentState = maybeDash;
-      this.typedBody;
+      this.scene.sound.play("dash");
       this.store.dispatch(updateStamina(-10));
       return;
     }
