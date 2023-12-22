@@ -65,6 +65,7 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
     );
 
     this.typedBody.setAngularVelocity(200);
+    this.scene.sound.play("ranged_attack");
   }
 
   public update() {

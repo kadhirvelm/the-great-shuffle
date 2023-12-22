@@ -2,6 +2,11 @@ export class AssetManager {
   public constructor(private scene: Phaser.Scene) {
     this.scene.load.setBaseURL("http://localhost:8080");
 
+    this.loadVisualAssets();
+    this.loadAudioAssets();
+  }
+
+  private loadVisualAssets() {
     this.loadBackground();
     this.loadAttacks();
     this.loadPlayer();
@@ -42,5 +47,10 @@ export class AssetManager {
       frameWidth: 40,
       frameHeight: 40,
     });
+  }
+
+  private loadAudioAssets() {
+    this.scene.load.audio("ranged_attack", "ranged_attack.mp3");
+    this.scene.load.audio("dash", "dash.mp3");
   }
 }
