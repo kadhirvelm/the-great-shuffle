@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Grandstander } from "next/font/google";
+import { Nanum_Brush_Script } from "next/font/google";
 import clsx from "clsx";
 import styles from "./layout.module.scss";
 
-const grandstander = Grandstander({ subsets: ["latin"] });
+const font = Nanum_Brush_Script({ subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "The Tower of Cultivation",
@@ -17,9 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={clsx(grandstander.className, styles.body)}>
-        {children}
-      </body>
+      <body className={clsx(font.className, styles.body)}>{children}</body>
     </html>
   );
 }

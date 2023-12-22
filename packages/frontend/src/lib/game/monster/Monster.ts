@@ -20,6 +20,13 @@ export class Monster extends Phaser.GameObjects.Sprite {
   private store: Store<State>;
   private monsterStats: MonsterStats;
 
+  private damageEvent:
+    | {
+        flash: Phaser.Time.TimerEvent;
+        timer: Phaser.Time.TimerEvent;
+      }
+    | undefined;
+
   public constructor(
     scene: Phaser.Scene,
     x: number,
@@ -86,10 +93,38 @@ export class Monster extends Phaser.GameObjects.Sprite {
     this.stats.health.current = Math.max(this.stats.health.current - damage, 0);
 
     if (this.stats.health.current > 0) {
+      this.flashDamage();
       return;
     }
 
     this.fadeOutAndDestroy();
+  }
+
+  private flashDamage() {
+    if (this.damageEvent !== undefined) {
+      this.damageEvent.flash.remove();
+      this.damageEvent.timer.remove();
+    }
+
+    const flashDuration = 200;
+    const flash = this.scene.time.addEvent({
+      delay: flashDuration,
+      repeat: 3,
+      callback: () => {
+        if (this.tint === 0xff0000) {
+          this.clearTint();
+        } else {
+          this.setTint(0xff0000);
+        }
+      },
+    });
+
+    const timer = this.scene.time.delayedCall(flashDuration * 4, () => {
+      flash.remove();
+      this.setAlpha(1);
+    });
+
+    this.damageEvent = { flash, timer };
   }
 
   private fadeOutAndDestroy() {

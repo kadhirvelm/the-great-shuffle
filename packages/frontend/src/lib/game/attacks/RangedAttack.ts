@@ -7,6 +7,8 @@ export interface RangedAttackAttributes {
 
 export class RangedAttack extends Phaser.GameObjects.Sprite {
   public attributes: RangedAttackAttributes | undefined;
+  public typedBody: Phaser.Physics.Arcade.Body;
+  public isDestroyed: boolean = false;
 
   private initialPosition: { x: number; y: number } | undefined;
 
@@ -16,11 +18,22 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    (this.body as Phaser.Physics.Arcade.Body).setCollideWorldBounds(true);
-    (this.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
-    (this.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
+    this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    (this.body as Phaser.Physics.Arcade.Body).world.on(
+    this.setScale(0.15);
+
+    this.setActive(false);
+    this.setVisible(false);
+
+    this.initializePhysics();
+  }
+
+  private initializePhysics() {
+    this.typedBody.setCollideWorldBounds(true);
+    this.typedBody.onWorldBounds = true;
+    this.typedBody.setAllowGravity(false);
+
+    this.typedBody.world.on(
       "worldbounds",
       (body: Phaser.Physics.Arcade.Body) => {
         if (body.gameObject !== this) {
@@ -30,11 +43,6 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
         this.destroy();
       },
     );
-
-    this.setScale(0.15);
-
-    this.setActive(false);
-    this.setVisible(false);
   }
 
   public fire(
@@ -56,7 +64,7 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
       (this.body?.velocity ?? undefined) as Phaser.Math.Vector2 | undefined,
     );
 
-    (this.body as Phaser.Physics.Arcade.Body).setAngularVelocity(200);
+    this.typedBody.setAngularVelocity(200);
   }
 
   public update() {
@@ -82,5 +90,28 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
         (1 * (1 - percentageDistanceTraveled)) / percentageDistanceTraveled,
       );
     }
+  }
+
+  public destroy(fromScene?: boolean) {
+    if (this.isDestroyed) {
+      return;
+    }
+
+    if (this.attributes === undefined) {
+      return;
+    }
+
+    this.isDestroyed = true;
+    this.attributes.damage = 0;
+
+    this.scene.tweens.add({
+      targets: this,
+      alpha: { from: 1, to: 0 },
+      scale: { from: this.scale, to: this.scale * 1.2 },
+      duration: 200,
+      onComplete: () => {
+        super.destroy(fromScene);
+      },
+    });
   }
 }

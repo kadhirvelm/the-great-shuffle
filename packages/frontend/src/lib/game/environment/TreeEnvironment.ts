@@ -5,6 +5,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
     super(scene.physics.world, scene);
 
     this.background = scene.add.image(0, 0, "tree").setOrigin(0, 0).setScale(3);
+    this.background.setAlpha(0.85);
 
     scene.physics.world.setBounds(
       0,
