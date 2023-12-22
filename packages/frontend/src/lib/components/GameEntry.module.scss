@@ -1,8 +1,8 @@
 .rootContainer {
   display: flex;
   flex-direction: column;
+  position: relative;
   flex: 1;
-  padding: 20px;
 }
 
 .statsContainer {

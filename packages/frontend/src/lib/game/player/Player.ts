@@ -12,6 +12,7 @@ import { clamp } from "lodash-es";
 import { Gravity } from "../constants/Gravity";
 import { Movement } from "../constants/Movement";
 import { RangedAttack } from "../attacks/RangedAttack";
+import { Distance } from "../constants/Distance";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
@@ -256,7 +257,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     maybeRangedAttack.fire(this.x, this.y, this.flipX ? 180 : 0, {
       damage: 10,
-      range: 200,
+      range: Distance.player_projectile,
     });
     this.store.dispatch(updateChi(-10));
   }
