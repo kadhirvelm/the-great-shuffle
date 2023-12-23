@@ -24,17 +24,10 @@ export class CloseAttack extends Phaser.GameObjects.Sprite {
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    this.setScale(0.25);
+    this.setScale(1);
 
     this.setActive(false);
     this.setVisible(false);
-
-    this.initializePhysics();
-  }
-
-  private initializePhysics() {
-    this.typedBody.setAllowGravity(false);
-    this.typedBody.setCollideWorldBounds(false);
   }
 
   public fire(
@@ -44,6 +37,8 @@ export class CloseAttack extends Phaser.GameObjects.Sprite {
     attributes: CloseAttackAttributes,
   ) {
     this.attributes = attributes;
+    this.closeAttackId = v4();
+
     this.setOrigin(0.5, 1);
     this.setPosition(x, y);
 

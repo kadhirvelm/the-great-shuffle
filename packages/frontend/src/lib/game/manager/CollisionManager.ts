@@ -6,6 +6,9 @@ import {
 } from "../attacks/CloseAttackHitbox";
 import { RangedAttack } from "../attacks/RangedAttack";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
+import { Shield } from "../attacks/Shield";
+import { ShieldGroup } from "../attacks/ShieldGroup";
+import { Distance } from "../constants/Distance";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
 import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
@@ -18,6 +21,7 @@ export interface InteractingObjects {
   rangedAttacks: RangedAttackGroup;
   auraAttacks: AuraAttackGroup;
   closeAttacksHitbox: CloseAttackHitboxGroup;
+  shieldGroup: ShieldGroup;
 }
 
 export class CollisionManager {
@@ -27,9 +31,12 @@ export class CollisionManager {
   ) {
     this.addPlatform();
     this.addPlayerAndMonster();
+
     this.addRangedAttacks();
     this.addAuraAttacks();
     this.addCloseAttacks();
+
+    this.addShield();
   }
 
   private addPlatform() {
@@ -44,7 +51,7 @@ export class CollisionManager {
   }
 
   private addPlayerAndMonster() {
-    this.scene.physics.add.collider(
+    this.scene.physics.add.overlap(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.player,
       (player, monster) => {
@@ -74,7 +81,7 @@ export class CollisionManager {
   }
 
   private addRangedAttacks() {
-    this.scene.physics.add.collider(
+    this.scene.physics.add.overlap(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.rangedAttacks,
       (monster, rangedAttack) => {
@@ -101,7 +108,7 @@ export class CollisionManager {
   }
 
   private addAuraAttacks() {
-    this.scene.physics.add.collider(
+    this.scene.physics.add.overlap(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.auraAttacks,
       (monster, auraAttack) => {
@@ -127,7 +134,7 @@ export class CollisionManager {
   }
 
   private addCloseAttacks() {
-    this.scene.physics.add.collider(
+    this.scene.physics.add.overlap(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.closeAttacksHitbox,
       (monster, closeAttack) => {
@@ -150,6 +157,35 @@ export class CollisionManager {
         return typedMonster.canTakeDamageFromCloseAttack(
           typedCloseAttack.closeAttackId,
         );
+      },
+    );
+  }
+
+  private addShield() {
+    this.scene.physics.add.overlap(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.shieldGroup,
+      (monster, shield) => {
+        const typedMonster = monster as Monster;
+        const typedShield = shield as Shield;
+
+        const direction = new Phaser.Math.Vector2(
+          typedMonster.x - typedShield.x,
+          typedMonster.y - typedShield.y,
+        ).normalize();
+
+        typedMonster.pushBack(
+          direction.x * Distance.shield_pushback,
+          typedShield.attributes?.pushBackDuration ?? 100,
+        );
+      },
+      (monster) => {
+        const typedMonster = monster as Monster;
+        if (!typedMonster.isAlive()) {
+          return false;
+        }
+
+        return true;
       },
     );
   }

@@ -17,6 +17,7 @@ import { Gravity } from "./constants/Gravity";
 import { AuraAttackGroup } from "./attacks/AuraAttackGroup";
 import { CloseAttackGroup } from "./attacks/CloseAttackGroup";
 import { CloseAttackHitboxGroup } from "./attacks/CloseAttackHitbox";
+import { ShieldGroup } from "./attacks/ShieldGroup";
 
 export class PrimaryGame {
   private game: Game;
@@ -52,10 +53,13 @@ export class PrimaryGame {
 class TutorialScene extends Scene {
   private player: Player | undefined;
   private monsterGroup: MonsterGroup | undefined;
+
   private rangedAttackGroup: RangedAttackGroup | undefined;
   private auraAttackGroup: AuraAttackGroup | undefined;
   private closeAttackHitbox: CloseAttackHitboxGroup | undefined;
   private closeAttackGroup: CloseAttackGroup | undefined;
+
+  private shieldGroup: ShieldGroup | undefined;
 
   public preload() {
     new AssetManager(this);
@@ -63,16 +67,20 @@ class TutorialScene extends Scene {
 
   public create() {
     const environment = new TreeEnvironment(this);
+
     this.rangedAttackGroup = new RangedAttackGroup(this);
     this.auraAttackGroup = new AuraAttackGroup(this);
     this.closeAttackHitbox = new CloseAttackHitboxGroup(this);
     this.closeAttackGroup = new CloseAttackGroup(this, this.closeAttackHitbox);
+
+    this.shieldGroup = new ShieldGroup(this);
 
     this.player = new Player(this, 500, 2900, {
       keyboard: new Keyboard(this),
       rangedAttackGroup: this.rangedAttackGroup,
       auraAttackGroup: this.auraAttackGroup,
       closeAttackGroup: this.closeAttackGroup,
+      shieldGroup: this.shieldGroup,
     });
     this.monsterGroup = new MonsterGroup(this);
 
@@ -87,6 +95,7 @@ class TutorialScene extends Scene {
       rangedAttacks: this.rangedAttackGroup,
       auraAttacks: this.auraAttackGroup,
       closeAttacksHitbox: this.closeAttackHitbox,
+      shieldGroup: this.shieldGroup,
     });
 
     const camera = new Camera(this, environment.background);
@@ -99,7 +108,8 @@ class TutorialScene extends Scene {
       this.monsterGroup === undefined ||
       this.rangedAttackGroup === undefined ||
       this.auraAttackGroup === undefined ||
-      this.closeAttackGroup === undefined
+      this.closeAttackGroup === undefined ||
+      this.shieldGroup === undefined
     ) {
       return;
     }
@@ -109,5 +119,6 @@ class TutorialScene extends Scene {
     this.rangedAttackGroup.update();
     this.auraAttackGroup.update();
     this.closeAttackGroup.update();
+    this.shieldGroup.update();
   }
 }

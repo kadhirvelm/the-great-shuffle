@@ -22,6 +22,8 @@ export class Monster extends Phaser.GameObjects.Sprite {
   private auraAttackTracker: { [auraAttackId: string]: number } = {};
   private closeAttackTracker: { [closeAttackId: string]: true } = {};
 
+  private isBeingPushed: boolean = false;
+
   private damageEvent:
     | {
         flash: Phaser.Time.TimerEvent;
@@ -72,6 +74,10 @@ export class Monster extends Phaser.GameObjects.Sprite {
       return;
     }
 
+    if (this.isBeingPushed) {
+      return;
+    }
+
     const distanceToPlayer = Phaser.Math.Distance.Between(
       this.x,
       this.y,
@@ -83,7 +89,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
       const direction = Math.sign(this.monsterInteractions.player.x - this.x);
       this.typedBody.setVelocityX(Movement.monster_x * direction);
 
-      if (this.typedBody.touching.down) {
+      if (this.typedBody.touching.down && this.damageEvent === undefined) {
         this.typedBody.setVelocityY(-Movement.monster_y);
       }
     } else {
@@ -138,6 +144,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
     const timer = this.scene.time.delayedCall(flashDuration * 4, () => {
       flash.remove();
       this.setAlpha(1);
+      this.damageEvent = undefined;
     });
 
     this.damageEvent = { flash, timer };
@@ -176,5 +183,14 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
   public canTakeDamageFromCloseAttack(closeAttackId: string) {
     return this.closeAttackTracker[closeAttackId] === undefined;
+  }
+
+  public pushBack(velocity: number, duration: number) {
+    this.isBeingPushed = true;
+    this.typedBody.setVelocityX(velocity);
+
+    this.scene.time.delayedCall(duration, () => {
+      this.isBeingPushed = false;
+    });
   }
 }

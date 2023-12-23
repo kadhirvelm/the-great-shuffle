@@ -20,6 +20,7 @@ export class AuraAttack extends Phaser.GameObjects.Sprite {
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
     this.setScale(0);
+    this.setAlpha(0);
 
     this.setActive(false);
     this.setVisible(false);
