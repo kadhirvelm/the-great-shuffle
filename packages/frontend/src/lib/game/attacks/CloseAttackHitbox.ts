@@ -14,7 +14,12 @@ export class CloseAttackHitbox extends Phaser.Physics.Arcade.Sprite {
     closeAttackAttributes: CloseAttackHitboxAttributes,
     public closeAttackDetails: CloseAttack,
   ) {
-    super(scene, closeAttackAttributes.x, closeAttackAttributes.y, "");
+    super(
+      scene,
+      closeAttackAttributes.x,
+      closeAttackAttributes.y,
+      "platform_texture",
+    );
 
     this.setVisible(false);
 
@@ -43,6 +48,8 @@ export class CloseAttackHitboxGroup extends Phaser.Physics.Arcade.StaticGroup {
       closeAttackAttributes,
       closeAttack,
     );
+
+    console.log("Created hitbox!");
 
     this.add(hitbox, true);
     hitbox.refreshBody();

@@ -12,6 +12,7 @@ export class AssetManager {
     this.loadPlayer();
     this.loadMonster();
     this.loadWeapons();
+    this.loadEquipment();
   }
 
   private loadBackground() {
@@ -52,6 +53,10 @@ export class AssetManager {
 
   private loadWeapons() {
     this.scene.load.image("fire_sword", "visual/fire_sword.png");
+  }
+
+  private loadEquipment() {
+    this.scene.load.image("fire_shield", "visual/fire_shield.png");
   }
 
   private loadAudioAssets() {

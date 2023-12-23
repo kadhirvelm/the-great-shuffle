@@ -18,12 +18,15 @@ import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
 import { Scale } from "../constants/Scale";
 import { CloseAttackGroup } from "../attacks/CloseAttackGroup";
 import { CloseAttack } from "../attacks/CloseAttack";
+import { ShieldGroup } from "../attacks/ShieldGroup";
+import { Shield } from "../attacks/Shield";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
   rangedAttackGroup: RangedAttackGroup;
   auraAttackGroup: AuraAttackGroup;
   closeAttackGroup: CloseAttackGroup;
+  shieldGroup: ShieldGroup;
 }
 
 interface DashingState {
@@ -136,7 +139,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       return this.handleDashing(this.currentState);
     }
 
-    this.handleAttacking();
+    this.handleKeyboardInput();
 
     if (!this.typedBody.touching.down) {
       return this.handleAirborneMovement();
@@ -161,7 +164,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.currentState = undefined;
   }
 
-  private handleAttacking() {
+  private handleKeyboardInput() {
     if (
       Phaser.Input.Keyboard.JustDown(
         this.playerInteractions.keyboard.ranged_attack,
@@ -184,6 +187,12 @@ export class Player extends Phaser.GameObjects.Sprite {
       )
     ) {
       this.fireCloseAttack();
+    }
+
+    if (
+      Phaser.Input.Keyboard.JustDown(this.playerInteractions.keyboard.shield)
+    ) {
+      this.fireShield();
     }
   }
 
@@ -308,6 +317,12 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private fireCloseAttack() {
+    const playerStamina =
+      this.store.getState().gameState.player.stamina.current;
+    if (playerStamina < 0.5) {
+      return;
+    }
+
     const maybeCloseAttack: CloseAttack | null =
       this.playerInteractions.closeAttackGroup.get();
     if (maybeCloseAttack == null) {
@@ -315,7 +330,29 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     maybeCloseAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
-      damage: 5,
+      damage: 1,
     });
+    this.store.dispatch(updateStamina(-0.5));
+  }
+
+  private fireShield() {
+    const playerStamina =
+      this.store.getState().gameState.player.stamina.current;
+    if (playerStamina < 2) {
+      return;
+    }
+
+    const maybeShield: Shield | undefined =
+      this.playerInteractions.shieldGroup.get();
+    if (maybeShield == null) {
+      return;
+    }
+
+    maybeShield.fire(this.x, this.y, {
+      duration: 350,
+      pushBackDuration: 500,
+      direction: this.flipX ? "left" : "right",
+    });
+    this.store.dispatch(updateStamina(-2));
   }
 }
