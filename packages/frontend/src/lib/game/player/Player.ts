@@ -16,17 +16,20 @@ import { Distance } from "../constants/Distance";
 import { AuraAttack } from "../attacks/AuraAttack";
 import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
 import { Scale } from "../constants/Scale";
-import { CloseAttackGroup } from "../attacks/CloseAttackGroup";
-import { CloseAttack } from "../attacks/CloseAttack";
+import { SwordAttackGroup } from "../attacks/SwordAttackGroup";
+import { SwordAttack } from "../attacks/SwordAttack";
 import { ShieldGroup } from "../attacks/ShieldGroup";
 import { Shield } from "../attacks/Shield";
+import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
+import { SpearAttack } from "../attacks/SpearAttack";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
   rangedAttackGroup: RangedAttackGroup;
   auraAttackGroup: AuraAttackGroup;
-  closeAttackGroup: CloseAttackGroup;
+  swordAttackGroup: SwordAttackGroup;
   shieldGroup: ShieldGroup;
+  spearAttackGroup: SpearAttackGroup;
 }
 
 interface DashingState {
@@ -183,10 +186,18 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerInteractions.keyboard.close_attack,
+        this.playerInteractions.keyboard.sword_attack,
       )
     ) {
-      this.fireCloseAttack();
+      this.fireSwordAttack();
+    }
+
+    if (
+      Phaser.Input.Keyboard.JustDown(
+        this.playerInteractions.keyboard.spear_attack,
+      )
+    ) {
+      this.fireSpearAttack();
     }
 
     if (
@@ -289,7 +300,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    maybeRangedAttack.fire(this.x, this.y, this.flipX ? 180 : 0, {
+    maybeRangedAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
       damage: 15,
       range: Distance.player_projectile,
     });
@@ -316,23 +327,43 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.store.dispatch(updateChi(-20));
   }
 
-  private fireCloseAttack() {
+  private fireSwordAttack() {
     const playerStamina =
       this.store.getState().gameState.player.stamina.current;
-    if (playerStamina < 0.5) {
+    if (playerStamina < 2) {
       return;
     }
 
-    const maybeCloseAttack: CloseAttack | null =
-      this.playerInteractions.closeAttackGroup.get();
-    if (maybeCloseAttack == null) {
+    const maybeSwordAttack: SwordAttack | null =
+      this.playerInteractions.swordAttackGroup.get();
+    if (maybeSwordAttack == null) {
       return;
     }
 
-    maybeCloseAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
-      damage: 1,
+    maybeSwordAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
+      damage: 5,
     });
-    this.store.dispatch(updateStamina(-0.5));
+    this.store.dispatch(updateStamina(-2));
+  }
+
+  private fireSpearAttack() {
+    const playerStamina =
+      this.store.getState().gameState.player.stamina.current;
+    if (playerStamina < 2) {
+      return;
+    }
+
+    const maybeSpearAttack: SpearAttack | null =
+      this.playerInteractions.spearAttackGroup.get();
+    if (maybeSpearAttack == null) {
+      return;
+    }
+
+    maybeSpearAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
+      damage: 5,
+      range: Distance.player_spear_x,
+    });
+    this.store.dispatch(updateStamina(-2));
   }
 
   private fireShield() {
