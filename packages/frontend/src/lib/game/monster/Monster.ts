@@ -20,6 +20,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
   private store: Store<State>;
   private monsterStats: MonsterStats;
   private auraAttackTracker: { [auraAttackId: string]: number } = {};
+  private closeAttackTracker: { [closeAttackId: string]: true } = {};
 
   private damageEvent:
     | {
@@ -90,11 +91,21 @@ export class Monster extends Phaser.GameObjects.Sprite {
     }
   }
 
-  public takeDamage(damage: number, auraAttackId?: string) {
+  public takeDamage(
+    damage: number,
+    {
+      auraAttackId,
+      closeAttackId,
+    }: { auraAttackId?: string; closeAttackId?: string },
+  ) {
     this.stats.health.current = Math.max(this.stats.health.current - damage, 0);
 
     if (auraAttackId !== undefined) {
       this.auraAttackTracker[auraAttackId] = this.scene.time.now;
+    }
+
+    if (closeAttackId !== undefined) {
+      this.closeAttackTracker[closeAttackId] = true;
     }
 
     if (this.stats.health.current > 0) {
@@ -161,5 +172,9 @@ export class Monster extends Phaser.GameObjects.Sprite {
     }
 
     return this.scene.time.now - maybeExistingAttack > 300;
+  }
+
+  public canTakeDamageFromCloseAttack(closeAttackId: string) {
+    return this.closeAttackTracker[closeAttackId] === undefined;
   }
 }

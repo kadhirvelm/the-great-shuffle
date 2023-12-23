@@ -15,6 +15,8 @@ import { removeStore, setStore } from "./store/storeManager";
 import { MonsterGroup } from "./monster/MonsterGroup";
 import { Gravity } from "./constants/Gravity";
 import { AuraAttackGroup } from "./attacks/AuraAttackGroup";
+import { CloseAttackGroup } from "./attacks/CloseAttackGroup";
+import { CloseAttackHitboxGroup } from "./attacks/CloseAttackHitbox";
 
 export class PrimaryGame {
   private game: Game;
@@ -26,8 +28,8 @@ export class PrimaryGame {
     setStore(store);
 
     this.game = new Game({
-      width: "100%",
-      height: "100%",
+      width: 1792,
+      height: 999,
       type: Phaser.AUTO,
       parent: this.parent,
       physics: {
@@ -39,11 +41,6 @@ export class PrimaryGame {
       backgroundColor: "#000",
       scene: TutorialScene,
     });
-
-    console.log(
-      this.parent.getBoundingClientRect(),
-      this.game.canvas.getBoundingClientRect(),
-    );
   }
 
   public destroyGame() {
@@ -57,6 +54,8 @@ class TutorialScene extends Scene {
   private monsterGroup: MonsterGroup | undefined;
   private rangedAttackGroup: RangedAttackGroup | undefined;
   private auraAttackGroup: AuraAttackGroup | undefined;
+  private closeAttackHitbox: CloseAttackHitboxGroup | undefined;
+  private closeAttackGroup: CloseAttackGroup | undefined;
 
   public preload() {
     new AssetManager(this);
@@ -66,11 +65,14 @@ class TutorialScene extends Scene {
     const environment = new TreeEnvironment(this);
     this.rangedAttackGroup = new RangedAttackGroup(this);
     this.auraAttackGroup = new AuraAttackGroup(this);
+    this.closeAttackHitbox = new CloseAttackHitboxGroup(this);
+    this.closeAttackGroup = new CloseAttackGroup(this, this.closeAttackHitbox);
 
     this.player = new Player(this, 500, 2900, {
       keyboard: new Keyboard(this),
       rangedAttackGroup: this.rangedAttackGroup,
       auraAttackGroup: this.auraAttackGroup,
+      closeAttackGroup: this.closeAttackGroup,
     });
     this.monsterGroup = new MonsterGroup(this);
 
@@ -84,6 +86,7 @@ class TutorialScene extends Scene {
       environment: environment,
       rangedAttacks: this.rangedAttackGroup,
       auraAttacks: this.auraAttackGroup,
+      closeAttacksHitbox: this.closeAttackHitbox,
     });
 
     const camera = new Camera(this, environment.background);
@@ -95,7 +98,8 @@ class TutorialScene extends Scene {
       this.player === undefined ||
       this.monsterGroup === undefined ||
       this.rangedAttackGroup === undefined ||
-      this.auraAttackGroup === undefined
+      this.auraAttackGroup === undefined ||
+      this.closeAttackGroup === undefined
     ) {
       return;
     }
@@ -104,5 +108,6 @@ class TutorialScene extends Scene {
     this.monsterGroup.update();
     this.rangedAttackGroup.update();
     this.auraAttackGroup.update();
+    this.closeAttackGroup.update();
   }
 }
