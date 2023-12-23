@@ -11,10 +11,7 @@ const GameEntry = () => {
   const store = useTowerStore();
 
   useEffect(() => {
-    if (
-      gameCanvas.current == null ||
-      gameCanvas.current?.clientWidth !== window.innerWidth
-    ) {
+    if (gameCanvas.current == null) {
       return;
     }
 
@@ -22,7 +19,7 @@ const GameEntry = () => {
     return () => {
       primaryGame.destroyGame();
     };
-  }, [gameCanvas, store, gameCanvas.current?.clientWidth]);
+  }, [gameCanvas, store]);
 
   return (
     <div className={styles.rootContainer}>

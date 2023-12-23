@@ -1,5 +1,9 @@
 import { AuraAttack } from "../attacks/AuraAttack";
 import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
+import {
+  CloseAttackHitbox,
+  CloseAttackHitboxGroup,
+} from "../attacks/CloseAttackHitbox";
 import { RangedAttack } from "../attacks/RangedAttack";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
@@ -13,6 +17,7 @@ export interface InteractingObjects {
   monsterGroup: MonsterGroup;
   rangedAttacks: RangedAttackGroup;
   auraAttacks: AuraAttackGroup;
+  closeAttacksHitbox: CloseAttackHitboxGroup;
 }
 
 export class CollisionManager {
@@ -24,6 +29,7 @@ export class CollisionManager {
     this.addPlayerAndMonster();
     this.addRangedAttacks();
     this.addAuraAttacks();
+    this.addCloseAttacks();
   }
 
   private addPlatform() {
@@ -75,7 +81,7 @@ export class CollisionManager {
         const typedMonster = monster as Monster;
         const typedAttack = rangedAttack as RangedAttack;
 
-        typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0);
+        typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {});
         rangedAttack.destroy();
       },
       (monster, rangedAttack) => {
@@ -102,10 +108,9 @@ export class CollisionManager {
         const typedMonster = monster as Monster;
         const typedAttack = auraAttack as AuraAttack;
 
-        typedMonster.takeDamage(
-          typedAttack.attributes?.damage ?? 0,
-          typedAttack.auraAttackId,
-        );
+        typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
+          auraAttackId: typedAttack.auraAttackId,
+        });
       },
       (monster, auraAttack) => {
         const typedMonster = monster as Monster;
@@ -116,6 +121,34 @@ export class CollisionManager {
         const typedAuraAttack = auraAttack as AuraAttack;
         return typedMonster.canTakeDamageFromAuraAttack(
           typedAuraAttack.auraAttackId,
+        );
+      },
+    );
+  }
+
+  private addCloseAttacks() {
+    this.scene.physics.add.collider(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.closeAttacksHitbox,
+      (monster, closeAttack) => {
+        const typedMonster = monster as Monster;
+        const typedAttack = (closeAttack as CloseAttackHitbox)
+          .closeAttackDetails;
+
+        typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
+          closeAttackId: typedAttack.closeAttackId,
+        });
+      },
+      (monster, closeAttack) => {
+        const typedMonster = monster as Monster;
+        if (!typedMonster.isAlive()) {
+          return false;
+        }
+
+        const typedCloseAttack = (closeAttack as CloseAttackHitbox)
+          .closeAttackDetails;
+        return typedMonster.canTakeDamageFromCloseAttack(
+          typedCloseAttack.closeAttackId,
         );
       },
     );

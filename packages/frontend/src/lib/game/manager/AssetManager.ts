@@ -11,6 +11,7 @@ export class AssetManager {
     this.loadAttacks();
     this.loadPlayer();
     this.loadMonster();
+    this.loadWeapons();
   }
 
   private loadBackground() {
@@ -47,6 +48,10 @@ export class AssetManager {
       frameWidth: 40,
       frameHeight: 40,
     });
+  }
+
+  private loadWeapons() {
+    this.scene.load.image("fire_sword", "visual/fire_sword.png");
   }
 
   private loadAudioAssets() {

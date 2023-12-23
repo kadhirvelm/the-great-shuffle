@@ -16,11 +16,14 @@ import { Distance } from "../constants/Distance";
 import { AuraAttack } from "../attacks/AuraAttack";
 import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
 import { Scale } from "../constants/Scale";
+import { CloseAttackGroup } from "../attacks/CloseAttackGroup";
+import { CloseAttack } from "../attacks/CloseAttack";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
   rangedAttackGroup: RangedAttackGroup;
   auraAttackGroup: AuraAttackGroup;
+  closeAttackGroup: CloseAttackGroup;
 }
 
 interface DashingState {
@@ -174,6 +177,14 @@ export class Player extends Phaser.GameObjects.Sprite {
     ) {
       this.fireAuraAttack();
     }
+
+    if (
+      Phaser.Input.Keyboard.JustDown(
+        this.playerInteractions.keyboard.close_attack,
+      )
+    ) {
+      this.fireCloseAttack();
+    }
   }
 
   private handleAirborneMovement() {
@@ -263,14 +274,14 @@ export class Player extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    const maybeRangedAttack: RangedAttack | undefined =
+    const maybeRangedAttack: RangedAttack | null =
       this.playerInteractions.rangedAttackGroup.get();
-    if (maybeRangedAttack === undefined) {
+    if (maybeRangedAttack == null) {
       return;
     }
 
     maybeRangedAttack.fire(this.x, this.y, this.flipX ? 180 : 0, {
-      damage: 10,
+      damage: 15,
       range: Distance.player_projectile,
     });
     this.store.dispatch(updateChi(-10));
@@ -282,9 +293,9 @@ export class Player extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    const maybeAuraAttack: AuraAttack | undefined =
+    const maybeAuraAttack: AuraAttack | null =
       this.playerInteractions.auraAttackGroup.get();
-    if (maybeAuraAttack === undefined) {
+    if (maybeAuraAttack == null) {
       return;
     }
 
@@ -294,5 +305,17 @@ export class Player extends Phaser.GameObjects.Sprite {
       scale: Scale.player_aura_attack,
     });
     this.store.dispatch(updateChi(-20));
+  }
+
+  private fireCloseAttack() {
+    const maybeCloseAttack: CloseAttack | null =
+      this.playerInteractions.closeAttackGroup.get();
+    if (maybeCloseAttack == null) {
+      return;
+    }
+
+    maybeCloseAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
+      damage: 5,
+    });
   }
 }
