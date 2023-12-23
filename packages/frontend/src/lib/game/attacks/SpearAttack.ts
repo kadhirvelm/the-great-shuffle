@@ -1,67 +1,57 @@
+import { v4 } from "uuid";
 import { Movement } from "../constants/Movement";
 
-export interface RangedAttackAttributes {
+export interface SpearAttackAttributes {
   damage: number;
   range: number;
 }
 
-export class RangedAttack extends Phaser.GameObjects.Sprite {
-  public attributes: RangedAttackAttributes | undefined;
+export class SpearAttack extends Phaser.GameObjects.Sprite {
+  public attributes: SpearAttackAttributes | undefined;
   public typedBody: Phaser.Physics.Arcade.Body;
+  public spearAttackId = v4();
   public isDestroyed: boolean = false;
 
   private initialPosition: { x: number; y: number } | undefined;
 
   public constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, "ranged_attack");
+    super(scene, x, y, "fire_spear");
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    this.setScale(0.15);
+    this.setScale(0.5);
+    this.setOrigin(0, 0.5);
 
     this.setActive(false);
     this.setVisible(false);
-
-    this.initializePhysics();
-  }
-
-  private initializePhysics() {
-    this.typedBody.world.on(
-      "worldbounds",
-      (body: Phaser.Physics.Arcade.Body) => {
-        if (body.gameObject !== this) {
-          return;
-        }
-
-        this.destroy();
-      },
-    );
   }
 
   public fire(
     x: number,
     y: number,
     direction: "left" | "right",
-    attributes: RangedAttackAttributes,
+    attributes: SpearAttackAttributes,
   ) {
     this.attributes = attributes;
+    this.spearAttackId = v4();
     this.initialPosition = { x, y };
     this.setPosition(x, y);
 
     this.setActive(true);
     this.setVisible(true);
 
+    if (direction === "left") {
+      this.setRotation(Phaser.Math.DegToRad(180));
+    }
+
     this.scene.physics.velocityFromAngle(
       direction === "left" ? 180 : 0,
-      Movement.player_projectile_x,
+      Movement.player_spear_attack_x,
       (this.body?.velocity ?? undefined) as Phaser.Math.Vector2 | undefined,
     );
-
-    this.typedBody.setAngularVelocity(200);
-    this.scene.sound.play("ranged_attack");
   }
 
   public update() {
@@ -87,7 +77,7 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
     this.destroy();
   }
 
-  public destroy(fromScene?: boolean) {
+  public destroy() {
     if (this.isDestroyed || this.attributes === undefined) {
       return;
     }
@@ -98,10 +88,9 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
     this.scene.tweens.add({
       targets: this,
       alpha: { from: 1, to: 0 },
-      scale: { from: this.scale, to: this.scale * 1.2 },
       duration: 200,
       onComplete: () => {
-        super.destroy(fromScene);
+        super.destroy();
       },
     });
   }

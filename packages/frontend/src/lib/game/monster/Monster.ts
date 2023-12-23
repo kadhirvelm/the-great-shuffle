@@ -20,7 +20,8 @@ export class Monster extends Phaser.GameObjects.Sprite {
   private store: Store<State>;
   private monsterStats: MonsterStats;
   private auraAttackTracker: { [auraAttackId: string]: number } = {};
-  private closeAttackTracker: { [closeAttackId: string]: true } = {};
+  private swordAttackTracker: { [swordAttackId: string]: true } = {};
+  private spearAttackTracker: { [spearAttackId: string]: true } = {};
 
   private isBeingPushed: boolean = false;
 
@@ -101,8 +102,13 @@ export class Monster extends Phaser.GameObjects.Sprite {
     damage: number,
     {
       auraAttackId,
-      closeAttackId,
-    }: { auraAttackId?: string; closeAttackId?: string },
+      swordAttackId,
+      spearAttackId,
+    }: {
+      auraAttackId?: string;
+      swordAttackId?: string;
+      spearAttackId?: string;
+    },
   ) {
     this.stats.health.current = Math.max(this.stats.health.current - damage, 0);
 
@@ -110,8 +116,12 @@ export class Monster extends Phaser.GameObjects.Sprite {
       this.auraAttackTracker[auraAttackId] = this.scene.time.now;
     }
 
-    if (closeAttackId !== undefined) {
-      this.closeAttackTracker[closeAttackId] = true;
+    if (swordAttackId !== undefined) {
+      this.swordAttackTracker[swordAttackId] = true;
+    }
+
+    if (spearAttackId !== undefined) {
+      this.spearAttackTracker[spearAttackId] = true;
     }
 
     if (this.stats.health.current > 0) {
@@ -181,8 +191,12 @@ export class Monster extends Phaser.GameObjects.Sprite {
     return this.scene.time.now - maybeExistingAttack > 300;
   }
 
-  public canTakeDamageFromCloseAttack(closeAttackId: string) {
-    return this.closeAttackTracker[closeAttackId] === undefined;
+  public canTakeDamageFromSwordAttack(swordAttackId: string) {
+    return this.swordAttackTracker[swordAttackId] === undefined;
+  }
+
+  public canTakeDamageFromSpearAttack(spearAttackId: string) {
+    return this.spearAttackTracker[spearAttackId] === undefined;
   }
 
   public pushBack(velocity: number, duration: number) {

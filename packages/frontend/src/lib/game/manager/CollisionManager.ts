@@ -1,9 +1,9 @@
 import { AuraAttack } from "../attacks/AuraAttack";
 import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
 import {
-  CloseAttackHitbox,
-  CloseAttackHitboxGroup,
-} from "../attacks/CloseAttackHitbox";
+  SwordAttackHitbox,
+  SwordAttackHitboxGroup,
+} from "../attacks/SwordAttackHitbox";
 import { RangedAttack } from "../attacks/RangedAttack";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
 import { Shield } from "../attacks/Shield";
@@ -13,6 +13,8 @@ import { TreeEnvironment } from "../environment/TreeEnvironment";
 import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
+import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
+import { SpearAttack } from "../attacks/SpearAttack";
 
 export interface InteractingObjects {
   environment: TreeEnvironment;
@@ -20,8 +22,9 @@ export interface InteractingObjects {
   monsterGroup: MonsterGroup;
   rangedAttacks: RangedAttackGroup;
   auraAttacks: AuraAttackGroup;
-  closeAttacksHitbox: CloseAttackHitboxGroup;
+  swordAttackHitbox: SwordAttackHitboxGroup;
   shieldGroup: ShieldGroup;
+  spearAttackGroup: SpearAttackGroup;
 }
 
 export class CollisionManager {
@@ -34,7 +37,8 @@ export class CollisionManager {
 
     this.addRangedAttacks();
     this.addAuraAttacks();
-    this.addCloseAttacks();
+    this.addSwordAttacks();
+    this.addSpearAttacks();
 
     this.addShield();
   }
@@ -133,29 +137,60 @@ export class CollisionManager {
     );
   }
 
-  private addCloseAttacks() {
+  private addSwordAttacks() {
     this.scene.physics.add.overlap(
       this.interactingObjects.monsterGroup,
-      this.interactingObjects.closeAttacksHitbox,
-      (monster, closeAttack) => {
+      this.interactingObjects.swordAttackHitbox,
+      (monster, swordAttack) => {
         const typedMonster = monster as Monster;
-        const typedAttack = (closeAttack as CloseAttackHitbox)
-          .closeAttackDetails;
+        const typedAttack = (swordAttack as SwordAttackHitbox)
+          .swordAttackDetails;
 
         typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
-          closeAttackId: typedAttack.closeAttackId,
+          swordAttackId: typedAttack.swordAttackId,
         });
       },
-      (monster, closeAttack) => {
+      (monster, swordAttack) => {
         const typedMonster = monster as Monster;
         if (!typedMonster.isAlive()) {
           return false;
         }
 
-        const typedCloseAttack = (closeAttack as CloseAttackHitbox)
-          .closeAttackDetails;
-        return typedMonster.canTakeDamageFromCloseAttack(
-          typedCloseAttack.closeAttackId,
+        const typedSwordAttack = (swordAttack as SwordAttackHitbox)
+          .swordAttackDetails;
+        return typedMonster.canTakeDamageFromSwordAttack(
+          typedSwordAttack.swordAttackId,
+        );
+      },
+    );
+  }
+
+  private addSpearAttacks() {
+    this.scene.physics.add.overlap(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.spearAttackGroup,
+      (monster, spearAttack) => {
+        const typedMonster = monster as Monster;
+        const typedAttack = spearAttack as SpearAttack;
+
+        typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
+          spearAttackId: typedAttack.spearAttackId,
+        });
+      },
+      (monster, spearAttack) => {
+        const typedMonster = monster as Monster;
+        if (!typedMonster.isAlive()) {
+          return false;
+        }
+
+        const typedRangedAttack = spearAttack as SpearAttack;
+        if (typedRangedAttack.isDestroyed) {
+          return false;
+        }
+
+        const typedSwordAttack = spearAttack as SpearAttack;
+        return typedMonster.canTakeDamageFromSpearAttack(
+          typedSwordAttack.spearAttackId,
         );
       },
     );

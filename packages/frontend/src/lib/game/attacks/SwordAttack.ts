@@ -1,21 +1,21 @@
 import { v4 } from "uuid";
-import { CloseAttackHitboxGroup } from "./CloseAttackHitbox";
+import { SwordAttackHitboxGroup } from "./SwordAttackHitbox";
 
-export interface CloseAttackAttributes {
+export interface SwordAttackAttributes {
   damage: number;
 }
 
-export class CloseAttack extends Phaser.GameObjects.Sprite {
-  public attributes: CloseAttackAttributes | undefined;
+export class SwordAttack extends Phaser.GameObjects.Sprite {
+  public attributes: SwordAttackAttributes | undefined;
   public typedBody: Phaser.Physics.Arcade.Body;
-  public closeAttackId = v4();
+  public swordAttackId = v4();
   public hitbox: Phaser.GameObjects.Rectangle | undefined;
 
   public constructor(
     scene: Phaser.Scene,
     x: number,
     y: number,
-    private closeAttackHitbox: CloseAttackHitboxGroup,
+    private swordAttackHitbox: SwordAttackHitboxGroup,
   ) {
     super(scene, x, y, "fire_sword");
 
@@ -24,7 +24,7 @@ export class CloseAttack extends Phaser.GameObjects.Sprite {
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    this.setScale(1);
+    this.setScale(0.5);
 
     this.setActive(false);
     this.setVisible(false);
@@ -34,10 +34,10 @@ export class CloseAttack extends Phaser.GameObjects.Sprite {
     x: number,
     y: number,
     direction: "left" | "right",
-    attributes: CloseAttackAttributes,
+    attributes: SwordAttackAttributes,
   ) {
     this.attributes = attributes;
-    this.closeAttackId = v4();
+    this.swordAttackId = v4();
 
     this.setOrigin(0.5, 1);
     this.setPosition(x, y);
@@ -47,7 +47,7 @@ export class CloseAttack extends Phaser.GameObjects.Sprite {
 
     const squareDimension = this.height * this.scaleY;
 
-    const hitbox = this.closeAttackHitbox.createHitbox(
+    const hitbox = this.swordAttackHitbox.createHitbox(
       {
         x: this.x,
         y: this.y,
@@ -70,7 +70,7 @@ export class CloseAttack extends Phaser.GameObjects.Sprite {
                 ? Phaser.Math.DegToRad(180)
                 : Phaser.Math.DegToRad(-180),
           },
-          duration: 200,
+          duration: 125,
           onComplete: () => {
             hitbox.destroy();
             this.destroy();

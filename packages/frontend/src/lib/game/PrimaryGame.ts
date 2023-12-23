@@ -15,9 +15,10 @@ import { removeStore, setStore } from "./store/storeManager";
 import { MonsterGroup } from "./monster/MonsterGroup";
 import { Gravity } from "./constants/Gravity";
 import { AuraAttackGroup } from "./attacks/AuraAttackGroup";
-import { CloseAttackGroup } from "./attacks/CloseAttackGroup";
-import { CloseAttackHitboxGroup } from "./attacks/CloseAttackHitbox";
+import { SwordAttackGroup } from "./attacks/SwordAttackGroup";
+import { SwordAttackHitboxGroup } from "./attacks/SwordAttackHitbox";
 import { ShieldGroup } from "./attacks/ShieldGroup";
+import { SpearAttackGroup } from "./attacks/SpearAttackGroup";
 
 export class PrimaryGame {
   private game: Game;
@@ -56,8 +57,9 @@ class TutorialScene extends Scene {
 
   private rangedAttackGroup: RangedAttackGroup | undefined;
   private auraAttackGroup: AuraAttackGroup | undefined;
-  private closeAttackHitbox: CloseAttackHitboxGroup | undefined;
-  private closeAttackGroup: CloseAttackGroup | undefined;
+  private swordAttackHitbox: SwordAttackHitboxGroup | undefined;
+  private swordAttackGroup: SwordAttackGroup | undefined;
+  private spearAttackGroup: SpearAttackGroup | undefined;
 
   private shieldGroup: ShieldGroup | undefined;
 
@@ -70,8 +72,9 @@ class TutorialScene extends Scene {
 
     this.rangedAttackGroup = new RangedAttackGroup(this);
     this.auraAttackGroup = new AuraAttackGroup(this);
-    this.closeAttackHitbox = new CloseAttackHitboxGroup(this);
-    this.closeAttackGroup = new CloseAttackGroup(this, this.closeAttackHitbox);
+    this.swordAttackHitbox = new SwordAttackHitboxGroup(this);
+    this.swordAttackGroup = new SwordAttackGroup(this, this.swordAttackHitbox);
+    this.spearAttackGroup = new SpearAttackGroup(this);
 
     this.shieldGroup = new ShieldGroup(this);
 
@@ -79,8 +82,9 @@ class TutorialScene extends Scene {
       keyboard: new Keyboard(this),
       rangedAttackGroup: this.rangedAttackGroup,
       auraAttackGroup: this.auraAttackGroup,
-      closeAttackGroup: this.closeAttackGroup,
+      swordAttackGroup: this.swordAttackGroup,
       shieldGroup: this.shieldGroup,
+      spearAttackGroup: this.spearAttackGroup,
     });
     this.monsterGroup = new MonsterGroup(this);
 
@@ -94,8 +98,9 @@ class TutorialScene extends Scene {
       environment: environment,
       rangedAttacks: this.rangedAttackGroup,
       auraAttacks: this.auraAttackGroup,
-      closeAttacksHitbox: this.closeAttackHitbox,
+      swordAttackHitbox: this.swordAttackHitbox,
       shieldGroup: this.shieldGroup,
+      spearAttackGroup: this.spearAttackGroup,
     });
 
     const camera = new Camera(this, environment.background);
@@ -108,8 +113,9 @@ class TutorialScene extends Scene {
       this.monsterGroup === undefined ||
       this.rangedAttackGroup === undefined ||
       this.auraAttackGroup === undefined ||
-      this.closeAttackGroup === undefined ||
-      this.shieldGroup === undefined
+      this.swordAttackGroup === undefined ||
+      this.shieldGroup === undefined ||
+      this.spearAttackGroup === undefined
     ) {
       return;
     }
@@ -118,7 +124,8 @@ class TutorialScene extends Scene {
     this.monsterGroup.update();
     this.rangedAttackGroup.update();
     this.auraAttackGroup.update();
-    this.closeAttackGroup.update();
+    this.swordAttackGroup.update();
     this.shieldGroup.update();
+    this.spearAttackGroup.update();
   }
 }
