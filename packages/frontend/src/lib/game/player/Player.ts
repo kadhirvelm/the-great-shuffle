@@ -22,6 +22,8 @@ import { ShieldGroup } from "../attacks/ShieldGroup";
 import { Shield } from "../attacks/Shield";
 import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
 import { SpearAttack } from "../attacks/SpearAttack";
+import { RodAttackGroup } from "../attacks/RodAttackGroup";
+import { RodAttack } from "../attacks/RodAttack";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
@@ -30,6 +32,7 @@ export interface PlayerInteractions {
   swordAttackGroup: SwordAttackGroup;
   shieldGroup: ShieldGroup;
   spearAttackGroup: SpearAttackGroup;
+  rodAttackGroup: RodAttackGroup;
 }
 
 interface DashingState {
@@ -64,6 +67,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
     this.store = getStore();
+
+    this.setDepth(this.depth + 1);
 
     this.initializePhysics();
     this.setAnimations();
@@ -198,6 +203,14 @@ export class Player extends Phaser.GameObjects.Sprite {
       )
     ) {
       this.fireSpearAttack();
+    }
+
+    if (
+      Phaser.Input.Keyboard.JustDown(
+        this.playerInteractions.keyboard.rod_attack,
+      )
+    ) {
+      this.fireRodAttack();
     }
 
     if (
@@ -340,7 +353,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    maybeSwordAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
+    maybeSwordAttack.fire(this, this.flipX ? "left" : "right", {
       damage: 5,
     });
     this.store.dispatch(updateStamina(-2));
@@ -364,6 +377,28 @@ export class Player extends Phaser.GameObjects.Sprite {
       range: Distance.player_spear_x,
     });
     this.store.dispatch(updateStamina(-2));
+  }
+
+  private fireRodAttack() {
+    const playerStamina =
+      this.store.getState().gameState.player.stamina.current;
+    if (playerStamina < 2) {
+      return;
+    }
+
+    const maybeRodAttack: RodAttack | undefined =
+      this.playerInteractions.rodAttackGroup.get();
+    if (maybeRodAttack == null) {
+      return;
+    }
+
+    maybeRodAttack.fire(this, this.flipX ? "left" : "right", {
+      damage: 2,
+      pushBack: {
+        velocity: 400,
+        duration: 500,
+      },
+    });
   }
 
   private fireShield() {

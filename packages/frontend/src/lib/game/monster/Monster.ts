@@ -22,6 +22,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
   private auraAttackTracker: { [auraAttackId: string]: number } = {};
   private swordAttackTracker: { [swordAttackId: string]: true } = {};
   private spearAttackTracker: { [spearAttackId: string]: true } = {};
+  private rodAttackTracker: { [rodAttackId: string]: true } = {};
 
   private isBeingPushed: boolean = false;
 
@@ -104,10 +105,12 @@ export class Monster extends Phaser.GameObjects.Sprite {
       auraAttackId,
       swordAttackId,
       spearAttackId,
+      rodAttackId,
     }: {
       auraAttackId?: string;
       swordAttackId?: string;
       spearAttackId?: string;
+      rodAttackId?: string;
     },
   ) {
     this.stats.health.current = Math.max(this.stats.health.current - damage, 0);
@@ -122,6 +125,10 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
     if (spearAttackId !== undefined) {
       this.spearAttackTracker[spearAttackId] = true;
+    }
+
+    if (rodAttackId !== undefined) {
+      this.rodAttackTracker[rodAttackId] = true;
     }
 
     if (this.stats.health.current > 0) {
@@ -197,6 +204,10 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
   public canTakeDamageFromSpearAttack(spearAttackId: string) {
     return this.spearAttackTracker[spearAttackId] === undefined;
+  }
+
+  public canTakeDamageFromRodAttack(rodAttackId: string) {
+    return this.rodAttackTracker[rodAttackId] === undefined;
   }
 
   public pushBack(velocity: number, duration: number) {

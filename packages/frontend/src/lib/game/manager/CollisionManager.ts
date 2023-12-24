@@ -15,6 +15,10 @@ import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
 import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
 import { SpearAttack } from "../attacks/SpearAttack";
+import {
+  RodAttackHitbox,
+  RodAttackHitboxGroup,
+} from "../attacks/RodAttackHitbox";
 
 export interface InteractingObjects {
   environment: TreeEnvironment;
@@ -25,6 +29,7 @@ export interface InteractingObjects {
   swordAttackHitbox: SwordAttackHitboxGroup;
   shieldGroup: ShieldGroup;
   spearAttackGroup: SpearAttackGroup;
+  rodAttackHitbox: RodAttackHitboxGroup;
 }
 
 export class CollisionManager {
@@ -39,6 +44,8 @@ export class CollisionManager {
     this.addAuraAttacks();
     this.addSwordAttacks();
     this.addSpearAttacks();
+    this.addSwordAttacks();
+    this.addRodAttacks();
 
     this.addShield();
   }
@@ -191,6 +198,48 @@ export class CollisionManager {
         const typedSwordAttack = spearAttack as SpearAttack;
         return typedMonster.canTakeDamageFromSpearAttack(
           typedSwordAttack.spearAttackId,
+        );
+      },
+    );
+  }
+
+  private addRodAttacks() {
+    this.scene.physics.add.overlap(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.rodAttackHitbox,
+      (monster, rodAttack) => {
+        const typedMonster = monster as Monster;
+        const typedAttack = (rodAttack as RodAttackHitbox).rodAttackDetails;
+
+        typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
+          rodAttackId: typedAttack.rodAttackId,
+        });
+
+        const direction = new Phaser.Math.Vector2(
+          typedMonster.x - typedAttack.x,
+          typedMonster.y - typedAttack.y,
+        ).normalize();
+
+        typedMonster.pushBack(
+          direction.x * (typedAttack.attributes?.pushBack.velocity ?? 0),
+          typedAttack.attributes?.pushBack.duration ?? 0,
+        );
+      },
+      (monster, rodAttack) => {
+        const typedMonster = monster as Monster;
+        if (!typedMonster.isAlive()) {
+          return false;
+        }
+
+        const typedRodAttackHitbox: RodAttackHitbox =
+          rodAttack as RodAttackHitbox;
+        if (!typedRodAttackHitbox.active) {
+          return false;
+        }
+
+        const typedRodAttack = (rodAttack as RodAttackHitbox).rodAttackDetails;
+        return typedMonster.canTakeDamageFromRodAttack(
+          typedRodAttack.rodAttackId,
         );
       },
     );

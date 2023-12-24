@@ -54,6 +54,7 @@ export class AssetManager {
   private loadWeapons() {
     this.scene.load.image("fire_sword", "visual/fire_sword.png");
     this.scene.load.image("fire_spear", "visual/fire_spear.png");
+    this.scene.load.image("fire_rod", "visual/fire_rod.png");
   }
 
   private loadEquipment() {

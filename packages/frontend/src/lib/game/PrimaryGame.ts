@@ -19,6 +19,8 @@ import { SwordAttackGroup } from "./attacks/SwordAttackGroup";
 import { SwordAttackHitboxGroup } from "./attacks/SwordAttackHitbox";
 import { ShieldGroup } from "./attacks/ShieldGroup";
 import { SpearAttackGroup } from "./attacks/SpearAttackGroup";
+import { RodAttackHitboxGroup } from "./attacks/RodAttackHitbox";
+import { RodAttackGroup } from "./attacks/RodAttackGroup";
 
 export class PrimaryGame {
   private game: Game;
@@ -60,6 +62,8 @@ class TutorialScene extends Scene {
   private swordAttackHitbox: SwordAttackHitboxGroup | undefined;
   private swordAttackGroup: SwordAttackGroup | undefined;
   private spearAttackGroup: SpearAttackGroup | undefined;
+  private rodAttackHitbox: RodAttackHitboxGroup | undefined;
+  private rodAttackGroup: RodAttackGroup | undefined;
 
   private shieldGroup: ShieldGroup | undefined;
 
@@ -75,6 +79,8 @@ class TutorialScene extends Scene {
     this.swordAttackHitbox = new SwordAttackHitboxGroup(this);
     this.swordAttackGroup = new SwordAttackGroup(this, this.swordAttackHitbox);
     this.spearAttackGroup = new SpearAttackGroup(this);
+    this.rodAttackHitbox = new RodAttackHitboxGroup(this);
+    this.rodAttackGroup = new RodAttackGroup(this, this.rodAttackHitbox);
 
     this.shieldGroup = new ShieldGroup(this);
 
@@ -85,6 +91,7 @@ class TutorialScene extends Scene {
       swordAttackGroup: this.swordAttackGroup,
       shieldGroup: this.shieldGroup,
       spearAttackGroup: this.spearAttackGroup,
+      rodAttackGroup: this.rodAttackGroup,
     });
     this.monsterGroup = new MonsterGroup(this);
 
@@ -101,6 +108,7 @@ class TutorialScene extends Scene {
       swordAttackHitbox: this.swordAttackHitbox,
       shieldGroup: this.shieldGroup,
       spearAttackGroup: this.spearAttackGroup,
+      rodAttackHitbox: this.rodAttackHitbox,
     });
 
     const camera = new Camera(this, environment.background);
@@ -115,7 +123,8 @@ class TutorialScene extends Scene {
       this.auraAttackGroup === undefined ||
       this.swordAttackGroup === undefined ||
       this.shieldGroup === undefined ||
-      this.spearAttackGroup === undefined
+      this.spearAttackGroup === undefined ||
+      this.rodAttackGroup === undefined
     ) {
       return;
     }
@@ -127,5 +136,6 @@ class TutorialScene extends Scene {
     this.swordAttackGroup.update();
     this.shieldGroup.update();
     this.spearAttackGroup.update();
+    this.rodAttackGroup.update();
   }
 }
