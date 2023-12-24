@@ -10,6 +10,7 @@ export class Keyboard {
   public aura_attack: Phaser.Input.Keyboard.Key;
   public sword_attack: Phaser.Input.Keyboard.Key;
   public spear_attack: Phaser.Input.Keyboard.Key;
+  public rod_attack: Phaser.Input.Keyboard.Key;
 
   public shield: Phaser.Input.Keyboard.Key;
 
@@ -34,7 +35,8 @@ export class Keyboard {
 
     this.sword_attack = scene.input.keyboard.addKey("a");
     this.spear_attack = scene.input.keyboard.addKey("s");
+    this.rod_attack = scene.input.keyboard.addKey("d");
 
-    this.shield = scene.input.keyboard.addKey("d");
+    this.shield = scene.input.keyboard.addKey("z");
   }
 }

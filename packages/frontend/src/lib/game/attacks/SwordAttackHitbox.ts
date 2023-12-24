@@ -49,8 +49,6 @@ export class SwordAttackHitboxGroup extends Phaser.Physics.Arcade.StaticGroup {
       swordAttack,
     );
 
-    console.log("Created hitbox!");
-
     this.add(hitbox, true);
     hitbox.refreshBody();
 
