@@ -1,9 +1,11 @@
 import { v4 } from "uuid";
 import { SwordAttackHitbox, SwordAttackHitboxGroup } from "./SwordAttackHitbox";
 import { Player } from "../player/Player";
+import { PushBack } from "../monster/Monster";
 
 export interface SwordAttackAttributes {
   damage: number;
+  pushBack: PushBack;
 }
 
 export class SwordAttack extends Phaser.GameObjects.Sprite {

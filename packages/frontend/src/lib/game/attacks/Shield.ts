@@ -1,9 +1,10 @@
 import { Scale } from "../constants/Scale";
+import { PushBack } from "../monster/Monster";
 
 export interface ShieldAttributes {
   duration: number;
   direction: "left" | "right";
-  pushBackDuration: number;
+  pushBack: PushBack;
 }
 
 export class Shield extends Phaser.GameObjects.Sprite {

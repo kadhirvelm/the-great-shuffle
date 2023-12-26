@@ -1,9 +1,11 @@
 import { v4 } from "uuid";
+import { PushBack } from "../monster/Monster";
 
 export interface AuraAttackAttributes {
   damage: number;
   duration: number;
   scale: number;
+  pushBack: PushBack;
 }
 
 export class AuraAttack extends Phaser.GameObjects.Sprite {

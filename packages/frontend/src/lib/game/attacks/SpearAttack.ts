@@ -1,9 +1,11 @@
 import { v4 } from "uuid";
 import { Movement } from "../constants/Movement";
+import { PushBack } from "../monster/Monster";
 
 export interface SpearAttackAttributes {
   damage: number;
   range: number;
+  pushBack: PushBack;
 }
 
 export class SpearAttack extends Phaser.GameObjects.Sprite {
