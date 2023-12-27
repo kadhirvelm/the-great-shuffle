@@ -51,10 +51,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
     this.monsterStatsHandler = new MonsterStatsHandler(this);
 
     this.displayStats = new DisplayStats(this, {
-      health: {
-        current: this.monsterStatsHandler.stats.vitality.health.current,
-        max: this.monsterStatsHandler.stats.vitality.health.max,
-      },
+      health: this.monsterStatsHandler.stats.vitality.health,
     });
 
     this.initializePhysics();
