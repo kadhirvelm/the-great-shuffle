@@ -98,7 +98,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     });
   }
 
-  private clearTint() {
+  public clearTint() {
     this.setTint(0xeadbcb);
 
     return this;
@@ -113,7 +113,8 @@ export class Player extends Phaser.GameObjects.Sprite {
   public takeDamage(damage: number) {
     this.playerStatsHandler.takeDamage(damage);
 
-    const invulnerableDuration = 1000;
+    const invulnerableDuration =
+      this.playerStatsHandler.defensiveAttributes.invulnerableDuration();
 
     this.currentState = {
       takenOn: this.scene.time.now,

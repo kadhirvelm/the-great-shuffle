@@ -72,7 +72,7 @@ export class CollisionManager {
   }
 
   private addPlayerAndMonster() {
-    this.scene.physics.add.overlap(
+    this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.player,
       (player, monster) => {
