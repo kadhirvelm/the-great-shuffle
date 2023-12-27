@@ -79,7 +79,9 @@ export class CollisionManager {
         const typedPlayer: Player = player as Player;
         const typedMonster: Monster = monster as Monster;
 
-        typedPlayer.takeDamage(typedMonster.stats.damage);
+        typedPlayer.takeDamage(
+          typedMonster.monsterStatsHandler.getCollisionStrength(),
+        );
       },
       (player, monster) => {
         const typedPlayer: Player = player as Player;

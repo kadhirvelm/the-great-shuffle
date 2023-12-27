@@ -3,7 +3,7 @@ interface SingleStat {
   max: number;
 }
 
-export interface AllStats {
+export interface DisplayedStats {
   health: SingleStat;
 }
 
@@ -18,7 +18,7 @@ export class DisplayStats {
 
   public constructor(
     private rootSprite: Phaser.GameObjects.Sprite,
-    private stats: AllStats,
+    private displayStats: DisplayedStats,
   ) {
     this.healthBar = this.rootSprite.scene.add.graphics();
   }
@@ -35,16 +35,23 @@ export class DisplayStats {
       this.rootSprite.x - HEALTH_BAR_SIZE / 2,
       this.rootSprite.y + this.rootSprite.height / 1.8,
       Math.round(
-        (this.stats.health.current / this.stats.health.max) * HEALTH_BAR_SIZE,
+        (this.displayStats.health.current / this.displayStats.health.max) *
+          HEALTH_BAR_SIZE,
       ),
       10,
     );
   }
 
   private setHealthBarColor() {
-    if (this.stats.health.current / this.stats.health.max >= 0.75) {
+    if (
+      this.displayStats.health.current / this.displayStats.health.max >=
+      0.75
+    ) {
       this.healthBar.fillStyle(green, 1);
-    } else if (this.stats.health.current / this.stats.health.max >= 0.25) {
+    } else if (
+      this.displayStats.health.current / this.displayStats.health.max >=
+      0.25
+    ) {
       this.healthBar.fillStyle(yellow, 1);
     } else {
       this.healthBar.fillStyle(red, 1);
