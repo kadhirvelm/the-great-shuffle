@@ -10,7 +10,7 @@ export class AssetManager {
     this.loadBackground();
     this.loadAttacks();
     this.loadPlayer();
-    this.loadMonster();
+    this.loadMonsters();
     this.loadWeapons();
     this.loadModifiers();
     this.loadEquipment();
@@ -50,10 +50,14 @@ export class AssetManager {
     });
   }
 
-  private loadMonster() {
-    this.scene.load.spritesheet("monster", "visual/monster.png", {
+  private loadMonsters() {
+    this.scene.load.spritesheet("mushroom", "visual/monsters/mushroom.png", {
       frameWidth: 40,
       frameHeight: 40,
+    });
+    this.scene.load.spritesheet("ice", "visual/monsters/ice.png", {
+      frameWidth: 217,
+      frameHeight: 191,
     });
   }
 
