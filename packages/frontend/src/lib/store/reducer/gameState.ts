@@ -21,15 +21,15 @@ const initialState: GameState = {
   stage: "tutorial",
   player: {
     health: {
-      current: 0,
+      current: Infinity,
       max: 0,
     },
     chi: {
-      current: 0,
+      current: Infinity,
       max: 0,
     },
     stamina: {
-      current: 0,
+      current: Infinity,
       max: 0,
     },
   },
@@ -77,9 +77,18 @@ const gameStateSlice = createSlice({
       state.player.chi.max = action.payload.chi;
       state.player.stamina.max = action.payload.stamina;
 
-      state.player.health.current = action.payload.health;
-      state.player.chi.current = action.payload.chi;
-      state.player.stamina.current = action.payload.stamina;
+      state.player.health.current = Math.min(
+        state.player.health.current,
+        action.payload.health,
+      );
+      state.player.chi.current = Math.min(
+        state.player.chi.current,
+        action.payload.chi,
+      );
+      state.player.stamina.current = Math.min(
+        state.player.stamina.current,
+        action.payload.stamina,
+      );
     },
   },
 });

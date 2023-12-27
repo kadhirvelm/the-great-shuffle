@@ -56,11 +56,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   public constructor(
     scene: Phaser.Scene,
-    x: number,
-    y: number,
     private playerInteractions: PlayerInteractions,
   ) {
-    super(scene, x, y, "idle");
+    super(scene, 0, 0, "idle");
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -69,6 +67,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.playerStatsHandler = new PlayerStatsHandler();
 
     this.setDepth(this.depth + 1);
+    this.setActive(false);
+    this.setVisible(false);
 
     this.initializePhysics();
     this.setAnimations();
@@ -108,6 +108,12 @@ export class Player extends Phaser.GameObjects.Sprite {
       key: "climb",
       frames: this.anims.generateFrameNumbers("climb", { start: 0, end: 0 }),
     });
+  }
+
+  public spawnPlayer(x: number, y: number) {
+    this.setActive(true);
+    this.setVisible(true);
+    this.setPosition(x, y);
   }
 
   public takeDamage(damage: number) {
