@@ -1,5 +1,6 @@
+import { DisplayStats } from "../display/DisplayStats";
 import { Player } from "../player/Player";
-import { AllStats, DisplayStats } from "../display/DisplayStats";
+import { MonsterStatsHandler } from "./MonsterStatsHandler";
 import { MonsterTypeHandler, MonsterTypes } from "./MonsterType";
 
 export interface MonsterInteraction {
@@ -13,12 +14,10 @@ export interface PushBack {
 
 export class Monster extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
-  public stats: AllStats = {
-    health: { current: 100, max: 100 },
-  };
   public displayStats: DisplayStats;
 
   public monsterTypeHandler: MonsterTypeHandler;
+  public monsterStatsHandler: MonsterStatsHandler;
 
   public auraAttackTracker: { [auraAttackId: string]: number } = {};
   public swordAttackTracker: { [swordAttackId: string]: true } = {};
@@ -48,9 +47,15 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    this.displayStats = new DisplayStats(this, this.stats);
-
     this.monsterTypeHandler = new MonsterTypeHandler(scene, this);
+    this.monsterStatsHandler = new MonsterStatsHandler(this);
+
+    this.displayStats = new DisplayStats(this, {
+      health: {
+        current: this.monsterStatsHandler.stats.vitality.health.current,
+        max: this.monsterStatsHandler.stats.vitality.health.max,
+      },
+    });
 
     this.initializePhysics();
     this.monsterTypeHandler.loadAssets();
@@ -90,8 +95,6 @@ export class Monster extends Phaser.GameObjects.Sprite {
       rodAttackId?: string;
     },
   ) {
-    this.stats.health.current = Math.max(this.stats.health.current - damage, 0);
-
     if (auraAttackId !== undefined) {
       this.auraAttackTracker[auraAttackId] = this.scene.time.now;
     }
@@ -108,12 +111,13 @@ export class Monster extends Phaser.GameObjects.Sprite {
       this.rodAttackTracker[rodAttackId] = true;
     }
 
-    if (this.stats.health.current > 0) {
-      this.flashDamage();
-      return;
+    this.monsterStatsHandler.takeDamage(damage);
+
+    if (!this.monsterStatsHandler.isAlive()) {
+      return this.fadeOutAndDestroy();
     }
 
-    this.fadeOutAndDestroy();
+    this.flashDamage();
   }
 
   private flashDamage() {
@@ -164,7 +168,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
   }
 
   public isAlive() {
-    return this.stats.health.current > 0;
+    return this.monsterStatsHandler.isAlive();
   }
 
   public canTakeDamageFromAuraAttack(auraAttackId: string) {
@@ -203,9 +207,13 @@ export class Monster extends Phaser.GameObjects.Sprite {
       this.y - y,
     ).normalize();
 
-    this.typedBody.setVelocityX(direction.x * velocity);
+    const { finalDuration, finalVelocity } = this.monsterStatsHandler.knockBack(
+      { duration, velocity },
+    );
 
-    this.scene.time.delayedCall(duration, () => {
+    this.typedBody.setVelocityX(direction.x * finalVelocity);
+
+    this.scene.time.delayedCall(finalDuration, () => {
       this.isBeingPushed = false;
     });
   }

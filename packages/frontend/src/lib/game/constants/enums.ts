@@ -27,7 +27,6 @@ export enum Damage {
 }
 
 export enum Distance {
-  monster_aggro = 350,
   player_projectile = 500,
   player_spear_x = 300,
   player_dash = 240,
@@ -44,8 +43,6 @@ export enum Movement {
   player_y = Gravity.playerY * 0.4,
   player_projectile_x = Gravity.generic * 2,
   player_spear_attack_x = Gravity.generic * 4,
-  monster_x = Gravity.generic / 3,
-  monster_y = Gravity.generic / 2,
 }
 
 export enum Scale {
