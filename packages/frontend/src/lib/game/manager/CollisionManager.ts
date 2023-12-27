@@ -14,6 +14,7 @@ import {
   SwordAttackHitbox,
   SwordAttackHitboxGroup,
 } from "../attacks/SwordAttackHitbox";
+import { Ladders } from "../environment/Ladders";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
 import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
@@ -21,6 +22,7 @@ import { Player } from "../player/Player";
 
 export interface InteractingObjects {
   environment: TreeEnvironment;
+  ladders: Ladders;
   player: Player;
   monsterGroup: MonsterGroup;
   rangedAttacks: RangedAttackGroup;
@@ -57,6 +59,15 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.environment,
+    );
+
+    this.scene.physics.add.overlap(
+      this.interactingObjects.player,
+      this.interactingObjects.ladders,
+      (player, ladder) => {
+        const typedPlayer: Player = player as Player;
+        typedPlayer.updateClosestLadder(ladder as Phaser.GameObjects.Sprite);
+      },
     );
   }
 
