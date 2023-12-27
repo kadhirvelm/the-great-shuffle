@@ -3,8 +3,7 @@ import { State } from "../../store/configureStore";
 import { getStore } from "../store/storeManager";
 import { Player } from "../player/Player";
 import { AllMonsterStats, MonsterStats } from "./MonsterStats";
-import { Movement } from "../constants/Movement";
-import { Distance } from "../constants/Distance";
+import { Distance, Movement } from "../constants/enums";
 
 export interface MonsterInteraction {
   player: Player;

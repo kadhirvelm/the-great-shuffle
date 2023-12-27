@@ -13,7 +13,7 @@ import { Monster } from "./monster/Monster";
 import { Player } from "./player/Player";
 import { removeStore, setStore } from "./store/storeManager";
 import { MonsterGroup } from "./monster/MonsterGroup";
-import { Gravity } from "./constants/Gravity";
+import { Gravity } from "./constants/enums";
 import { AuraAttackGroup } from "./attacks/AuraAttackGroup";
 import { SwordAttackGroup } from "./attacks/SwordAttackGroup";
 import { SwordAttackHitboxGroup } from "./attacks/SwordAttackHitbox";
