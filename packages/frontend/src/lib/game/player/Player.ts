@@ -123,6 +123,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     });
 
     this.scene.time.delayedCall(invulnerableDuration, () => {
+      this.clearTint();
+
       if (
         this.currentState?.type !== "recently-damaged" ||
         this.currentState.invulnerableUntil > this.scene.time.now
@@ -131,7 +133,6 @@ export class Player extends Phaser.GameObjects.Sprite {
       }
 
       flashEvent.remove();
-      this.clearTint();
       this.currentState = undefined;
     });
   }

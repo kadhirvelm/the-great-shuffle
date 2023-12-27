@@ -1,9 +1,6 @@
-import { Store } from "@reduxjs/toolkit";
-import { State } from "../../store/configureStore";
-import { getStore } from "../store/storeManager";
 import { Player } from "../player/Player";
 import { AllMonsterStats, MonsterStats } from "./MonsterStats";
-import { Distance, Movement } from "../constants/enums";
+import { MonsterTypeHandler, MonsterTypes } from "./MonsterType";
 
 export interface MonsterInteraction {
   player: Player;
@@ -21,16 +18,17 @@ export class Monster extends Phaser.GameObjects.Sprite {
     health: { current: 100, max: 100 },
   };
 
-  private store: Store<State>;
-  private monsterStats: MonsterStats;
-  private auraAttackTracker: { [auraAttackId: string]: number } = {};
-  private swordAttackTracker: { [swordAttackId: string]: true } = {};
-  private spearAttackTracker: { [spearAttackId: string]: true } = {};
-  private rodAttackTracker: { [rodAttackId: string]: true } = {};
+  public monsterStats: MonsterStats;
+  public monsterTypeHandler: MonsterTypeHandler;
 
-  private isBeingPushed: boolean = false;
+  public auraAttackTracker: { [auraAttackId: string]: number } = {};
+  public swordAttackTracker: { [swordAttackId: string]: true } = {};
+  public spearAttackTracker: { [spearAttackId: string]: true } = {};
+  public rodAttackTracker: { [rodAttackId: string]: true } = {};
 
-  private damageEvent:
+  public isBeingPushed: boolean = false;
+
+  public damageEvent:
     | {
         flash: Phaser.Time.TimerEvent;
         timer: Phaser.Time.TimerEvent;
@@ -41,19 +39,21 @@ export class Monster extends Phaser.GameObjects.Sprite {
     scene: Phaser.Scene,
     x: number,
     y: number,
-    private monsterInteractions: MonsterInteraction,
+    public monsterType: MonsterTypes,
+    public monsterInteractions: MonsterInteraction,
   ) {
-    super(scene, x, y, "monster");
+    super(scene, x, y, monsterType);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
-    this.store = getStore();
+
     this.monsterStats = new MonsterStats(this, this.stats);
+    this.monsterTypeHandler = new MonsterTypeHandler(scene, this);
 
     this.initializePhysics();
-    this.setAnimations();
+    this.monsterTypeHandler.loadAssets();
   }
 
   private initializePhysics() {
@@ -61,22 +61,11 @@ export class Monster extends Phaser.GameObjects.Sprite {
     this.typedBody.setCollideWorldBounds(true);
   }
 
-  private setAnimations() {
-    this.anims.create({
-      key: "monster",
-      frames: this.anims.generateFrameNumbers("monster", { start: 0, end: 11 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.play("monster", true);
-  }
-
   public update() {
     this.monsterStats.update();
 
     if (!this.isAlive()) {
-      this.typedBody.setVelocityX(0);
+      this.typedBody.setVelocity(0, 0);
       return;
     }
 
@@ -84,26 +73,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    const distanceToPlayer = Phaser.Math.Distance.Between(
-      this.x,
-      this.y,
-      this.monsterInteractions.player.x,
-      this.monsterInteractions.player.y,
-    );
-
-    const areOnSamePlane =
-      Math.abs(this.y - this.monsterInteractions.player.y) < 100;
-
-    if (distanceToPlayer <= Distance.monster_aggro && areOnSamePlane) {
-      const direction = Math.sign(this.monsterInteractions.player.x - this.x);
-      this.typedBody.setVelocityX(Movement.monster_x * direction);
-
-      if (this.typedBody.touching.down && this.damageEvent === undefined) {
-        this.typedBody.setVelocityY(-Movement.monster_y);
-      }
-    } else {
-      this.typedBody.setVelocityX(0);
-    }
+    this.monsterTypeHandler.attackPattern();
   }
 
   public takeDamage(
@@ -168,6 +138,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
     const timer = this.scene.time.delayedCall(flashDuration * 4, () => {
       flash.remove();
       this.setAlpha(1);
+      this.clearTint();
       this.damageEvent = undefined;
     });
 

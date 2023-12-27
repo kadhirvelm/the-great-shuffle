@@ -1,3 +1,4 @@
+import { range } from "lodash-es";
 import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
@@ -82,12 +83,19 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
     ];
 
     let delay = 0;
-    for (const location of locations) {
+    for (const locationIndex of range(locations.length)) {
       this.scene.time.delayedCall(delay, () => {
+        const location = locations[locationIndex];
         this.environmentInteractions.monsterGroup.add(
-          new Monster(this.scene, location[0], location[1], {
-            player: this.environmentInteractions.player,
-          }),
+          new Monster(
+            this.scene,
+            location[0],
+            location[1],
+            locationIndex % 2 === 0 ? "ice" : "mushroom",
+            {
+              player: this.environmentInteractions.player,
+            },
+          ),
         );
       });
       delay += 1000;
