@@ -12,16 +12,22 @@ import { SwordAttack } from "../attacks/SwordAttack";
 import { SwordAttackGroup } from "../attacks/SwordAttackGroup";
 import { Gravity } from "../constants/enums";
 import { Keyboard } from "../keyboard/Keyboard";
+import { Enforcement } from "../modifier/Enforcement";
+import { EnforcementGroup } from "../modifier/EnforcementGroup";
 import { PlayerStatsHandler } from "./PlayerStatsHandler";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;
+
   rangedAttackGroup: RangedAttackGroup;
   auraAttackGroup: AuraAttackGroup;
+  enforcementGroup: EnforcementGroup;
+
   swordAttackGroup: SwordAttackGroup;
-  shieldGroup: ShieldGroup;
   spearAttackGroup: SpearAttackGroup;
   rodAttackGroup: RodAttackGroup;
+
+  shieldGroup: ShieldGroup;
 }
 
 interface DashingState {
@@ -40,8 +46,9 @@ interface RecentlyDamagedState {
 export class Player extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
   public currentState: DashingState | RecentlyDamagedState | undefined;
+  public playerStatsHandler: PlayerStatsHandler;
 
-  private playerStatsHandler: PlayerStatsHandler;
+  private isFlashing = false;
 
   public constructor(
     scene: Phaser.Scene,
@@ -139,6 +146,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     this.handleKeyboardInput();
+    this.handleStartDashing();
 
     if (!this.typedBody.touching.down) {
       this.handleAirborneMovement();
@@ -164,6 +172,17 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.currentState = undefined;
   }
 
+  private handleStartDashing() {
+    const maybeDash = this.maybeStartDashing();
+    if (maybeDash === undefined) {
+      return;
+    }
+
+    this.currentState = maybeDash;
+    this.scene.sound.play("dash");
+    this.playerStatsHandler.dash.consumeStaminaForDash();
+  }
+
   private handleAirborneMovement() {
     this.anims.play("jump", true);
 
@@ -187,11 +206,7 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private handleGroundMovement() {
-    const maybeDash = this.maybeStartDashing();
-    if (maybeDash !== undefined) {
-      this.currentState = maybeDash;
-      this.scene.sound.play("dash");
-      this.playerStatsHandler.dash.consumeStaminaForDash();
+    if (this.currentState?.type === "dashing") {
       return;
     }
 
@@ -214,10 +229,12 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private maybeStartDashing(): DashingState | undefined {
-    if (
-      !this.playerInteractions.keyboard.shift.isDown ||
-      !this.playerStatsHandler.dash.canDash()
-    ) {
+    if (!this.playerInteractions.keyboard.shift.isDown) {
+      return;
+    }
+
+    if (!this.playerStatsHandler.dash.canDash()) {
+      this.noStamina();
       return;
     }
 
@@ -270,6 +287,14 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     if (
       Phaser.Input.Keyboard.JustDown(
+        this.playerInteractions.keyboard.enforcement,
+      )
+    ) {
+      this.fireEnforcement();
+    }
+
+    if (
+      Phaser.Input.Keyboard.JustDown(
         this.playerInteractions.keyboard.sword_attack,
       )
     ) {
@@ -301,6 +326,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private fireRangedAttack() {
     if (!this.playerStatsHandler.rangedAttack.canFire()) {
+      this.noChi();
       return;
     }
 
@@ -325,6 +351,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private fireAuraAttack() {
     if (!this.playerStatsHandler.auraAttack.canFire()) {
+      this.noChi();
       return;
     }
 
@@ -346,8 +373,34 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.playerStatsHandler.auraAttack.consumeChi();
   }
 
+  private fireEnforcement() {
+    if (!this.playerStatsHandler.enforcement.canFire()) {
+      this.noChi();
+      return;
+    }
+
+    const maybeEnforcement: Enforcement | null =
+      this.playerInteractions.enforcementGroup.get();
+    if (maybeEnforcement == null) {
+      return;
+    }
+
+    maybeEnforcement.fire(this, {
+      duration: this.playerStatsHandler.enforcement.duration(),
+      enforcement: {
+        offensiveAttributes: {
+          chiFocus: 5,
+          efficiency: 5,
+          weaponStrength: 5,
+        },
+      },
+    });
+    this.playerStatsHandler.auraAttack.consumeChi();
+  }
+
   private fireSwordAttack() {
     if (!this.playerStatsHandler.swordAttack.canFire()) {
+      this.noStamina();
       return;
     }
 
@@ -369,6 +422,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private fireSpearAttack() {
     if (!this.playerStatsHandler.spearAttack.canFire()) {
+      this.noStamina();
       return;
     }
 
@@ -392,6 +446,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private fireRodAttack() {
     if (!this.playerStatsHandler.rodAttack.canFire()) {
+      this.noStamina();
       return;
     }
 
@@ -410,6 +465,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private fireShield() {
     if (!this.playerStatsHandler.shield.canFire()) {
+      this.noStamina();
       return;
     }
 
@@ -426,5 +482,65 @@ export class Player extends Phaser.GameObjects.Sprite {
       scale: this.playerStatsHandler.shield.scale(),
     });
     this.playerStatsHandler.shield.consumeStamina();
+  }
+
+  public noChi() {
+    if (this.isFlashing) {
+      return;
+    }
+
+    this.isFlashing = true;
+    const text = this.scene.add.text(this.x, this.y - 50, "No chi!", {
+      color: "black",
+    });
+
+    const timeline = this.scene.add.timeline([
+      {
+        at: 0,
+        tween: {
+          targets: text,
+          alpha: { from: 0.5, to: 1 },
+          yoyo: true,
+          duration: 100,
+          repeat: 2,
+          onComplete: () => {
+            this.isFlashing = false;
+            text.destroy();
+          },
+        },
+      },
+    ]);
+
+    timeline.play();
+  }
+
+  public noStamina() {
+    if (this.isFlashing) {
+      return;
+    }
+
+    this.isFlashing = true;
+    const text = this.scene.add.text(this.x, this.y - 50, "No stamina!", {
+      color: "black",
+    });
+
+    const timeline = this.scene.add.timeline([
+      {
+        at: 0,
+        tween: {
+          targets: text,
+          alpha: { from: 0.75, to: 1 },
+          yoyo: true,
+          duration: 100,
+          repeat: 2,
+          onComplete: () => {
+            this.isFlashing = false;
+            text.destroy();
+          },
+        },
+      },
+    ]);
+
+    timeline.play();
   }
 }

@@ -8,6 +8,8 @@ export class Keyboard {
 
   public ranged_attack: Phaser.Input.Keyboard.Key;
   public aura_attack: Phaser.Input.Keyboard.Key;
+  public enforcement: Phaser.Input.Keyboard.Key;
+
   public sword_attack: Phaser.Input.Keyboard.Key;
   public spear_attack: Phaser.Input.Keyboard.Key;
   public rod_attack: Phaser.Input.Keyboard.Key;
@@ -32,6 +34,7 @@ export class Keyboard {
 
     this.ranged_attack = scene.input.keyboard.addKey("q");
     this.aura_attack = scene.input.keyboard.addKey("w");
+    this.enforcement = scene.input.keyboard.addKey("e");
 
     this.sword_attack = scene.input.keyboard.addKey("a");
     this.spear_attack = scene.input.keyboard.addKey("s");

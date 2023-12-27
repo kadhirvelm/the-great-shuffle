@@ -35,7 +35,8 @@ export const Bars = () => {
                 />
               </div>
               <div className={styles.textContainer}>
-                {stat.label} ({percentage}%)
+                {stat.label} ({Math.floor(stat.current).toLocaleString()}/
+                {Math.floor(stat.max).toLocaleString()})
               </div>
             </div>
           );

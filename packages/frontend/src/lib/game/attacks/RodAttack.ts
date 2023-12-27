@@ -10,7 +10,6 @@ export interface RodAttackAttributes {
 
 export class RodAttack extends Phaser.GameObjects.Sprite {
   public attributes: RodAttackAttributes | undefined;
-  public typedBody: Phaser.Physics.Arcade.Body;
   public rodAttackId = v4();
 
   private followPlayer: Player | undefined;
@@ -26,8 +25,6 @@ export class RodAttack extends Phaser.GameObjects.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
-
-    this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
     this.setScale(0.25);
     this.setAlpha(0);

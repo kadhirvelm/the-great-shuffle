@@ -4,6 +4,7 @@ import { getStore } from "../store/storeManager";
 import {
   updateChi,
   updateHealth,
+  updateMaximums,
   updateStamina,
 } from "../../store/reducer/gameState";
 import {
@@ -14,7 +15,7 @@ import {
   Scale,
   Velocity,
 } from "../constants/enums";
-import { clamp } from "lodash-es";
+import { clamp, cloneDeep, mergeWith } from "lodash-es";
 import { Damage } from "../constants/enums";
 import { PushBack } from "../monster/Monster";
 
@@ -63,11 +64,15 @@ export interface PlayerStats {
   };
 }
 
+export type RecursivePartial<T> = {
+  [Key in keyof T]?: RecursivePartial<T[Key]>;
+};
+
 const INITIAL_STATS: PlayerStats = {
   vitality: {
-    health: 10,
-    chi: 5,
-    stamina: 5,
+    health: 100,
+    chi: 50,
+    stamina: 50,
   },
   offensiveAttributes: {
     weaponStrength: 1,
@@ -81,16 +86,28 @@ const INITIAL_STATS: PlayerStats = {
   },
 };
 
-type RecursivePartial<T> = {
-  [Key in keyof T]?: RecursivePartial<T[Key]>;
-};
-
 export class PlayerStatsHandler {
-  private playerStats: PlayerStats;
+  private basePlayerStats: PlayerStats;
+  private currentPlayerStats: PlayerStats;
   private store: Store<State>;
 
   public constructor(overrideBaseStats?: RecursivePartial<PlayerStats>) {
-    this.playerStats = {
+    this.basePlayerStats = {
+      vitality: {
+        ...INITIAL_STATS.vitality,
+        ...overrideBaseStats?.vitality,
+      },
+      offensiveAttributes: {
+        ...INITIAL_STATS.offensiveAttributes,
+        ...overrideBaseStats?.offensiveAttributes,
+      },
+      defensiveAttributes: {
+        ...INITIAL_STATS.defensiveAttributes,
+        ...overrideBaseStats?.defensiveAttributes,
+      },
+    };
+
+    this.currentPlayerStats = {
       vitality: {
         ...INITIAL_STATS.vitality,
         ...overrideBaseStats?.vitality,
@@ -106,11 +123,55 @@ export class PlayerStatsHandler {
     };
 
     this.store = getStore();
+    this.updatePlayerMaximums();
+  }
+
+  public enforcePlayer(enforcementAttributes: RecursivePartial<PlayerStats>) {
+    this.currentPlayerStats = {
+      vitality: mergeWith(
+        this.currentPlayerStats.vitality,
+        enforcementAttributes.vitality ?? {},
+        (currentValue, incomingValue) => {
+          return currentValue + incomingValue;
+        },
+      ),
+      offensiveAttributes: mergeWith(
+        this.currentPlayerStats.offensiveAttributes,
+        enforcementAttributes.offensiveAttributes ?? {},
+        (currentValue, incomingValue) => {
+          return currentValue + incomingValue;
+        },
+      ),
+      defensiveAttributes: mergeWith(
+        this.currentPlayerStats.defensiveAttributes,
+        enforcementAttributes.defensiveAttributes ?? {},
+        (currentValue, incomingValue) => {
+          return currentValue + incomingValue;
+        },
+      ),
+    };
+    this.updatePlayerMaximums();
+  }
+
+  public removeEnforcement() {
+    this.currentPlayerStats = cloneDeep(this.basePlayerStats);
+    this.updatePlayerMaximums();
+  }
+
+  private updatePlayerMaximums() {
+    const { health, chi, stamina } = this.currentPlayerStats.vitality;
+    this.store.dispatch(
+      updateMaximums({
+        health,
+        chi,
+        stamina,
+      }),
+    );
   }
 
   public takeDamage(damage: number) {
     const finalDamage =
-      damage * (1 - this.playerStats.defensiveAttributes.defense / 100);
+      damage * (1 - this.currentPlayerStats.defensiveAttributes.defense / 100);
     this.store.dispatch(updateHealth(-finalDamage));
   }
 
@@ -188,6 +249,18 @@ export class PlayerStatsHandler {
     },
   };
 
+  public enforcement = {
+    canFire: () => {
+      return this.canConsumeChi(Costs.enforcement);
+    },
+    consumeChi: () => {
+      return this.consumeChi(Costs.enforcement);
+    },
+    duration: () => {
+      return Duration.player_enforcement + this.getChiDamageModifierPercent();
+    },
+  };
+
   public swordAttack = {
     canFire: () => {
       return this.canConsumeStamina(Costs.sword_attack);
@@ -258,16 +331,13 @@ export class PlayerStatsHandler {
   };
 
   private getSpeedModifier() {
-    return this.playerStats.defensiveAttributes.speed * 10;
-  }
-
-  private getChiCostModifier() {
-    return 1 - this.playerStats.offensiveAttributes.efficiency / 100;
+    return this.currentPlayerStats.defensiveAttributes.speed * 10;
   }
 
   private canConsumeChi(chi: number) {
     const currentChi = this.store.getState().gameState.player.chi.current;
     const requiredChi = chi * this.getChiCostModifier();
+    console.log({ currentChi, requiredChi, Costs });
     return currentChi >= requiredChi;
   }
 
@@ -276,16 +346,20 @@ export class PlayerStatsHandler {
     this.store.dispatch(updateChi(-finalChi));
   }
 
+  private getChiCostModifier() {
+    return 1 - this.currentPlayerStats.offensiveAttributes.efficiency / 100;
+  }
+
   private getChiDamageModifier() {
-    return this.playerStats.offensiveAttributes.chiFocus * 10;
+    return this.currentPlayerStats.offensiveAttributes.chiFocus * 10;
   }
 
   private getChiDamageModifierPercent() {
-    return 1 + this.playerStats.offensiveAttributes.chiFocus / 100;
+    return 1 + this.currentPlayerStats.offensiveAttributes.chiFocus / 100;
   }
 
   private getStaminaCostModifier() {
-    return 1 - this.playerStats.offensiveAttributes.efficiency / 100;
+    return 1 - this.currentPlayerStats.offensiveAttributes.efficiency / 100;
   }
 
   private canConsumeStamina(stamina: number) {
@@ -301,14 +375,14 @@ export class PlayerStatsHandler {
   }
 
   private getStaminaDamageModifier() {
-    return this.playerStats.offensiveAttributes.weaponStrength * 10;
+    return this.currentPlayerStats.offensiveAttributes.weaponStrength * 10;
   }
 
   private getDefenseModifier() {
-    return this.playerStats.defensiveAttributes.defense * 10;
+    return this.currentPlayerStats.defensiveAttributes.defense * 10;
   }
 
   private getDefenseModifierPercent() {
-    return 1 + this.playerStats.defensiveAttributes.defense / 100;
+    return 1 + this.currentPlayerStats.defensiveAttributes.defense / 100;
   }
 }

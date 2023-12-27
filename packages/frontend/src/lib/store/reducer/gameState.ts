@@ -21,16 +21,16 @@ const initialState: GameState = {
   stage: "tutorial",
   player: {
     health: {
-      current: 100,
-      max: 100,
+      current: 0,
+      max: 0,
     },
     chi: {
-      current: 100,
-      max: 100,
+      current: 0,
+      max: 0,
     },
     stamina: {
-      current: 100,
-      max: 100,
+      current: 0,
+      max: 0,
     },
   },
 };
@@ -69,10 +69,27 @@ const gameStateSlice = createSlice({
         ),
       );
     },
+    updateMaximums: (
+      state,
+      action: PayloadAction<{ health: number; chi: number; stamina: number }>,
+    ) => {
+      state.player.health.max = action.payload.health;
+      state.player.chi.max = action.payload.chi;
+      state.player.stamina.max = action.payload.stamina;
+
+      state.player.health.current = action.payload.health;
+      state.player.chi.current = action.payload.chi;
+      state.player.stamina.current = action.payload.stamina;
+    },
   },
 });
 
-export const { setStage, updateHealth, updateStamina, updateChi } =
-  gameStateSlice.actions;
+export const {
+  setStage,
+  updateHealth,
+  updateStamina,
+  updateChi,
+  updateMaximums,
+} = gameStateSlice.actions;
 
 export const GameStateReducer = gameStateSlice.reducer;

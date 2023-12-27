@@ -21,6 +21,7 @@ import { ShieldGroup } from "./attacks/ShieldGroup";
 import { SpearAttackGroup } from "./attacks/SpearAttackGroup";
 import { RodAttackHitboxGroup } from "./attacks/RodAttackHitbox";
 import { RodAttackGroup } from "./attacks/RodAttackGroup";
+import { EnforcementGroup } from "./modifier/EnforcementGroup";
 
 export class PrimaryGame {
   private game: Game;
@@ -66,6 +67,7 @@ class TutorialScene extends Scene {
   private rodAttackGroup: RodAttackGroup | undefined;
 
   private shieldGroup: ShieldGroup | undefined;
+  private enforcementGroup: EnforcementGroup | undefined;
 
   public preload() {
     new AssetManager(this);
@@ -83,15 +85,19 @@ class TutorialScene extends Scene {
     this.rodAttackGroup = new RodAttackGroup(this, this.rodAttackHitbox);
 
     this.shieldGroup = new ShieldGroup(this);
+    this.enforcementGroup = new EnforcementGroup(this);
 
     this.player = new Player(this, 500, 2900, {
       keyboard: new Keyboard(this),
       rangedAttackGroup: this.rangedAttackGroup,
       auraAttackGroup: this.auraAttackGroup,
+      enforcementGroup: this.enforcementGroup,
+
       swordAttackGroup: this.swordAttackGroup,
-      shieldGroup: this.shieldGroup,
       spearAttackGroup: this.spearAttackGroup,
       rodAttackGroup: this.rodAttackGroup,
+
+      shieldGroup: this.shieldGroup,
     });
     this.monsterGroup = new MonsterGroup(this);
 
@@ -124,7 +130,8 @@ class TutorialScene extends Scene {
       this.swordAttackGroup === undefined ||
       this.shieldGroup === undefined ||
       this.spearAttackGroup === undefined ||
-      this.rodAttackGroup === undefined
+      this.rodAttackGroup === undefined ||
+      this.enforcementGroup === undefined
     ) {
       return;
     }
@@ -137,5 +144,6 @@ class TutorialScene extends Scene {
     this.shieldGroup.update();
     this.spearAttackGroup.update();
     this.rodAttackGroup.update();
+    this.enforcementGroup.update();
   }
 }
