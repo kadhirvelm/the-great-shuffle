@@ -1,24 +1,23 @@
 import { AuraAttack } from "../attacks/AuraAttack";
 import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
-import {
-  SwordAttackHitbox,
-  SwordAttackHitboxGroup,
-} from "../attacks/SwordAttackHitbox";
 import { RangedAttack } from "../attacks/RangedAttack";
 import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
-import { Shield } from "../attacks/Shield";
-import { ShieldGroup } from "../attacks/ShieldGroup";
-import { Distance } from "../constants/Distance";
-import { TreeEnvironment } from "../environment/TreeEnvironment";
-import { Monster } from "../monster/Monster";
-import { MonsterGroup } from "../monster/MonsterGroup";
-import { Player } from "../player/Player";
-import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
-import { SpearAttack } from "../attacks/SpearAttack";
 import {
   RodAttackHitbox,
   RodAttackHitboxGroup,
 } from "../attacks/RodAttackHitbox";
+import { Shield } from "../attacks/Shield";
+import { ShieldGroup } from "../attacks/ShieldGroup";
+import { SpearAttack } from "../attacks/SpearAttack";
+import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
+import {
+  SwordAttackHitbox,
+  SwordAttackHitboxGroup,
+} from "../attacks/SwordAttackHitbox";
+import { TreeEnvironment } from "../environment/TreeEnvironment";
+import { Monster } from "../monster/Monster";
+import { MonsterGroup } from "../monster/MonsterGroup";
+import { Player } from "../player/Player";
 
 export interface InteractingObjects {
   environment: TreeEnvironment;
@@ -100,6 +99,15 @@ export class CollisionManager {
         const typedAttack = rangedAttack as RangedAttack;
 
         typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {});
+
+        typedMonster.pushBack(
+          {
+            velocity: typedAttack.attributes?.pushBack.velocity ?? 0,
+            duration: typedAttack.attributes?.pushBack.duration ?? 0,
+          },
+          { x: typedAttack.x, y: typedAttack.y },
+        );
+
         rangedAttack.destroy();
       },
       (monster, rangedAttack) => {
@@ -129,6 +137,14 @@ export class CollisionManager {
         typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
           auraAttackId: typedAttack.auraAttackId,
         });
+
+        typedMonster.pushBack(
+          {
+            velocity: typedAttack.attributes?.pushBack.velocity ?? 0,
+            duration: typedAttack.attributes?.pushBack.duration ?? 0,
+          },
+          { x: typedAttack.x, y: typedAttack.y },
+        );
       },
       (monster, auraAttack) => {
         const typedMonster = monster as Monster;
@@ -156,6 +172,14 @@ export class CollisionManager {
         typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
           swordAttackId: typedAttack.swordAttackId,
         });
+
+        typedMonster.pushBack(
+          {
+            velocity: typedAttack.attributes?.pushBack.velocity ?? 0,
+            duration: typedAttack.attributes?.pushBack.duration ?? 0,
+          },
+          { x: typedAttack.x, y: typedAttack.y },
+        );
       },
       (monster, swordAttack) => {
         const typedMonster = monster as Monster;
@@ -183,6 +207,14 @@ export class CollisionManager {
         typedMonster.takeDamage(typedAttack.attributes?.damage ?? 0, {
           spearAttackId: typedAttack.spearAttackId,
         });
+
+        typedMonster.pushBack(
+          {
+            velocity: typedAttack.attributes?.pushBack.velocity ?? 0,
+            duration: typedAttack.attributes?.pushBack.duration ?? 0,
+          },
+          { x: typedAttack.x, y: typedAttack.y },
+        );
       },
       (monster, spearAttack) => {
         const typedMonster = monster as Monster;
@@ -215,14 +247,12 @@ export class CollisionManager {
           rodAttackId: typedAttack.rodAttackId,
         });
 
-        const direction = new Phaser.Math.Vector2(
-          typedMonster.x - typedAttack.x,
-          typedMonster.y - typedAttack.y,
-        ).normalize();
-
         typedMonster.pushBack(
-          direction.x * (typedAttack.attributes?.pushBack.velocity ?? 0),
-          typedAttack.attributes?.pushBack.duration ?? 0,
+          {
+            velocity: typedAttack.attributes?.pushBack.velocity ?? 0,
+            duration: typedAttack.attributes?.pushBack.duration ?? 0,
+          },
+          { x: typedAttack.x, y: typedAttack.y },
         );
       },
       (monster, rodAttack) => {
@@ -253,14 +283,12 @@ export class CollisionManager {
         const typedMonster = monster as Monster;
         const typedShield = shield as Shield;
 
-        const direction = new Phaser.Math.Vector2(
-          typedMonster.x - typedShield.x,
-          typedMonster.y - typedShield.y,
-        ).normalize();
-
         typedMonster.pushBack(
-          direction.x * Distance.shield_pushback,
-          typedShield.attributes?.pushBackDuration ?? 100,
+          {
+            velocity: typedShield.attributes?.pushBack.velocity ?? 0,
+            duration: typedShield.attributes?.pushBack.duration ?? 0,
+          },
+          { x: typedShield.x, y: typedShield.y },
         );
       },
       (monster) => {

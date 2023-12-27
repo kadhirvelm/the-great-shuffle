@@ -1,8 +1,10 @@
 import { Movement } from "../constants/Movement";
+import { PushBack } from "../monster/Monster";
 
 export interface RangedAttackAttributes {
   damage: number;
   range: number;
+  pushBack: PushBack;
 }
 
 export class RangedAttack extends Phaser.GameObjects.Sprite {
@@ -29,6 +31,8 @@ export class RangedAttack extends Phaser.GameObjects.Sprite {
   }
 
   private initializePhysics() {
+    this.typedBody.onWorldBounds = true;
+
     this.typedBody.world.on(
       "worldbounds",
       (body: Phaser.Physics.Arcade.Body) => {

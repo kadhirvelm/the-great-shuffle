@@ -10,6 +10,11 @@ export interface MonsterInteraction {
   player: Player;
 }
 
+export interface PushBack {
+  velocity: number;
+  duration: number;
+}
+
 export class Monster extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
   public stats: AllMonsterStats = {
@@ -210,9 +215,22 @@ export class Monster extends Phaser.GameObjects.Sprite {
     return this.rodAttackTracker[rodAttackId] === undefined;
   }
 
-  public pushBack(velocity: number, duration: number) {
+  public pushBack(
+    { duration, velocity }: PushBack,
+    { x, y }: { x: number; y: number },
+  ) {
+    if (duration === 0 || velocity === 0) {
+      return;
+    }
+
     this.isBeingPushed = true;
-    this.typedBody.setVelocityX(velocity);
+
+    const direction = new Phaser.Math.Vector2(
+      this.x - x,
+      this.y - y,
+    ).normalize();
+
+    this.typedBody.setVelocityX(direction.x * velocity);
 
     this.scene.time.delayedCall(duration, () => {
       this.isBeingPushed = false;

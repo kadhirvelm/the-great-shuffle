@@ -98,7 +98,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     this.anims.create({
       key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 0 }),
+      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 3 }),
+      frameRate: 2,
+      repeat: -1,
     });
 
     this.anims.create({
@@ -316,6 +318,10 @@ export class Player extends Phaser.GameObjects.Sprite {
     maybeRangedAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
       damage: 15,
       range: Distance.player_projectile,
+      pushBack: {
+        duration: 100,
+        velocity: 10,
+      },
     });
     this.store.dispatch(updateChi(-10));
   }
@@ -336,6 +342,10 @@ export class Player extends Phaser.GameObjects.Sprite {
       damage: 25,
       duration: 300,
       scale: Scale.player_aura_attack,
+      pushBack: {
+        duration: 100,
+        velocity: 10,
+      },
     });
     this.store.dispatch(updateChi(-20));
   }
@@ -355,6 +365,10 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     maybeSwordAttack.fire(this, this.flipX ? "left" : "right", {
       damage: 5,
+      pushBack: {
+        duration: 0,
+        velocity: 0,
+      },
     });
     this.store.dispatch(updateStamina(-2));
   }
@@ -375,6 +389,10 @@ export class Player extends Phaser.GameObjects.Sprite {
     maybeSpearAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
       damage: 5,
       range: Distance.player_spear_x,
+      pushBack: {
+        duration: 100,
+        velocity: 10,
+      },
     });
     this.store.dispatch(updateStamina(-2));
   }
@@ -416,7 +434,10 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     maybeShield.fire(this.x, this.y, {
       duration: 350,
-      pushBackDuration: 500,
+      pushBack: {
+        duration: 500,
+        velocity: 50,
+      },
       direction: this.flipX ? "left" : "right",
     });
     this.store.dispatch(updateStamina(-2));

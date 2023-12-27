@@ -1,13 +1,11 @@
 import { v4 } from "uuid";
 import { RodAttackHitbox, RodAttackHitboxGroup } from "./RodAttackHitbox";
 import { Player } from "../player/Player";
+import { PushBack } from "../monster/Monster";
 
 export interface RodAttackAttributes {
   damage: number;
-  pushBack: {
-    velocity: number;
-    duration: number;
-  };
+  pushBack: PushBack;
 }
 
 export class RodAttack extends Phaser.GameObjects.Sprite {
