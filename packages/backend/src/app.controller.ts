@@ -6,6 +6,7 @@ import {
   RemoveString,
   backendService,
 } from "@tower/api";
+import { ImageManipulationService } from "./imageManipulation/imageManipulation.service";
 
 type IServiceImplementation<Service extends IService> = {
   [Key in keyof RemoveString<Service>]: (
@@ -15,7 +16,10 @@ type IServiceImplementation<Service extends IService> = {
 
 @Controller()
 export class AppController implements IServiceImplementation<IBackendService> {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly imageManipulation: ImageManipulationService,
+  ) {}
 
   @Get("health-check")
   healthCheck() {
@@ -25,5 +29,15 @@ export class AppController implements IServiceImplementation<IBackendService> {
   @Post(backendService.helloWorld.endpoint)
   helloWorld(@Body() _payload: IBackendService["helloWorld"]["payload"]) {
     return this.appService.helloWorld();
+  }
+
+  @Get("fix-smack-studio")
+  fixSmackStudioImage() {
+    return this.imageManipulation.fixSmackStudioImage();
+  }
+
+  @Get("get-ideal-size")
+  determineIdealSize() {
+    return this.imageManipulation.determineIdealSize();
   }
 }

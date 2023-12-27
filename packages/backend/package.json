@@ -26,9 +26,11 @@
     "@nestjs/serve-static": "^4.0.0",
     "@tower/api": "workspace:^",
     "express": "^4.18.2",
+    "lodash": "^4.17.21",
     "openai": "^4.19.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "sharp": "^0.33.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -36,6 +38,7 @@
     "@nestjs/testing": "^10.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/lodash": "^4",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
     "eslint": "^8.54.0",

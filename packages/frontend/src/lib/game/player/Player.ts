@@ -55,6 +55,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.setActive(false);
     this.setVisible(false);
 
+    this.setTint(0xeadbcb);
+
     this.initializePhysics();
     this.setAnimations();
   }
@@ -68,23 +70,24 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private setAnimations() {
     this.anims.create({
-      key: "walk",
-      frames: this.anims.generateFrameNumbers("walk", { start: 0, end: 7 }),
-      frameRate: 25,
+      key: "idle",
+      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 9 }),
+      frameRate: 5,
       repeat: -1,
     });
     this.anims.create({
       key: "jump",
-      frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 1 }),
+      frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 9 }),
       frameRate: 10,
       repeat: -1,
     });
     this.anims.create({
-      key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 3 }),
-      frameRate: 2,
+      key: "run",
+      frames: this.anims.generateFrameNumbers("run", { start: 0, end: 19 }),
+      frameRate: 40,
       repeat: -1,
     });
+
     this.anims.create({
       key: "dash",
       frames: this.anims.generateFrameNumbers("dash", { start: 0, end: 0 }),
@@ -93,6 +96,12 @@ export class Player extends Phaser.GameObjects.Sprite {
       key: "climb",
       frames: this.anims.generateFrameNumbers("climb", { start: 0, end: 0 }),
     });
+  }
+
+  private clearTint() {
+    this.setTint(0xeadbcb);
+
+    return this;
   }
 
   public spawnPlayer(x: number, y: number) {

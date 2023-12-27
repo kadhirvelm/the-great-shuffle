@@ -122,13 +122,13 @@ export class PlayerMovement {
         -this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
       );
       this.playerSprite.setFlipX(true);
-      this.playerSprite.anims.play("walk", true);
+      this.playerSprite.anims.play("run", true);
     } else if (this.playerSprite.playerInteractions.keyboard.right.isDown) {
       this.playerSprite.typedBody.setVelocityX(
         this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
       );
       this.playerSprite.setFlipX(false);
-      this.playerSprite.anims.play("walk", true);
+      this.playerSprite.anims.play("run", true);
     } else {
       this.playerSprite.typedBody.setVelocityX(0);
       this.playerSprite.anims.play("idle", true);

@@ -42,7 +42,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
         this.background.displayHeight - 30,
         this.background.displayWidth,
       ],
-      [1387, 2801, 2000],
+      [1387, 2600, 2000],
     ];
 
     for (const platform of platforms) {
@@ -71,15 +71,15 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
 
   public spawnMonsters() {
     const locations: [number, number][] = [
-      [1292, 2600],
-      [1563, 2600],
-      [1435, 2600],
-      [1003, 2600],
-      [743, 2600],
-      [2061, 2600],
-      [1738, 2600],
-      [1142, 2600],
-      [889, 2600],
+      [1292, 2400],
+      [1563, 2400],
+      [1435, 2400],
+      [1003, 2400],
+      [743, 2400],
+      [2061, 2400],
+      [1738, 2400],
+      [1142, 2400],
+      [889, 2400],
     ];
 
     let delay = 0;
@@ -103,6 +103,6 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   }
 
   private spawnPlayer() {
-    this.environmentInteractions.player.spawnPlayer(200, 2800);
+    this.environmentInteractions.player.spawnPlayer(200, 2500);
   }
 }

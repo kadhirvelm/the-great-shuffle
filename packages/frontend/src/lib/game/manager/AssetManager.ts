@@ -28,19 +28,32 @@ export class AssetManager {
   }
 
   private loadPlayer() {
-    this.scene.load.spritesheet("idle", "visual/idle.png", {
-      frameWidth: 55,
-      frameHeight: 70,
-    });
+    this.scene.load.spritesheet(
+      "idle",
+      "visual/player/idle-100x256-65.fixed.png",
+      {
+        frameWidth: 100,
+        frameHeight: 256,
+      },
+    );
+    this.scene.load.spritesheet(
+      "jump",
+      "visual/player/jump-205x256-25.fixed.png",
+      {
+        frameWidth: 205,
+        frameHeight: 256,
+      },
+    );
+    this.scene.load.spritesheet(
+      "run",
+      "visual/player/running-195x256-20.fixed.png",
+      {
+        frameWidth: 195,
+        frameHeight: 256,
+      },
+    );
+
     this.scene.load.spritesheet("dash", "visual/dash.png", {
-      frameWidth: 55,
-      frameHeight: 70,
-    });
-    this.scene.load.spritesheet("jump", "visual/jump.png", {
-      frameWidth: 55,
-      frameHeight: 70,
-    });
-    this.scene.load.spritesheet("walk", "visual/walk.png", {
       frameWidth: 55,
       frameHeight: 70,
     });
