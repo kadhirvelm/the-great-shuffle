@@ -12,6 +12,7 @@ export class AssetManager {
     this.loadPlayer();
     this.loadMonster();
     this.loadWeapons();
+    this.loadModifiers();
     this.loadEquipment();
   }
 
@@ -55,6 +56,10 @@ export class AssetManager {
     this.scene.load.image("fire_sword", "visual/fire_sword.png");
     this.scene.load.image("fire_spear", "visual/fire_spear.png");
     this.scene.load.image("fire_rod", "visual/fire_rod.png");
+  }
+
+  private loadModifiers() {
+    this.scene.load.image("fire_enforcement", "visual/fire_enforcement.png");
   }
 
   private loadEquipment() {

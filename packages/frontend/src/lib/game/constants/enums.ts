@@ -4,6 +4,7 @@ export enum Costs {
   dash = 10,
   ranged_attack = 10,
   aura_attack = 20,
+  enforcement = 15,
   sword_attack = 2,
   spear_attack = 2,
   rod_attack = 2,
@@ -14,6 +15,7 @@ export enum Duration {
   player_aura_attack = 300,
   player_rod_attack = 500,
   player_shield = 500,
+  player_enforcement = 20000,
 }
 
 export enum Damage {
@@ -33,13 +35,13 @@ export enum Distance {
 
 export enum Gravity {
   generic = 300,
-  playerY = 2000,
+  playerY = 2500,
 }
 
 export enum Movement {
   player_x = Gravity.generic,
   player_dash_x = Gravity.generic * 3,
-  player_y = Gravity.playerY * 0.35,
+  player_y = Gravity.playerY * 0.4,
   player_projectile_x = Gravity.generic * 2,
   player_spear_attack_x = Gravity.generic * 4,
   monster_x = Gravity.generic / 3,
