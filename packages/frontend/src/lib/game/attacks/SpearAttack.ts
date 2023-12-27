@@ -1,10 +1,10 @@
 import { v4 } from "uuid";
-import { Movement } from "../constants/Movement";
 import { PushBack } from "../monster/Monster";
 
 export interface SpearAttackAttributes {
   damage: number;
   range: number;
+  velocity: number;
   pushBack: PushBack;
 }
 
@@ -51,7 +51,7 @@ export class SpearAttack extends Phaser.GameObjects.Sprite {
 
     this.scene.physics.velocityFromAngle(
       direction === "left" ? 180 : 0,
-      Movement.player_spear_attack_x,
+      this.attributes.velocity,
       (this.body?.velocity ?? undefined) as Phaser.Math.Vector2 | undefined,
     );
   }

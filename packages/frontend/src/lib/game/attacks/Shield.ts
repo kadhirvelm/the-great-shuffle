@@ -1,10 +1,10 @@
-import { Scale } from "../constants/Scale";
 import { PushBack } from "../monster/Monster";
 
 export interface ShieldAttributes {
   duration: number;
   direction: "left" | "right";
   pushBack: PushBack;
+  scale: number;
 }
 
 export class Shield extends Phaser.GameObjects.Sprite {
@@ -32,8 +32,8 @@ export class Shield extends Phaser.GameObjects.Sprite {
     this.setPosition(x + accountForDirection, y - 20);
 
     this.setSize(
-      this.frame.width * Scale.player_shield,
-      this.frame.height * Scale.player_shield,
+      this.frame.width * this.attributes.scale,
+      this.frame.height * this.attributes.scale,
     );
 
     this.setActive(true);
