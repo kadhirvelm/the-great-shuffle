@@ -91,7 +91,10 @@ export class Monster extends Phaser.GameObjects.Sprite {
       this.monsterInteractions.player.y,
     );
 
-    if (distanceToPlayer <= Distance.monster_aggro) {
+    const areOnSamePlane =
+      Math.abs(this.y - this.monsterInteractions.player.y) < 100;
+
+    if (distanceToPlayer <= Distance.monster_aggro && areOnSamePlane) {
       const direction = Math.sign(this.monsterInteractions.player.x - this.x);
       this.typedBody.setVelocityX(Movement.monster_x * direction);
 
