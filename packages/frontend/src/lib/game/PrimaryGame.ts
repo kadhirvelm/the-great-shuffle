@@ -22,6 +22,7 @@ import { SpearAttackGroup } from "./attacks/SpearAttackGroup";
 import { RodAttackHitboxGroup } from "./attacks/RodAttackHitbox";
 import { RodAttackGroup } from "./attacks/RodAttackGroup";
 import { EnforcementGroup } from "./modifier/EnforcementGroup";
+import { Ladders } from "./environment/Ladders";
 
 export class PrimaryGame {
   private game: Game;
@@ -75,6 +76,7 @@ class TutorialScene extends Scene {
 
   public create() {
     const environment = new TreeEnvironment(this);
+    const ladders = new Ladders(this);
 
     this.rangedAttackGroup = new RangedAttackGroup(this);
     this.auraAttackGroup = new AuraAttackGroup(this);
@@ -109,6 +111,7 @@ class TutorialScene extends Scene {
       player: this.player,
       monsterGroup: this.monsterGroup,
       environment: environment,
+      ladders: ladders,
       rangedAttacks: this.rangedAttackGroup,
       auraAttacks: this.auraAttackGroup,
       swordAttackHitbox: this.swordAttackHitbox,

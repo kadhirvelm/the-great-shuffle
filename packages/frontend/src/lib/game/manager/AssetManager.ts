@@ -19,6 +19,7 @@ export class AssetManager {
   private loadBackground() {
     this.scene.load.image("tree", "visual/tree.jpg");
     this.scene.load.image("platform_texture", "visual/platform_texture.jpg");
+    this.scene.load.image("ladder", "visual/ladder.png");
   }
 
   private loadAttacks() {
@@ -40,6 +41,10 @@ export class AssetManager {
       frameHeight: 70,
     });
     this.scene.load.spritesheet("walk", "visual/walk.png", {
+      frameWidth: 55,
+      frameHeight: 70,
+    });
+    this.scene.load.spritesheet("climb", "visual/climb.png", {
       frameWidth: 55,
       frameHeight: 70,
     });

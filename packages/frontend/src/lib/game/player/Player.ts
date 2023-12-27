@@ -50,6 +50,10 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   private isFlashing = false;
 
+  private closestLadder: Phaser.GameObjects.Sprite | undefined;
+  private canClimb = false;
+  private isClimbing = false;
+
   public constructor(
     scene: Phaser.Scene,
     x: number,
@@ -84,24 +88,25 @@ export class Player extends Phaser.GameObjects.Sprite {
       frameRate: 25,
       repeat: -1,
     });
-
     this.anims.create({
       key: "jump",
       frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 1 }),
       frameRate: 10,
       repeat: -1,
     });
-
     this.anims.create({
       key: "idle",
       frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 3 }),
       frameRate: 2,
       repeat: -1,
     });
-
     this.anims.create({
       key: "dash",
       frames: this.anims.generateFrameNumbers("dash", { start: 0, end: 0 }),
+    });
+    this.anims.create({
+      key: "climb",
+      frames: this.anims.generateFrameNumbers("climb", { start: 0, end: 0 }),
     });
   }
 
@@ -140,19 +145,38 @@ export class Player extends Phaser.GameObjects.Sprite {
     });
   }
 
+  public updateClosestLadder(ladder: Phaser.GameObjects.Sprite) {
+    this.closestLadder = ladder;
+  }
+
   public update() {
+    this.handleUpdatingGravity();
+    this.updateCanClimbStatus();
+
     if (this.currentState?.type === "dashing") {
       return this.handleDashing(this.currentState);
     }
 
+    if (this.isClimbing && this.canClimb) {
+      return this.handleClimbingMovement();
+    }
+
     this.handleKeyboardInput();
-    this.handleStartDashing();
+    this.handleMaybeDashing();
 
     if (!this.typedBody.touching.down) {
-      this.handleAirborneMovement();
+      return this.handleAirborneMovement();
+    }
+
+    this.handleGroundMovement();
+    this.handleEnvironmentInteractions();
+  }
+
+  private handleUpdatingGravity() {
+    if (this.isClimbing || this.currentState?.type === "dashing") {
+      this.typedBody.setAllowGravity(false);
     } else {
-      this.handleGroundMovement();
-      this.handleEnvironmentInteractions();
+      this.typedBody.setAllowGravity(true);
     }
   }
 
@@ -172,7 +196,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.currentState = undefined;
   }
 
-  private handleStartDashing() {
+  private handleMaybeDashing() {
     const maybeDash = this.maybeStartDashing();
     if (maybeDash === undefined) {
       return;
@@ -205,6 +229,50 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
+  private updateCanClimbStatus() {
+    if (this.closestLadder === undefined) {
+      return;
+    }
+
+    this.canClimb = Phaser.Geom.Intersects.RectangleToRectangle(
+      this.getBounds(),
+      this.closestLadder.getBounds(),
+    );
+
+    if (!this.canClimb) {
+      this.isClimbing = false;
+    }
+  }
+
+  private handleClimbingMovement() {
+    if (this.playerInteractions.keyboard.up.isDown) {
+      this.typedBody.setVelocityY(
+        -this.playerStatsHandler.movement.movementVelocityX(),
+      );
+    } else if (this.playerInteractions.keyboard.down.isDown) {
+      this.typedBody.setVelocityY(
+        this.playerStatsHandler.movement.movementVelocityX(),
+      );
+    } else {
+      this.typedBody.setVelocityY(0);
+    }
+
+    if (
+      this.playerInteractions.keyboard.left.isDown ||
+      this.playerInteractions.keyboard.right.isDown
+    ) {
+      this.isClimbing = false;
+    } else if (this.playerInteractions.keyboard.space.isDown) {
+      this.isClimbing = false;
+      this.typedBody.setVelocityY(
+        -this.playerStatsHandler.movement.movementVelocityY(),
+      );
+    } else {
+      this.anims.play("climb", true);
+      this.typedBody.setVelocityX(0);
+    }
+  }
+
   private handleGroundMovement() {
     if (this.currentState?.type === "dashing") {
       return;
@@ -225,6 +293,14 @@ export class Player extends Phaser.GameObjects.Sprite {
     } else {
       this.typedBody.setVelocityX(0);
       this.anims.play("idle", true);
+    }
+
+    if (
+      (this.playerInteractions.keyboard.up.isDown ||
+        this.playerInteractions.keyboard.down.isDown) &&
+      this.canClimb
+    ) {
+      this.isClimbing = true;
     }
   }
 
