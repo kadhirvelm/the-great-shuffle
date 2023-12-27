@@ -61,15 +61,12 @@ export class CollisionManager {
       this.interactingObjects.environment,
     );
 
-    console.log(this.interactingObjects.ladders);
-
     this.scene.physics.add.overlap(
       this.interactingObjects.player,
       this.interactingObjects.ladders,
       (player, ladder) => {
         const typedPlayer: Player = player as Player;
         typedPlayer.updateClosestLadder(ladder as Phaser.GameObjects.Sprite);
-        console.log("Overlapping!");
       },
     );
   }

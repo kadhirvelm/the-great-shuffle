@@ -95,6 +95,6 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   }
 
   private spawnPlayer() {
-    this.environmentInteractions.player.spawnPlayer(500, 2700);
+    this.environmentInteractions.player.spawnPlayer(200, 2800);
   }
 }

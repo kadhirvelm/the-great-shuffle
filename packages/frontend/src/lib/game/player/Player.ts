@@ -1,43 +1,18 @@
-import { AuraAttack } from "../attacks/AuraAttack";
-import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
-import { RangedAttack } from "../attacks/RangedAttack";
-import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
-import { RodAttack } from "../attacks/RodAttack";
-import { RodAttackGroup } from "../attacks/RodAttackGroup";
-import { Shield } from "../attacks/Shield";
-import { ShieldGroup } from "../attacks/ShieldGroup";
-import { SpearAttack } from "../attacks/SpearAttack";
-import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
-import { SwordAttack } from "../attacks/SwordAttack";
-import { SwordAttackGroup } from "../attacks/SwordAttackGroup";
 import { Gravity } from "../constants/enums";
-import { Keyboard } from "../keyboard/Keyboard";
-import { Enforcement } from "../modifier/Enforcement";
-import { EnforcementGroup } from "../modifier/EnforcementGroup";
+import { PlayerAttack } from "./PlayerAttacks";
+import { PlayerEnvironmentInteractions } from "./PlayerEnvironmentInteractions";
+import { PlayerInteractions } from "./PlayerInteractions";
+import { PlayerMovement } from "./PlayerMovement";
 import { PlayerStatsHandler } from "./PlayerStatsHandler";
 
-export interface PlayerInteractions {
-  keyboard: Keyboard;
-
-  rangedAttackGroup: RangedAttackGroup;
-  auraAttackGroup: AuraAttackGroup;
-  enforcementGroup: EnforcementGroup;
-
-  swordAttackGroup: SwordAttackGroup;
-  spearAttackGroup: SpearAttackGroup;
-  rodAttackGroup: RodAttackGroup;
-
-  shieldGroup: ShieldGroup;
-}
-
-interface DashingState {
+export interface DashingState {
   currentDashDistance: number;
   direction: "left" | "right";
   totalDashDistance: number;
   type: "dashing";
 }
 
-interface RecentlyDamagedState {
+export interface RecentlyDamagedState {
   takenOn: number;
   invulnerableUntil: number;
   type: "recently-damaged";
@@ -46,17 +21,21 @@ interface RecentlyDamagedState {
 export class Player extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
   public currentState: DashingState | RecentlyDamagedState | undefined;
+
   public playerStatsHandler: PlayerStatsHandler;
+  public playerAttack: PlayerAttack;
+  public playerMovement: PlayerMovement;
+  public playerEnvironmentInteractions: PlayerEnvironmentInteractions;
 
-  private isFlashing = false;
+  public isFlashing = false;
 
-  private closestLadder: Phaser.GameObjects.Sprite | undefined;
-  private canClimb = false;
-  private isClimbing = false;
+  public closestLadder: Phaser.GameObjects.Sprite | undefined;
+  public canClimb = false;
+  public isClimbing = false;
 
   public constructor(
     scene: Phaser.Scene,
-    private playerInteractions: PlayerInteractions,
+    public playerInteractions: PlayerInteractions,
   ) {
     super(scene, 0, 0, "idle");
 
@@ -64,7 +43,13 @@ export class Player extends Phaser.GameObjects.Sprite {
     scene.physics.add.existing(this);
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
+
     this.playerStatsHandler = new PlayerStatsHandler();
+    this.playerAttack = new PlayerAttack(this);
+    this.playerMovement = new PlayerMovement(this);
+    this.playerEnvironmentInteractions = new PlayerEnvironmentInteractions(
+      this,
+    );
 
     this.setDepth(this.depth + 1);
     this.setActive(false);
@@ -156,34 +141,18 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   public update() {
-    this.handleUpdatingGravity();
-    this.updateCanClimbStatus();
+    this.playerEnvironmentInteractions.update();
 
     if (this.currentState?.type === "dashing") {
       return this.handleDashing(this.currentState);
     }
 
     if (this.isClimbing && this.canClimb) {
-      return this.handleClimbingMovement();
+      return this.playerMovement.handleClimbingMovement();
     }
 
-    this.handleKeyboardInput();
-    this.handleMaybeDashing();
-
-    if (!this.typedBody.touching.down) {
-      return this.handleAirborneMovement();
-    }
-
-    this.handleGroundMovement();
-    this.handleEnvironmentInteractions();
-  }
-
-  private handleUpdatingGravity() {
-    if (this.isClimbing || this.currentState?.type === "dashing") {
-      this.typedBody.setAllowGravity(false);
-    } else {
-      this.typedBody.setAllowGravity(true);
-    }
+    this.playerAttack.handleKeyboardInput();
+    this.playerMovement.updateOtherMovements();
   }
 
   private handleDashing(dashingState: DashingState) {
@@ -200,370 +169,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     this.currentState = undefined;
-  }
-
-  private handleMaybeDashing() {
-    const maybeDash = this.maybeStartDashing();
-    if (maybeDash === undefined) {
-      return;
-    }
-
-    this.currentState = maybeDash;
-    this.scene.sound.play("dash");
-    this.playerStatsHandler.dash.consumeStaminaForDash();
-  }
-
-  private handleAirborneMovement() {
-    this.anims.play("jump", true);
-
-    if (this.playerInteractions.keyboard.left.isDown) {
-      this.typedBody.setVelocityX(
-        this.playerStatsHandler.movement.movementVelocityXAirborne(
-          "left",
-          this.typedBody.velocity.x,
-        ),
-      );
-    } else if (this.playerInteractions.keyboard.right.isDown) {
-      this.typedBody.setVelocityX(
-        this.playerStatsHandler.movement.movementVelocityXAirborne(
-          "right",
-          this.typedBody.velocity.x,
-        ),
-      );
-    } else {
-      this.typedBody.setVelocityX(this.typedBody.velocity.x * 0.995);
-    }
-  }
-
-  private updateCanClimbStatus() {
-    if (this.closestLadder === undefined) {
-      return;
-    }
-
-    this.canClimb = Phaser.Geom.Intersects.RectangleToRectangle(
-      this.getBounds(),
-      this.closestLadder.getBounds(),
-    );
-
-    if (!this.canClimb) {
-      this.isClimbing = false;
-    }
-  }
-
-  private handleClimbingMovement() {
-    if (this.playerInteractions.keyboard.up.isDown) {
-      this.typedBody.setVelocityY(
-        -this.playerStatsHandler.movement.movementVelocityX(),
-      );
-    } else if (this.playerInteractions.keyboard.down.isDown) {
-      this.typedBody.setVelocityY(
-        this.playerStatsHandler.movement.movementVelocityX(),
-      );
-    } else {
-      this.typedBody.setVelocityY(0);
-    }
-
-    if (
-      this.playerInteractions.keyboard.left.isDown ||
-      this.playerInteractions.keyboard.right.isDown
-    ) {
-      this.isClimbing = false;
-    } else if (this.playerInteractions.keyboard.space.isDown) {
-      this.isClimbing = false;
-      this.typedBody.setVelocityY(
-        -this.playerStatsHandler.movement.movementVelocityY(),
-      );
-    } else {
-      this.anims.play("climb", true);
-      this.typedBody.setVelocityX(0);
-    }
-  }
-
-  private handleGroundMovement() {
-    if (this.currentState?.type === "dashing") {
-      return;
-    }
-
-    if (this.playerInteractions.keyboard.left.isDown) {
-      this.typedBody.setVelocityX(
-        -this.playerStatsHandler.movement.movementVelocityX(),
-      );
-      this.setFlipX(true);
-      this.anims.play("walk", true);
-    } else if (this.playerInteractions.keyboard.right.isDown) {
-      this.typedBody.setVelocityX(
-        this.playerStatsHandler.movement.movementVelocityX(),
-      );
-      this.setFlipX(false);
-      this.anims.play("walk", true);
-    } else {
-      this.typedBody.setVelocityX(0);
-      this.anims.play("idle", true);
-    }
-
-    if (
-      (this.playerInteractions.keyboard.up.isDown ||
-        this.playerInteractions.keyboard.down.isDown) &&
-      this.canClimb
-    ) {
-      this.isClimbing = true;
-    }
-  }
-
-  private maybeStartDashing(): DashingState | undefined {
-    if (!this.playerInteractions.keyboard.shift.isDown) {
-      return;
-    }
-
-    if (!this.playerStatsHandler.dash.canDash()) {
-      this.noStamina();
-      return;
-    }
-
-    if (this.playerInteractions.keyboard.left.isDown) {
-      return {
-        currentDashDistance: 0,
-        totalDashDistance: this.playerStatsHandler.dash.dashDistance(),
-        direction: "left",
-        type: "dashing",
-      };
-    }
-
-    if (this.playerInteractions.keyboard.right.isDown) {
-      return {
-        currentDashDistance: 0,
-        totalDashDistance: this.playerStatsHandler.dash.dashDistance(),
-        direction: "right",
-        type: "dashing",
-      };
-    }
-  }
-
-  private handleEnvironmentInteractions() {
-    if (
-      this.playerInteractions.keyboard.space.isDown &&
-      this.typedBody.touching.down
-    ) {
-      this.typedBody.setVelocityY(
-        -this.playerStatsHandler.movement.movementVelocityY(),
-      );
-    }
-  }
-
-  private handleKeyboardInput() {
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerInteractions.keyboard.ranged_attack,
-      )
-    ) {
-      this.fireRangedAttack();
-    }
-
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerInteractions.keyboard.aura_attack,
-      )
-    ) {
-      this.fireAuraAttack();
-    }
-
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerInteractions.keyboard.enforcement,
-      )
-    ) {
-      this.fireEnforcement();
-    }
-
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerInteractions.keyboard.sword_attack,
-      )
-    ) {
-      this.fireSwordAttack();
-    }
-
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerInteractions.keyboard.spear_attack,
-      )
-    ) {
-      this.fireSpearAttack();
-    }
-
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerInteractions.keyboard.rod_attack,
-      )
-    ) {
-      this.fireRodAttack();
-    }
-
-    if (
-      Phaser.Input.Keyboard.JustDown(this.playerInteractions.keyboard.shield)
-    ) {
-      this.fireShield();
-    }
-  }
-
-  private fireRangedAttack() {
-    if (!this.playerStatsHandler.rangedAttack.canFire()) {
-      this.noChi();
-      return;
-    }
-
-    const maybeRangedAttack: RangedAttack | null =
-      this.playerInteractions.rangedAttackGroup.get();
-    if (maybeRangedAttack == null) {
-      return;
-    }
-
-    maybeRangedAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
-      damage: this.playerStatsHandler.rangedAttack.damage(),
-      range: this.playerStatsHandler.rangedAttack.range(),
-      velocity: this.playerStatsHandler.rangedAttack.velocity(),
-      pushBack: {
-        duration: 100,
-        velocity: 10,
-      },
-    });
-
-    this.playerStatsHandler.rangedAttack.consumeChi();
-  }
-
-  private fireAuraAttack() {
-    if (!this.playerStatsHandler.auraAttack.canFire()) {
-      this.noChi();
-      return;
-    }
-
-    const maybeAuraAttack: AuraAttack | null =
-      this.playerInteractions.auraAttackGroup.get();
-    if (maybeAuraAttack == null) {
-      return;
-    }
-
-    maybeAuraAttack.fire(this.x, this.y, {
-      damage: this.playerStatsHandler.auraAttack.damage(),
-      duration: this.playerStatsHandler.auraAttack.duration(),
-      scale: this.playerStatsHandler.auraAttack.scale(),
-      pushBack: {
-        duration: 0,
-        velocity: 0,
-      },
-    });
-    this.playerStatsHandler.auraAttack.consumeChi();
-  }
-
-  private fireEnforcement() {
-    if (!this.playerStatsHandler.enforcement.canFire()) {
-      this.noChi();
-      return;
-    }
-
-    const maybeEnforcement: Enforcement | null =
-      this.playerInteractions.enforcementGroup.get();
-    if (maybeEnforcement == null) {
-      return;
-    }
-
-    maybeEnforcement.fire(this, {
-      duration: this.playerStatsHandler.enforcement.duration(),
-      enforcement: {
-        offensiveAttributes: {
-          chiFocus: 5,
-          efficiency: 5,
-          weaponStrength: 5,
-        },
-      },
-    });
-    this.playerStatsHandler.auraAttack.consumeChi();
-  }
-
-  private fireSwordAttack() {
-    if (!this.playerStatsHandler.swordAttack.canFire()) {
-      this.noStamina();
-      return;
-    }
-
-    const maybeSwordAttack: SwordAttack | null =
-      this.playerInteractions.swordAttackGroup.get();
-    if (maybeSwordAttack == null) {
-      return;
-    }
-
-    maybeSwordAttack.fire(this, this.flipX ? "left" : "right", {
-      damage: this.playerStatsHandler.swordAttack.damage(),
-      pushBack: {
-        duration: 0,
-        velocity: 0,
-      },
-    });
-    this.playerStatsHandler.swordAttack.consumeStamina();
-  }
-
-  private fireSpearAttack() {
-    if (!this.playerStatsHandler.spearAttack.canFire()) {
-      this.noStamina();
-      return;
-    }
-
-    const maybeSpearAttack: SpearAttack | null =
-      this.playerInteractions.spearAttackGroup.get();
-    if (maybeSpearAttack == null) {
-      return;
-    }
-
-    maybeSpearAttack.fire(this.x, this.y, this.flipX ? "left" : "right", {
-      damage: this.playerStatsHandler.spearAttack.damage(),
-      range: this.playerStatsHandler.spearAttack.range(),
-      velocity: this.playerStatsHandler.spearAttack.velocity(),
-      pushBack: {
-        duration: 100,
-        velocity: 10,
-      },
-    });
-    this.playerStatsHandler.spearAttack.consumeStamina();
-  }
-
-  private fireRodAttack() {
-    if (!this.playerStatsHandler.rodAttack.canFire()) {
-      this.noStamina();
-      return;
-    }
-
-    const maybeRodAttack: RodAttack | undefined =
-      this.playerInteractions.rodAttackGroup.get();
-    if (maybeRodAttack == null) {
-      return;
-    }
-
-    maybeRodAttack.fire(this, this.flipX ? "left" : "right", {
-      damage: this.playerStatsHandler.rodAttack.damage(),
-      pushBack: this.playerStatsHandler.rodAttack.pushBack(),
-    });
-    this.playerStatsHandler.rodAttack.consumeStamina();
-  }
-
-  private fireShield() {
-    if (!this.playerStatsHandler.shield.canFire()) {
-      this.noStamina();
-      return;
-    }
-
-    const maybeShield: Shield | undefined =
-      this.playerInteractions.shieldGroup.get();
-    if (maybeShield == null) {
-      return;
-    }
-
-    maybeShield.fire(this.x, this.y, {
-      duration: this.playerStatsHandler.shield.duration(),
-      pushBack: this.playerStatsHandler.shield.pushBack(),
-      direction: this.flipX ? "left" : "right",
-      scale: this.playerStatsHandler.shield.scale(),
-    });
-    this.playerStatsHandler.shield.consumeStamina();
   }
 
   public noChi() {
