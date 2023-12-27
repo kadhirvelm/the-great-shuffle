@@ -1,5 +1,5 @@
 import { Player } from "../player/Player";
-import { AllMonsterStats, MonsterStats } from "./MonsterStats";
+import { AllStats, DisplayStats } from "../display/DisplayStats";
 import { MonsterTypeHandler, MonsterTypes } from "./MonsterType";
 
 export interface MonsterInteraction {
@@ -13,12 +13,11 @@ export interface PushBack {
 
 export class Monster extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
-  public stats: AllMonsterStats = {
-    damage: 20,
+  public stats: AllStats = {
     health: { current: 100, max: 100 },
   };
+  public displayStats: DisplayStats;
 
-  public monsterStats: MonsterStats;
   public monsterTypeHandler: MonsterTypeHandler;
 
   public auraAttackTracker: { [auraAttackId: string]: number } = {};
@@ -49,7 +48,8 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    this.monsterStats = new MonsterStats(this, this.stats);
+    this.displayStats = new DisplayStats(this, this.stats);
+
     this.monsterTypeHandler = new MonsterTypeHandler(scene, this);
 
     this.initializePhysics();
@@ -62,7 +62,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
   }
 
   public update() {
-    this.monsterStats.update();
+    this.displayStats.update();
 
     if (!this.isAlive()) {
       this.typedBody.setVelocity(0, 0);
