@@ -3,26 +3,25 @@
 import { Store } from "@reduxjs/toolkit";
 import { Game, Scene } from "phaser";
 import { State } from "../store/configureStore";
-import { RangedAttackGroup } from "./attacks/RangedAttackGroup";
-import { Camera } from "./camera/Camera";
-import { TreeEnvironment } from "./environment/TreeEnvironment";
-import { CollisionManager } from "./manager/CollisionManager";
-import { Keyboard } from "./keyboard/Keyboard";
-import { AssetManager } from "./manager/AssetManager";
-import { Monster } from "./monster/Monster";
-import { Player } from "./player/Player";
-import { removeStore, setStore } from "./store/storeManager";
-import { MonsterGroup } from "./monster/MonsterGroup";
-import { Gravity } from "./constants/enums";
 import { AuraAttackGroup } from "./attacks/AuraAttackGroup";
-import { SwordAttackGroup } from "./attacks/SwordAttackGroup";
-import { SwordAttackHitboxGroup } from "./attacks/SwordAttackHitbox";
+import { RangedAttackGroup } from "./attacks/RangedAttackGroup";
+import { RodAttackGroup } from "./attacks/RodAttackGroup";
+import { RodAttackHitboxGroup } from "./attacks/RodAttackHitbox";
 import { ShieldGroup } from "./attacks/ShieldGroup";
 import { SpearAttackGroup } from "./attacks/SpearAttackGroup";
-import { RodAttackHitboxGroup } from "./attacks/RodAttackHitbox";
-import { RodAttackGroup } from "./attacks/RodAttackGroup";
-import { EnforcementGroup } from "./modifier/EnforcementGroup";
+import { SwordAttackGroup } from "./attacks/SwordAttackGroup";
+import { SwordAttackHitboxGroup } from "./attacks/SwordAttackHitbox";
+import { Camera } from "./camera/Camera";
+import { Gravity } from "./constants/enums";
 import { Ladders } from "./environment/Ladders";
+import { TreeEnvironment } from "./environment/TreeEnvironment";
+import { Keyboard } from "./keyboard/Keyboard";
+import { AssetManager } from "./manager/AssetManager";
+import { CollisionManager } from "./manager/CollisionManager";
+import { EnforcementGroup } from "./modifier/EnforcementGroup";
+import { MonsterGroup } from "./monster/MonsterGroup";
+import { Player } from "./player/Player";
+import { removeStore, setStore } from "./store/storeManager";
 
 export class PrimaryGame {
   private game: Game;
@@ -75,9 +74,6 @@ class TutorialScene extends Scene {
   }
 
   public create() {
-    const environment = new TreeEnvironment(this);
-    const ladders = new Ladders(this);
-
     this.rangedAttackGroup = new RangedAttackGroup(this);
     this.auraAttackGroup = new AuraAttackGroup(this);
     this.swordAttackHitbox = new SwordAttackHitboxGroup(this);
@@ -89,7 +85,7 @@ class TutorialScene extends Scene {
     this.shieldGroup = new ShieldGroup(this);
     this.enforcementGroup = new EnforcementGroup(this);
 
-    this.player = new Player(this, 500, 2900, {
+    this.player = new Player(this, {
       keyboard: new Keyboard(this),
       rangedAttackGroup: this.rangedAttackGroup,
       auraAttackGroup: this.auraAttackGroup,
@@ -103,9 +99,12 @@ class TutorialScene extends Scene {
     });
     this.monsterGroup = new MonsterGroup(this);
 
-    this.monsterGroup.add(
-      new Monster(this, 900, 2900, { player: this.player }),
-    );
+    const ladders = new Ladders(this);
+    const environment = new TreeEnvironment(this, {
+      player: this.player,
+      ladders: ladders,
+      monsterGroup: this.monsterGroup,
+    });
 
     new CollisionManager(this, {
       player: this.player,
