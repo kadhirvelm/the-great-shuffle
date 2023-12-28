@@ -8,6 +8,8 @@ export type Level = keyof LevelPrompt;
 
 export type PowerType = "aura" | "enforcement" | "ranged";
 
+export type Weapon = "sword" | "spear" | "rod" | "shield";
+
 export interface Prompt {
   prompt: string;
 }
@@ -110,5 +112,36 @@ export class PromptManager {
     Create a single image for a ${elementDescription} elemental ball attack that can be used in a sprite sheet.
     
     ${level}`.trim();
+  }
+
+  public static weapon(
+    weaponType: Weapon,
+    weaponDescription: string,
+    level: Level,
+  ): Prompt {
+    const levels: LevelPrompt = {
+      "1": "Create a weapon with simple details.",
+      "2": "Create a weapon with moderate details.",
+      "3": "Create a fierce looking weapon with intricate details.",
+    };
+
+    const prompt = `
+    You are assisting in creating a 2D video game with water color style graphics with a dreamy feel. The images created will be used in a sprite sheet for an animation, specifically for the weapons a character can pick up, which takes the form of either a sword, a spear, or a rod.
+
+    1. Keep the background simple and white
+    2. Make sure there’s no text in the image
+    3. Make sure there is no character in the image
+    4. Make the weapon easy to animate
+    5. Make sure there isn’t any information on the image
+    6. Make sure the image doesn’t have anything else except the weapon
+    7. Focus the image on just the weapon without any extra frames
+
+    Create a single image for a ${weaponDescription} ${weaponType} that can be used in a sprite sheet.
+    
+    ${levels[level]}`.trim();
+
+    return {
+      prompt,
+    };
   }
 }
