@@ -5,11 +5,4 @@ export interface IService {
   };
 }
 
-export interface IBackendService extends IService {
-  helloWorld: {
-    payload: {};
-    response: {
-      message: string;
-    };
-  };
-}
+export interface IBackendService extends IService {}

@@ -11,7 +11,7 @@ export class Enforcement extends Phaser.GameObjects.Sprite {
   private followPlayer: Player | undefined;
 
   public constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, "fire_enforcement");
+    super(scene, x, y, "enforcement");
 
     scene.add.existing(this);
     scene.physics.add.existing(this);

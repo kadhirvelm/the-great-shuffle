@@ -40,6 +40,8 @@ services:
     environment:
       - PORT=8080
       - DATABASE=postgresql://postgres@host.docker.internal:5432/tower?schema=public
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - REMOVE_BG_KEY=${REMOVE_BG_KEY}
     command: bash -c "yarn && cd ../../ && yarn dev backend"
   frontend:
     image: node:21.4.0
