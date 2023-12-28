@@ -1,7 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import OpenAI from "openai";
 import * as sharp from "sharp";
-import { Level, PowerType, Prompt, PromptManager } from "./promptManager";
+import {
+  Level,
+  PowerType,
+  Prompt,
+  PromptManager,
+  Weapon,
+} from "./promptManager";
 import { ensureDirSync } from "fs-extra";
 import { join } from "path";
 
@@ -39,6 +45,30 @@ export class ChatGPTService {
           inputPrompt,
         );
         return { level, name: element, type: powerType };
+      }),
+    );
+
+    return await promises;
+  }
+
+  public async generateWeapon(
+    weaponType: Weapon,
+    weaponDescription: string,
+    levels: Level[],
+  ) {
+    const promises = Promise.all(
+      levels.map(async (level) => {
+        const inputPrompt = PromptManager.weapon(
+          weaponType,
+          weaponDescription,
+          level,
+        );
+        await this.generateImage(
+          `weapons/${weaponType}`,
+          `${weaponDescription}-${level}`,
+          inputPrompt,
+        );
+        return { level, name: weaponDescription, type: weaponType };
       }),
     );
 

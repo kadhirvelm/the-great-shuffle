@@ -16,16 +16,20 @@ export class RemoveBackgroundService {
         basename(pathToImage),
       );
 
-      const response = await axios("https://api.remove.bg/v1.0/removebg", {
-        method: "post",
-        data: formData,
-        responseType: "arraybuffer",
-        headers: {
-          ...formData.getHeaders(),
-          "X-Api-Key": process.env.REMOVE_BG_KEY,
-        },
-      });
-      resolve(response.data);
+      try {
+        const response = await axios("https://api.remove.bg/v1.0/removebg", {
+          method: "post",
+          data: formData,
+          responseType: "arraybuffer",
+          headers: {
+            ...formData.getHeaders(),
+            "X-Api-Key": process.env.REMOVE_BG_KEY,
+          },
+        });
+        resolve(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 }

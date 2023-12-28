@@ -6,6 +6,7 @@ import { AppController } from "./app.controller";
 import { MonstersModule } from "./monsters/monsters.module";
 import { PlayerModule } from "./player/player.module";
 import { PowersModule } from "./powers/powers.module";
+import { WeaponModule } from "./weapon/weapon.module";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PowersModule } from "./powers/powers.module";
     MonstersModule,
     PlayerModule,
     PowersModule,
+    WeaponModule,
   ],
   controllers: [AppController],
 })
