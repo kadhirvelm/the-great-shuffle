@@ -5,18 +5,20 @@ import * as _ from "lodash";
 
 const ORIGINAL_WIDTH = 256;
 
-const INPUT_NAME = "running";
+const INPUT_NAME = "climbing";
 
-const LEFT = 20;
+const LEFT = 110;
 const TOP = 0;
-const WIDTH = 195;
+const WIDTH = 110;
 
-const FRAME_NUMBER = 10;
+const FRAME_NUMBER = 1;
 
 @Injectable()
 export class ImageManipulationService {
   public async fixSmackStudioImage() {
-    const imageFile = readFileSync(`./src/imageManipulation/${INPUT_NAME}.png`);
+    const imageFile = readFileSync(
+      `./src/helperServices/imageManipulation/${INPUT_NAME}.png`,
+    );
 
     const originalImage = sharp(imageFile);
 
@@ -59,7 +61,7 @@ export class ImageManipulationService {
     outputImage
       .composite(compositeFrames)
       .toFile(
-        `./src/imageManipulation/${INPUT_NAME}-${WIDTH}x${
+        `./src/helperServices/imageManipulation/${INPUT_NAME}-${WIDTH}x${
           ORIGINAL_WIDTH - TOP
         }-${LEFT}.fixed.png`,
       );
@@ -68,7 +70,9 @@ export class ImageManipulationService {
   }
 
   public async determineIdealSize() {
-    const imageFile = readFileSync(`./src/imageManipulation/${INPUT_NAME}.png`);
+    const imageFile = readFileSync(
+      `./src/helperServices/imageManipulation/${INPUT_NAME}.png`,
+    );
 
     const originalImage = sharp(imageFile);
 
@@ -86,7 +90,9 @@ export class ImageManipulationService {
         width: WIDTH,
       });
 
-    frame.toFile(`./src/imageManipulation/${INPUT_NAME}.trimmed.png`);
+    frame.toFile(
+      `./src/helperServices/imageManipulation/${INPUT_NAME}.trimmed.png`,
+    );
 
     return { LEFT, TOP, WIDTH };
   }

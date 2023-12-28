@@ -140,6 +140,12 @@ export class MonsterTypeHandler {
     this.isRoaming.distance -=
       moveSpeed / this.monster.scene.game.loop.actualFps;
 
+    if (this.isRoaming.direction === -1) {
+      this.monster.setFlipX(true);
+    } else {
+      this.monster.setFlipX(false);
+    }
+
     if (this.isRoaming.distance <= 0) {
       this.isRoaming = undefined;
     }
