@@ -213,6 +213,12 @@ export class PlayerStatsHandler {
     },
   };
 
+  public defensiveAttributes = {
+    invulnerableDuration: () => {
+      return 3000 + this.currentPlayerStats.defensiveAttributes.speed * 10;
+    },
+  };
+
   public rangedAttack = {
     canFire: () => {
       return this.canConsumeChi(Costs.ranged_attack);
