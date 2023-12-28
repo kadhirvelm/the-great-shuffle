@@ -65,10 +65,12 @@ export class SwordAttack extends Phaser.GameObjects.Sprite {
       this,
     );
 
-    const startRotation =
-      lastFiredFrom === "bottom" ? 0 : direction === "right" ? 180 : -180;
-    const endRotation = lastFiredFrom === "bottom" ? 180 : 0;
     const accountForDirection = direction === "right" ? 1 : -1;
+    const startRotation =
+      lastFiredFrom === "bottom" ? 0 : accountForDirection * 180;
+    const endRotation = lastFiredFrom === "bottom" ? 180 : 0;
+
+    this.setRotation(Phaser.Math.DegToRad(startRotation));
 
     lastFiredFrom = lastFiredFrom === "bottom" ? "top" : "bottom";
 

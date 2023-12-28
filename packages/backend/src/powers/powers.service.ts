@@ -31,15 +31,20 @@ export class PowerService {
   }
 
   public resizePower() {
-    const element = "water";
+    const elements = ["fire", "lightning", "water"];
     const powerTypes: PowerType[] = ["aura", "enforcement", "ranged"];
     const levels: Level[] = ["1", "2", "3"];
 
     return this.gptImageCleanUp.trimImage(
-      powerTypes.flatMap((powerType) =>
-        levels.map((level) => `temp-powers/${element}/${powerType}/${level}`),
+      elements.flatMap(
+        (element) =>
+          powerTypes.flatMap((powerType) =>
+            levels.map(
+              (level) => `temp-powers/${element}/${powerType}/${level}`,
+            ),
+          ),
+        "center",
       ),
-      "center",
     );
   }
 }
