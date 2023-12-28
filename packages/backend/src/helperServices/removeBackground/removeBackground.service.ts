@@ -10,17 +10,21 @@ export class RemoveBackgroundService {
     return new Promise<string>(async (resolve) => {
       const formData = new FormData();
       formData.append("size", "auto");
-      formData.append("image_file", createReadStream(pathToImage), basename(pathToImage));
+      formData.append(
+        "image_file",
+        createReadStream(pathToImage),
+        basename(pathToImage),
+      );
 
       const response = await axios("https://api.remove.bg/v1.0/removebg", {
-        method: 'post',
+        method: "post",
         data: formData,
-        responseType: 'arraybuffer',
+        responseType: "arraybuffer",
         headers: {
           ...formData.getHeaders(),
-          'X-Api-Key': process.env.REMOVE_BG_KEY,
+          "X-Api-Key": process.env.REMOVE_BG_KEY,
         },
-      })
+      });
       resolve(response.data);
     });
   }
