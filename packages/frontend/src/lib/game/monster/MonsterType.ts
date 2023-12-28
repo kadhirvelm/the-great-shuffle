@@ -1,7 +1,7 @@
 import { Monster } from "./Monster";
 import { MonsterStats } from "./MonsterStatsHandler";
 
-export type MonsterTypes = "mushroom" | "ice";
+export type MonsterTypes = "level_1" | "level_2" | "level_3";
 
 export class MonsterTypeHandler {
   private isRoaming: { distance: number; direction: -1 | 1 } | undefined;
@@ -13,72 +13,36 @@ export class MonsterTypeHandler {
 
   public getBaseStats(): MonsterStats {
     switch (this.monster.monsterType) {
-      case "mushroom":
+      case "level_1":
         return {
           vitality: { health: { current: 50, max: 50 } },
           offensiveAttributes: { collisionStrength: 10, aggroRange: 350 },
           defensiveAttributes: { defense: 0, speed: 150, jump: 300 },
         };
-      case "ice":
+      case "level_2":
         return {
           vitality: { health: { current: 100, max: 100 } },
           offensiveAttributes: { collisionStrength: 20, aggroRange: 500 },
-          defensiveAttributes: { defense: 10, speed: 50, jump: 0 },
+          defensiveAttributes: { defense: 10, speed: 200, jump: 150 },
         };
-    }
-  }
-
-  public loadAssets() {
-    switch (this.monster.monsterType) {
-      case "mushroom":
-        this.scene.load.spritesheet(
-          "mushroom",
-          "visual/monsters/mushroom.png",
-          {
-            frameWidth: 40,
-            frameHeight: 40,
-          },
-        );
-
-        this.monster.anims.create({
-          key: "mushroom",
-          frames: this.monster.anims.generateFrameNumbers("mushroom", {
-            start: 0,
-            end: 11,
-          }),
-          frameRate: 10,
-          repeat: -1,
-        });
-
-        this.monster.anims.play("mushroom", true);
-        break;
-      case "ice":
-        this.scene.load.spritesheet("ice", "visual/monsters/ice.png", {
-          frameWidth: 217,
-          frameHeight: 191,
-        });
-
-        this.monster.anims.create({
-          key: "ice",
-          frames: this.monster.anims.generateFrameNumbers("ice", {
-            start: 0,
-            end: 5,
-          }),
-          frameRate: 5,
-          repeat: -1,
-        });
-
-        this.monster.anims.play("ice", true);
-        break;
+      case "level_3":
+        return {
+          vitality: { health: { current: 200, max: 200 } },
+          offensiveAttributes: { collisionStrength: 30, aggroRange: 600 },
+          defensiveAttributes: { defense: 20, speed: 250, jump: 50 },
+        };
     }
   }
 
   public attackPattern() {
     switch (this.monster.monsterType) {
-      case "mushroom":
+      case "level_1":
         this.followWithJump();
         break;
-      case "ice":
+      case "level_2":
+        this.simpleAggroWithRoam();
+        break;
+      case "level_3":
         this.simpleAggroWithRoam();
         break;
     }

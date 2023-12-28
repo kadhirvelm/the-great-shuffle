@@ -45,7 +45,7 @@ export class Shield extends Phaser.GameObjects.Sprite {
         tween: {
           targets: this,
           alpha: { from: 0, to: 1 },
-          scale: { from: 0, to: 0.25 },
+          scale: { from: 0, to: 1 },
           duration: 150,
         },
       },

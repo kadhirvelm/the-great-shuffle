@@ -55,12 +55,26 @@ export class Monster extends Phaser.GameObjects.Sprite {
     });
 
     this.initializePhysics();
-    this.monsterTypeHandler.loadAssets();
+    this.initializeSize();
   }
 
   private initializePhysics() {
     this.typedBody.setBounce(0.2);
     this.typedBody.setCollideWorldBounds(true);
+  }
+
+  private initializeSize() {
+    switch (this.monsterType) {
+      case "level_1":
+        this.setScale(0.25);
+        break;
+      case "level_2":
+        this.setScale(1);
+        break;
+      case "level_3":
+        this.setScale(2);
+        break;
+    }
   }
 
   public update() {
