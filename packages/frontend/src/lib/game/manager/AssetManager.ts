@@ -8,12 +8,9 @@ export class AssetManager {
 
   private loadVisualAssets() {
     this.loadBackground();
-    this.loadAttacks();
-    this.loadPlayer();
-    this.loadMonsters();
-    this.loadWeapons();
-    this.loadModifiers();
     this.loadEquipment();
+    this.loadMonsters();
+    this.loadPlayer();
   }
 
   private loadBackground() {
@@ -22,9 +19,11 @@ export class AssetManager {
     this.scene.load.image("ladder", "visual/ladder.png");
   }
 
-  private loadAttacks() {
-    this.scene.load.image("ranged_attack", "visual/ranged_attack.png");
-    this.scene.load.image("aura_attack", "visual/aura_attack.png");
+  private loadEquipment() {
+    this.scene.load.image("sword", "visual/equipment/sword/fire.png");
+    this.scene.load.image("spear", "visual/equipment/spear/fire.png");
+    this.scene.load.image("rod", "visual/equipment/rod/fire.png");
+    this.scene.load.image("shield", "visual/equipment/shield/fire.png");
   }
 
   private loadPlayer() {
@@ -61,6 +60,23 @@ export class AssetManager {
       frameWidth: 55,
       frameHeight: 70,
     });
+
+    this.loadPowers();
+  }
+
+  private loadPowers() {
+    this.scene.load.image(
+      "ranged_attack",
+      "visual/player/powers/fire/ranged/1.png",
+    );
+    this.scene.load.image(
+      "aura_attack",
+      "visual/player/powers/fire/aura/1.png",
+    );
+    this.scene.load.image(
+      "enforcement",
+      "visual/player/powers/fire/enforcement/1.png",
+    );
   }
 
   private loadMonsters() {
@@ -72,20 +88,6 @@ export class AssetManager {
       frameWidth: 217,
       frameHeight: 191,
     });
-  }
-
-  private loadWeapons() {
-    this.scene.load.image("fire_sword", "visual/fire_sword.png");
-    this.scene.load.image("fire_spear", "visual/fire_spear.png");
-    this.scene.load.image("fire_rod", "visual/fire_rod.png");
-  }
-
-  private loadModifiers() {
-    this.scene.load.image("fire_enforcement", "visual/fire_enforcement.png");
-  }
-
-  private loadEquipment() {
-    this.scene.load.image("fire_shield", "visual/fire_shield.png");
   }
 
   private loadAudioAssets() {

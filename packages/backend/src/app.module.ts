@@ -1,10 +1,12 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { AppController } from "./app.controller";
 import { ImageManipulationService } from "./imageManipulation/imageManipulation.service";
+import { ChatGPTService } from "./chatgpt/chatgpt.service";
+import { GPTImageCleanUpService } from "./imageManipulation/gptImageCleanUp.service";
+import { RemoveBackgroundService } from "./removeBackground/removeBackground.service";
 
 @Module({
   imports: [
@@ -14,6 +16,6 @@ import { ImageManipulationService } from "./imageManipulation/imageManipulation.
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, ImageManipulationService],
+  providers: [ImageManipulationService, ChatGPTService, GPTImageCleanUpService, RemoveBackgroundService],
 })
 export class AppModule {}

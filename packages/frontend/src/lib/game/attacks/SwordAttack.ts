@@ -22,7 +22,7 @@ export class SwordAttack extends Phaser.GameObjects.Sprite {
     y: number,
     private swordAttackHitboxGroup: SwordAttackHitboxGroup,
   ) {
-    super(scene, x, y, "fire_sword");
+    super(scene, x, y, "sword");
 
     scene.add.existing(this);
     scene.physics.add.existing(this);

@@ -12,7 +12,7 @@ export class Shield extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
 
   public constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, "fire_shield");
+    super(scene, x, y, "shield");
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
