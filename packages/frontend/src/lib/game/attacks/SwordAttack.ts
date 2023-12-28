@@ -8,6 +8,8 @@ export interface SwordAttackAttributes {
   pushBack: PushBack;
 }
 
+let lastFiredFrom: "top" | "bottom" = "bottom";
+
 export class SwordAttack extends Phaser.GameObjects.Sprite {
   public attributes: SwordAttackAttributes | undefined;
   public typedBody: Phaser.Physics.Arcade.Body;
@@ -63,19 +65,23 @@ export class SwordAttack extends Phaser.GameObjects.Sprite {
       this,
     );
 
+    const startRotation =
+      lastFiredFrom === "bottom" ? 0 : direction === "right" ? 180 : -180;
+    const endRotation = lastFiredFrom === "bottom" ? 180 : 0;
+    const accountForDirection = direction === "right" ? 1 : -1;
+
+    lastFiredFrom = lastFiredFrom === "bottom" ? "top" : "bottom";
+
     const timeline = this.scene.add.timeline([
       {
         at: 0,
         tween: {
           targets: this,
           rotation: {
-            from: Phaser.Math.DegToRad(0),
-            to:
-              direction === "right"
-                ? Phaser.Math.DegToRad(180)
-                : Phaser.Math.DegToRad(-180),
+            from: Phaser.Math.DegToRad(startRotation),
+            to: Phaser.Math.DegToRad(endRotation * accountForDirection),
           },
-          duration: 125,
+          duration: 250,
           onComplete: () => {
             // We want the game to crash here if hitbox is undefined
             this.hitbox!.destroy();

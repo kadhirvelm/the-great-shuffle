@@ -20,13 +20,6 @@ export class AssetManager {
     this.scene.load.image("ladder", "visual/ladder.png");
   }
 
-  private loadWeapon() {
-    this.scene.load.image("sword", "visual/weapons/sword/iron-1.png");
-    this.scene.load.image("spear", "visual/weapons/spear/calm winds-1.png");
-    this.scene.load.image("rod", "visual/weapons/rod/sun god-1.png");
-    this.scene.load.image("shield", "visual/weapons/shield/steel-1.png");
-  }
-
   private loadPlayer() {
     this.scene.load.spritesheet(
       "idle",
@@ -63,19 +56,29 @@ export class AssetManager {
     });
   }
 
+  private loadWeapon() {
+    this.scene.load.image("sword", "visual/weapons/sword/dragon steel-3.png");
+    this.scene.load.image("spear", "visual/weapons/spear/calm winds-3.png");
+    this.scene.load.image("rod", "visual/weapons/rod/sun god-3.png");
+    this.scene.load.image(
+      "shield",
+      "visual/weapons/shield/towering glacier-3.png",
+    );
+  }
+
   private loadPowers() {
-    this.scene.load.image("ranged_attack", "visual/powers/water/ranged/1.png");
-    this.scene.load.image("aura_attack", "visual/powers/water/aura/1.png");
+    this.scene.load.image("ranged_attack", "visual/powers/water/ranged/2.png");
+    this.scene.load.image("aura_attack", "visual/powers/water/aura/2.png");
     this.scene.load.image(
       "enforcement",
-      "visual/powers/water/enforcement/1.png",
+      "visual/powers/water/enforcement/2.png",
     );
   }
 
   private loadMonsters() {
-    this.scene.load.image("level_1", "visual/monsters/mud imp-1.png");
-    this.scene.load.image("level_2", "visual/monsters/mud imp-2.png");
-    this.scene.load.image("level_3", "visual/monsters/mud imp-3.png");
+    this.scene.load.image("level_1", "visual/monsters/vampire slime-1.png");
+    this.scene.load.image("level_2", "visual/monsters/vampire slime-2.png");
+    this.scene.load.image("level_3", "visual/monsters/vampire slime-3.png");
   }
 
   private loadAudioAssets() {
