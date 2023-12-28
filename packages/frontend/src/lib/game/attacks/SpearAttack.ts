@@ -39,9 +39,8 @@ export class SpearAttack extends Phaser.GameObjects.Sprite {
   ) {
     this.attributes = attributes;
     this.spearAttackId = v4();
-    const adjustedYPosition = y - 100;
     this.initialPosition = { x, y };
-    this.setPosition(x, adjustedYPosition);
+    this.setPosition(x, y);
 
     this.setActive(true);
     this.setVisible(true);

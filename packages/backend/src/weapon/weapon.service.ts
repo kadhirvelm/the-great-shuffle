@@ -37,8 +37,8 @@ export class WeaponService {
   }
 
   public resizeWeapons() {
-    const weaponType: Weapon = "rod";
-    const weaponDescriptions: string[] = ["darkness", "sun god"];
+    const weaponType: Weapon = "sword";
+    const weaponDescriptions: string[] = ["dragon steel", "iron"];
     const levels: Level[] = ["1", "2", "3"];
 
     return this.gptImageCleanUp.trimImage(
@@ -47,6 +47,8 @@ export class WeaponService {
           (level) => `temp-weapons/${weaponType}/${weaponDescription}-${level}`,
         ),
       ),
+      "center",
+      { width: 175 },
     );
   }
 }

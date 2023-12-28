@@ -4,8 +4,8 @@ import { renameSync, unlinkSync } from "fs-extra";
 import * as sharp from "sharp";
 import { RemoveBackgroundService } from "../removeBackground/removeBackground.service";
 
-const TARGET_SIZE = 512;
-
+export const DEFAULT_TARGET_SIZE = 512;
+export const CUT_TARGET_SIZE = 175;
 @Injectable()
 export class GPTImageCleanUpService {
   public constructor(
@@ -28,7 +28,11 @@ export class GPTImageCleanUpService {
     return promises;
   }
 
-  public async trimImage(fileNames: string[], position: string = "bottom") {
+  public async trimImage(
+    fileNames: string[],
+    position: string = "bottom",
+    dimensions?: { height?: number; width?: number },
+  ) {
     const promises = await Promise.all(
       fileNames.map(async (fileName) => {
         const imageFile = `./assets/visual/${fileName}.png`;
@@ -36,11 +40,15 @@ export class GPTImageCleanUpService {
 
         await sharp(imageFile)
           .trim()
-          .resize(TARGET_SIZE, TARGET_SIZE, {
-            fit: "contain",
-            position,
-            background: { r: 0, g: 0, b: 0, alpha: 0 },
-          })
+          .resize(
+            dimensions?.width ?? DEFAULT_TARGET_SIZE,
+            dimensions?.height ?? DEFAULT_TARGET_SIZE,
+            {
+              fit: "contain",
+              position,
+              background: { r: 0, g: 0, b: 0, alpha: 0 },
+            },
+          )
           .toFile(outputFile);
 
         unlinkSync(imageFile);
