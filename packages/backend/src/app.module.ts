@@ -5,6 +5,7 @@ import { join } from "path";
 import { AppController } from "./app.controller";
 import { MonstersModule } from "./monsters/monsters.module";
 import { PlayerModule } from "./player/player.module";
+import { PowersModule } from "./powers/powers.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PlayerModule } from "./player/player.module";
     }),
     MonstersModule,
     PlayerModule,
+    PowersModule,
   ],
   controllers: [AppController],
 })

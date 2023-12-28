@@ -21,13 +21,17 @@ export class MonstersService {
     const monster = "vampire slime";
     const levels: Level[] = ["1", "2", "3"];
 
-    return this.gptImageCleanUp.removeBackgrounds(monster, levels);
+    return this.gptImageCleanUp.removeBackgrounds(
+      levels.map((level) => `temp-monsters/${monster}-${level}`),
+    );
   }
 
   public resizeMonster() {
     const monster = "vampire slime";
     const levels: Level[] = ["1", "2", "3"];
 
-    return this.gptImageCleanUp.trimImage(monster, levels);
+    return this.gptImageCleanUp.trimImage(
+      levels.map((level) => `temp-monsters/${monster}-${level}`),
+    );
   }
 }
