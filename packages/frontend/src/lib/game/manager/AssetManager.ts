@@ -11,6 +11,7 @@ export class AssetManager {
     this.loadEquipment();
     this.loadMonsters();
     this.loadPlayer();
+    this.loadPowers();
   }
 
   private loadBackground() {
@@ -60,22 +61,14 @@ export class AssetManager {
       frameWidth: 55,
       frameHeight: 70,
     });
-
-    this.loadPowers();
   }
 
   private loadPowers() {
-    this.scene.load.image(
-      "ranged_attack",
-      "visual/player/powers/fire/ranged/1.png",
-    );
-    this.scene.load.image(
-      "aura_attack",
-      "visual/player/powers/fire/aura/1.png",
-    );
+    this.scene.load.image("ranged_attack", "visual/powers/fire/ranged/1.png");
+    this.scene.load.image("aura_attack", "visual/powers/fire/aura/1.png");
     this.scene.load.image(
       "enforcement",
-      "visual/player/powers/fire/enforcement/1.png",
+      "visual/powers/fire/enforcement/1.png",
     );
   }
 
