@@ -8,7 +8,7 @@ export class AssetManager {
 
   private loadVisualAssets() {
     this.loadBackground();
-    this.loadEquipment();
+    this.loadWeapon();
     this.loadMonsters();
     this.loadPlayer();
     this.loadPowers();
@@ -20,11 +20,11 @@ export class AssetManager {
     this.scene.load.image("ladder", "visual/ladder.png");
   }
 
-  private loadEquipment() {
-    this.scene.load.image("sword", "visual/equipment/sword/fire.png");
-    this.scene.load.image("spear", "visual/equipment/spear/fire.png");
-    this.scene.load.image("rod", "visual/equipment/rod/fire.png");
-    this.scene.load.image("shield", "visual/equipment/shield/fire.png");
+  private loadWeapon() {
+    this.scene.load.image("sword", "visual/weapons/sword/iron-1.png");
+    this.scene.load.image("spear", "visual/weapons/spear/calm winds-1.png");
+    this.scene.load.image("rod", "visual/weapons/rod/sun god-1.png");
+    this.scene.load.image("shield", "visual/weapons/shield/steel-1.png");
   }
 
   private loadPlayer() {
@@ -64,23 +64,18 @@ export class AssetManager {
   }
 
   private loadPowers() {
-    this.scene.load.image("ranged_attack", "visual/powers/fire/ranged/1.png");
-    this.scene.load.image("aura_attack", "visual/powers/fire/aura/1.png");
+    this.scene.load.image("ranged_attack", "visual/powers/water/ranged/1.png");
+    this.scene.load.image("aura_attack", "visual/powers/water/aura/1.png");
     this.scene.load.image(
       "enforcement",
-      "visual/powers/fire/enforcement/1.png",
+      "visual/powers/water/enforcement/1.png",
     );
   }
 
   private loadMonsters() {
-    this.scene.load.spritesheet("mushroom", "visual/monsters/mushroom.png", {
-      frameWidth: 40,
-      frameHeight: 40,
-    });
-    this.scene.load.spritesheet("ice", "visual/monsters/ice.png", {
-      frameWidth: 217,
-      frameHeight: 191,
-    });
+    this.scene.load.image("level_1", "visual/monsters/mud imp-1.png");
+    this.scene.load.image("level_2", "visual/monsters/mud imp-2.png");
+    this.scene.load.image("level_3", "visual/monsters/mud imp-3.png");
   }
 
   private loadAudioAssets() {

@@ -33,7 +33,8 @@ export class DisplayStats {
 
     this.healthBar.fillRect(
       this.rootSprite.x - HEALTH_BAR_SIZE / 2,
-      this.rootSprite.y + this.rootSprite.height / 1.8,
+      this.rootSprite.y +
+        (this.rootSprite.height * this.rootSprite.scaleY) / 1.8,
       Math.round(
         (this.displayStats.health.current / this.displayStats.health.max) *
           HEALTH_BAR_SIZE,

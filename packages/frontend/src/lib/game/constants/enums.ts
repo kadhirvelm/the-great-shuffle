@@ -41,7 +41,7 @@ export enum Movement {
   player_x = Gravity.generic * 2,
   player_dash_x = Gravity.generic * 4,
   player_y = Gravity.playerY * 0.4,
-  player_projectile_x = Gravity.generic * 2,
+  player_projectile_x = Gravity.generic * 5,
   player_spear_attack_x = Gravity.generic * 4,
 }
 

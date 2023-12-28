@@ -29,10 +29,10 @@ export class SwordAttack extends Phaser.GameObjects.Sprite {
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    this.setScale(0.5);
-
     this.setActive(false);
     this.setVisible(false);
+
+    this.setScale(0.5);
   }
 
   public fire(

@@ -71,15 +71,15 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
 
   public spawnMonsters() {
     const locations: [number, number][] = [
-      [1292, 2400],
-      [1563, 2400],
-      [1435, 2400],
-      [1003, 2400],
-      [743, 2400],
-      [2061, 2400],
-      [1738, 2400],
-      [1142, 2400],
-      [889, 2400],
+      [1292, 1800],
+      [1563, 1800],
+      [1435, 1800],
+      [1003, 1800],
+      [743, 1800],
+      [2061, 1800],
+      [1738, 1800],
+      [1142, 1800],
+      [889, 1800],
     ];
 
     let delay = 0;
@@ -91,7 +91,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
             this.scene,
             location[0],
             location[1],
-            locationIndex % 2 === 0 ? "ice" : "mushroom",
+            `level_${(locationIndex % 3) + 1}` as "level_1",
             {
               player: this.environmentInteractions.player,
             },

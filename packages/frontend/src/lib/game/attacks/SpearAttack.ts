@@ -24,11 +24,11 @@ export class SpearAttack extends Phaser.GameObjects.Sprite {
 
     this.typedBody = this.body as Phaser.Physics.Arcade.Body;
 
-    this.setScale(0.5);
     this.setOrigin(0, 0.5);
 
     this.setActive(false);
     this.setVisible(false);
+    this.setScale(1);
   }
 
   public fire(
@@ -39,8 +39,9 @@ export class SpearAttack extends Phaser.GameObjects.Sprite {
   ) {
     this.attributes = attributes;
     this.spearAttackId = v4();
+    const adjustedYPosition = y - 100;
     this.initialPosition = { x, y };
-    this.setPosition(x, y);
+    this.setPosition(x, adjustedYPosition);
 
     this.setActive(true);
     this.setVisible(true);

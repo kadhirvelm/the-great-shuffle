@@ -26,11 +26,11 @@ export class RodAttack extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.setScale(0.25);
     this.setAlpha(0);
 
     this.setActive(false);
     this.setVisible(false);
+    this.setScale(1);
   }
 
   public fire(
@@ -91,7 +91,7 @@ export class RodAttack extends Phaser.GameObjects.Sprite {
                 ? Phaser.Math.DegToRad(180)
                 : Phaser.Math.DegToRad(-180),
           },
-          duration: 150,
+          duration: 300,
           onComplete: () => {
             // We want the game to crash here if hitbox is undefined
             this.hitbox!.destroy();
