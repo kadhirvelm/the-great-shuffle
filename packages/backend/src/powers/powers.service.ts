@@ -11,7 +11,7 @@ export class PowerService {
   ) {}
 
   public generatePower() {
-    const element = "lightning";
+    const element = "ice poison";
     const powerType: PowerType = "ranged";
     const levels: Level[] = ["1", "2", "3"];
 

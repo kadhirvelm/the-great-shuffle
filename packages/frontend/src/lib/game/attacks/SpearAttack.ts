@@ -16,8 +16,8 @@ export class SpearAttack extends Phaser.GameObjects.Sprite {
 
   private initialPosition: { x: number; y: number } | undefined;
 
-  public constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, "spear");
+  public constructor(scene: Phaser.Scene, x: number, y: number, key: string) {
+    super(scene, x, y, key);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);

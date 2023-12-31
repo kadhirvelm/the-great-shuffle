@@ -10,11 +10,8 @@ export class Keyboard {
   public aura_attack: Phaser.Input.Keyboard.Key;
   public enforcement: Phaser.Input.Keyboard.Key;
 
-  public sword_attack: Phaser.Input.Keyboard.Key;
-  public spear_attack: Phaser.Input.Keyboard.Key;
-  public rod_attack: Phaser.Input.Keyboard.Key;
-
-  public shield: Phaser.Input.Keyboard.Key;
+  public slotA: Phaser.Input.Keyboard.Key;
+  public slotB: Phaser.Input.Keyboard.Key;
 
   constructor(scene: Phaser.Scene) {
     if (scene.input.keyboard == null) {
@@ -36,10 +33,7 @@ export class Keyboard {
     this.aura_attack = scene.input.keyboard.addKey("w");
     this.enforcement = scene.input.keyboard.addKey("e");
 
-    this.sword_attack = scene.input.keyboard.addKey("a");
-    this.spear_attack = scene.input.keyboard.addKey("s");
-    this.rod_attack = scene.input.keyboard.addKey("d");
-
-    this.shield = scene.input.keyboard.addKey("z");
+    this.slotA = scene.input.keyboard.addKey("a");
+    this.slotB = scene.input.keyboard.addKey("s");
   }
 }

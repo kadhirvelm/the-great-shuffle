@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PlayerWeaponType } from "@tower/api";
 
 export type GameStage = "tutorial";
 
@@ -12,9 +13,23 @@ export interface PlayerStats {
   chi: SinglePlayerStat;
   stamina: SinglePlayerStat;
 }
+
+export interface WeaponSlot {
+  name: string;
+  assetName: string;
+  type: PlayerWeaponType;
+}
+
+export type WeaponSlotNumber = "slotA" | "slotB";
+
+export interface PlayerEquipment {
+  weapons: [WeaponSlot | undefined, WeaponSlot | undefined];
+}
+
 export interface GameState {
   stage: GameStage;
   player: PlayerStats;
+  playerEquipment: PlayerEquipment;
 }
 
 const initialState: GameState = {
@@ -32,6 +47,20 @@ const initialState: GameState = {
       current: Infinity,
       max: 0,
     },
+  },
+  playerEquipment: {
+    weapons: [
+      {
+        name: "Darkness 1",
+        assetName: "darkness-1",
+        type: "rod",
+      },
+      {
+        name: "Calm Winds 1",
+        assetName: "calm winds-1",
+        type: "spear",
+      },
+    ],
   },
 };
 
@@ -90,6 +119,16 @@ const gameStateSlice = createSlice({
         action.payload.stamina,
       );
     },
+    updateWeapon: (
+      state,
+      action: PayloadAction<{
+        weapon: WeaponSlot | undefined;
+        slotNumber: "1" | "2";
+      }>,
+    ) => {
+      state.playerEquipment.weapons[Number(action.payload.slotNumber) - 1] =
+        action.payload.weapon;
+    },
   },
 });
 
@@ -99,6 +138,7 @@ export const {
   updateStamina,
   updateChi,
   updateMaximums,
+  updateWeapon,
 } = gameStateSlice.actions;
 
 export const GameStateReducer = gameStateSlice.reducer;
