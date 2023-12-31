@@ -4,6 +4,7 @@ import { useTowerStore } from "../store/configureStore";
 import styles from "./GameEntry.module.scss";
 import { Bars } from "./stats/Bars";
 import { Weapons } from "./equipment/Weapons";
+import { ChiPowers } from "./powers/ChiPowers";
 
 // @refresh reset
 
@@ -30,6 +31,7 @@ const GameEntry = () => {
     <div className={styles.rootContainer}>
       <Bars />
       <Weapons />
+      <ChiPowers />
       <div className={styles.gameContainer} ref={gameCanvas} />
     </div>
   );

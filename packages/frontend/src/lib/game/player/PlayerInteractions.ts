@@ -1,11 +1,11 @@
-import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
-import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
-import { RodAttackGroup } from "../attacks/RodAttackGroup";
-import { ShieldGroup } from "../attacks/ShieldGroup";
-import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
-import { SwordAttackGroup } from "../attacks/SwordAttackGroup";
+import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
+import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
+import { RodAttackGroup } from "../weaponAttacks/RodAttackGroup";
+import { ShieldGroup } from "../weaponAttacks/ShieldGroup";
+import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
+import { SwordAttackGroup } from "../weaponAttacks/SwordAttackGroup";
 import { Keyboard } from "../keyboard/Keyboard";
-import { EnforcementGroup } from "../modifier/EnforcementGroup";
+import { EnforcementGroup } from "../chiPowers/EnforcementGroup";
 
 export interface PlayerInteractions {
   keyboard: Keyboard;

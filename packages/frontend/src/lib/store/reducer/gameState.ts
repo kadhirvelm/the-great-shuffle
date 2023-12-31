@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PlayerWeaponType } from "@tower/api";
+import { ChiPower, PlayerWeaponType } from "@tower/api";
+import { PlayerChiPower } from "./PlayerChiPower";
 
 export type GameStage = "tutorial";
 
@@ -20,7 +21,12 @@ export interface WeaponSlot {
   type: PlayerWeaponType;
 }
 
-export type WeaponSlotNumber = "slotA" | "slotB";
+export type WeaponSlotNumber = "weapon-slotA" | "weapon-slotB";
+
+export type ChiPowerSlotNumber =
+  | "chiPower-slotA"
+  | "chiPower-slotB"
+  | "chiPower-slotC";
 
 export interface PlayerEquipment {
   weapons: [WeaponSlot | undefined, WeaponSlot | undefined];
@@ -30,6 +36,11 @@ export interface GameState {
   stage: GameStage;
   player: PlayerStats;
   playerEquipment: PlayerEquipment;
+  playerChiPowers: [
+    PlayerChiPower<ChiPower> | undefined,
+    PlayerChiPower<ChiPower> | undefined,
+    PlayerChiPower<ChiPower> | undefined,
+  ];
 }
 
 const initialState: GameState = {
@@ -62,6 +73,26 @@ const initialState: GameState = {
       },
     ],
   },
+  playerChiPowers: [
+    {
+      name: "Water",
+      chiElement: "water",
+      level: "2",
+      type: "aura",
+    },
+    {
+      name: "Fire",
+      chiElement: "fire",
+      level: "3",
+      type: "ranged",
+    },
+    {
+      name: "Lightning",
+      chiElement: "lightning",
+      level: "1",
+      type: "enforcement",
+    },
+  ],
 };
 
 const gameStateSlice = createSlice({
@@ -123,11 +154,30 @@ const gameStateSlice = createSlice({
       state,
       action: PayloadAction<{
         weapon: WeaponSlot | undefined;
-        slotNumber: "1" | "2";
+        slotNumber: WeaponSlotNumber;
       }>,
     ) => {
       state.playerEquipment.weapons[Number(action.payload.slotNumber) - 1] =
         action.payload.weapon;
+    },
+    updateChiPower: (
+      state,
+      action: PayloadAction<{
+        chiPower: PlayerChiPower<ChiPower>;
+        slotNumber: ChiPowerSlotNumber;
+      }>,
+    ) => {
+      if (action.payload.slotNumber === "chiPower-slotA") {
+        state.playerChiPowers[0] = action.payload.chiPower;
+      }
+
+      if (action.payload.slotNumber === "chiPower-slotB") {
+        state.playerChiPowers[1] = action.payload.chiPower;
+      }
+
+      if (action.payload.slotNumber === "chiPower-slotC") {
+        state.playerChiPowers[2] = action.payload.chiPower;
+      }
     },
   },
 });
@@ -139,6 +189,7 @@ export const {
   updateChi,
   updateMaximums,
   updateWeapon,
+  updateChiPower,
 } = gameStateSlice.actions;
 
 export const GameStateReducer = gameStateSlice.reducer;

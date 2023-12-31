@@ -1,15 +1,23 @@
 import { Store } from "@reduxjs/toolkit";
 import { State } from "../../store/configureStore";
-import { WeaponSlotNumber } from "../../store/reducer/gameState";
-import { AuraAttack } from "../attacks/AuraAttack";
-import { RangedAttack } from "../attacks/RangedAttack";
-import { RodAttack } from "../attacks/RodAttack";
-import { Shield } from "../attacks/Shield";
-import { SpearAttack } from "../attacks/SpearAttack";
-import { SwordAttack } from "../attacks/SwordAttack";
-import { Enforcement } from "../modifier/Enforcement";
+import {
+  ChiPowerSlotNumber,
+  WeaponSlotNumber,
+} from "../../store/reducer/gameState";
+import { AuraAttack } from "../chiPowers/AuraAttack";
+import { RangedAttack } from "../chiPowers/RangedAttack";
+import { RodAttack } from "../weaponAttacks/RodAttack";
+import { Shield } from "../weaponAttacks/Shield";
+import { SpearAttack } from "../weaponAttacks/SpearAttack";
+import { SwordAttack } from "../weaponAttacks/SwordAttack";
+import { Enforcement } from "../chiPowers/Enforcement";
 import { getStore } from "../store/storeManager";
 import { Player } from "./Player";
+import {
+  isAura,
+  isEnforcement,
+  isRanged,
+} from "../../store/reducer/PlayerChiPower";
 
 export class PlayerAttack {
   private reduxStore: Store<State>;
@@ -21,75 +29,94 @@ export class PlayerAttack {
   public handleKeyboardInput() {
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.ranged_attack,
+        this.playerSprite.playerInteractions.keyboard.chiPowerSlotA,
       )
     ) {
-      this.fireRangedAttack();
+      this.fireChiPower("chiPower-slotA");
     }
 
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.aura_attack,
+        this.playerSprite.playerInteractions.keyboard.chiPowerSlotB,
       )
     ) {
-      this.fireAuraAttack();
+      this.fireChiPower("chiPower-slotB");
     }
 
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.enforcement,
+        this.playerSprite.playerInteractions.keyboard.chiPowerSlotC,
       )
     ) {
-      this.fireEnforcement();
+      this.fireChiPower("chiPower-slotC");
     }
 
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.slotA,
+        this.playerSprite.playerInteractions.keyboard.weaponSlotA,
       )
     ) {
-      return this.fireWeapon("slotA");
+      return this.fireWeapon("weapon-slotA");
     }
 
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.slotB,
+        this.playerSprite.playerInteractions.keyboard.weaponSlotB,
       )
     ) {
-      return this.fireWeapon("slotB");
+      return this.fireWeapon("weapon-slotB");
     }
   }
 
-  private fireWeapon(slotNumber: WeaponSlotNumber) {
-    const allWeaponSlot =
-      this.reduxStore.getState().gameState.playerEquipment.weapons;
-    const firedWeaponSlot = allWeaponSlot[slotNumber === "slotA" ? 0 : 1];
-    if (firedWeaponSlot == null) {
+  private fireChiPower(slotNumber: ChiPowerSlotNumber) {
+    const allChiPowers = this.reduxStore.getState().gameState.playerChiPowers;
+    const resolvedSlotNumber = (() => {
+      if (slotNumber === "chiPower-slotA") {
+        return 0;
+      }
+
+      if (slotNumber === "chiPower-slotB") {
+        return 1;
+      }
+
+      if (slotNumber === "chiPower-slotC") {
+        return 2;
+      }
+
+      throw new Error(`Unknown slot number: ${slotNumber}`);
+    })();
+    const firedChiSlot = allChiPowers[resolvedSlotNumber];
+    if (firedChiSlot == null) {
       return;
     }
 
-    switch (firedWeaponSlot.type) {
-      case "rod":
-        return this.fireRodAttack(slotNumber);
-      case "spear":
-        return this.fireSpearAttack(slotNumber);
-      case "sword":
-        return this.fireSwordAttack(slotNumber);
-      case "shield":
-        return this.fireShield(slotNumber);
-      default:
-        throw new Error(`Unknown weapon type ${firedWeaponSlot.type}`);
+    if (isRanged(firedChiSlot)) {
+      return this.fireRangedAttack(slotNumber);
     }
+
+    if (isAura(firedChiSlot)) {
+      return this.fireAuraAttack(slotNumber);
+    }
+
+    if (isEnforcement(firedChiSlot)) {
+      return this.fireEnforcement(slotNumber);
+    }
+
+    throw new Error(`Unknown chi power type ${firedChiSlot}`);
   }
 
-  private fireRangedAttack() {
+  private fireRangedAttack(slotNumber: ChiPowerSlotNumber) {
     if (!this.playerSprite.playerStatsHandler.rangedAttack.canFire()) {
       this.playerSprite.noChi();
       return;
     }
 
     const maybeRangedAttack: RangedAttack | null =
-      this.playerSprite.playerInteractions.rangedAttackGroup.get();
+      this.playerSprite.playerInteractions.rangedAttackGroup.get(
+        0,
+        0,
+        slotNumber,
+      );
     if (maybeRangedAttack == null) {
       return;
     }
@@ -112,14 +139,18 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.rangedAttack.consumeChi();
   }
 
-  private fireAuraAttack() {
+  private fireAuraAttack(slotNumber: ChiPowerSlotNumber) {
     if (!this.playerSprite.playerStatsHandler.auraAttack.canFire()) {
       this.playerSprite.noChi();
       return;
     }
 
     const maybeAuraAttack: AuraAttack | null =
-      this.playerSprite.playerInteractions.auraAttackGroup.get();
+      this.playerSprite.playerInteractions.auraAttackGroup.get(
+        0,
+        0,
+        slotNumber,
+      );
     if (maybeAuraAttack == null) {
       return;
     }
@@ -136,14 +167,18 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.auraAttack.consumeChi();
   }
 
-  private fireEnforcement() {
+  private fireEnforcement(slotNumber: ChiPowerSlotNumber) {
     if (!this.playerSprite.playerStatsHandler.enforcement.canFire()) {
       this.playerSprite.noChi();
       return;
     }
 
     const maybeEnforcement: Enforcement | null =
-      this.playerSprite.playerInteractions.enforcementGroup.get();
+      this.playerSprite.playerInteractions.enforcementGroup.get(
+        0,
+        0,
+        slotNumber,
+      );
     if (maybeEnforcement == null) {
       return;
     }
@@ -159,6 +194,29 @@ export class PlayerAttack {
       },
     });
     this.playerSprite.playerStatsHandler.auraAttack.consumeChi();
+  }
+
+  private fireWeapon(slotNumber: WeaponSlotNumber) {
+    const allWeaponSlot =
+      this.reduxStore.getState().gameState.playerEquipment.weapons;
+    const firedWeaponSlot =
+      allWeaponSlot[slotNumber === "weapon-slotA" ? 0 : 1];
+    if (firedWeaponSlot == null) {
+      return;
+    }
+
+    switch (firedWeaponSlot.type) {
+      case "rod":
+        return this.fireRodAttack(slotNumber);
+      case "spear":
+        return this.fireSpearAttack(slotNumber);
+      case "sword":
+        return this.fireSwordAttack(slotNumber);
+      case "shield":
+        return this.fireShield(slotNumber);
+      default:
+        throw new Error(`Unknown weapon type ${firedWeaponSlot.type}`);
+    }
   }
 
   private fireSwordAttack(slotNumber: WeaponSlotNumber) {
