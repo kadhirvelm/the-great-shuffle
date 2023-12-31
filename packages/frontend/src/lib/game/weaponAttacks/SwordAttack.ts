@@ -84,7 +84,7 @@ export class SwordAttack extends Phaser.GameObjects.Sprite {
             from: Phaser.Math.DegToRad(startRotation),
             to: Phaser.Math.DegToRad(endRotation * accountForDirection),
           },
-          duration: 250,
+          duration: 125,
           onComplete: () => {
             // We want the game to crash here if hitbox is undefined
             this.hitbox!.destroy();

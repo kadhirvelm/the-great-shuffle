@@ -1,16 +1,32 @@
+import { ChiPower } from "@tower/api";
+import { PlayerChiPower } from "../../store/reducer/PlayerChiPower";
 import {
+  ChiPowerSlotNumber,
   GameState,
   WeaponSlot,
   WeaponSlotNumber,
 } from "../../store/reducer/gameState";
-import { assembleWeaponLocation } from "../../utils/assembleAssetLocation";
+import {
+  assembleChiPowerLocation,
+  assembleWeaponLocation,
+} from "../../utils/assembleAssetLocation";
 import { getStore } from "../store/storeManager";
 
 export class AssetManager {
-  private loadedAssets: {
-    slotA: string | undefined;
-    slotB: string | undefined;
-  } = { slotA: undefined, slotB: undefined };
+  private loadedWeaponAssets: {
+    "weapon-slotA": string | undefined;
+    "weapon-slotB": string | undefined;
+  } = { "weapon-slotA": undefined, "weapon-slotB": undefined };
+
+  private loadedChiPowers: {
+    "chiPower-slotA": string | undefined;
+    "chiPower-slotB": string | undefined;
+    "chiPower-slotC": string | undefined;
+  } = {
+    "chiPower-slotA": undefined,
+    "chiPower-slotB": undefined,
+    "chiPower-slotC": undefined,
+  };
 
   public constructor(private scene: Phaser.Scene) {
     this.scene.load.setBaseURL("http://localhost:8080/");
@@ -20,41 +36,72 @@ export class AssetManager {
 
     const reduxStore = getStore();
     reduxStore.subscribe(() => {
-      this.loadWeaponAssets(reduxStore.getState().gameState);
+      const { gameState } = reduxStore.getState();
+
+      this.loadWeaponAssets(gameState);
+      this.loadChiPowers(gameState);
     });
 
-    this.loadWeaponAssets(reduxStore.getState().gameState);
+    const { gameState } = reduxStore.getState();
+    this.loadWeaponAssets(gameState);
+    this.loadChiPowers(gameState);
   }
 
-  private loadWeaponAssets(gameState: GameState) {
+  private loadWeaponAssets = (gameState: GameState) => {
     const maybeLoadSlot = (
-      slot: WeaponSlot | undefined,
+      weapon: WeaponSlot | undefined,
       slotName: WeaponSlotNumber,
     ) => {
       if (
-        this.loadedAssets[slotName] !== slot?.assetName &&
-        slot !== undefined
+        weapon !== undefined &&
+        this.loadedWeaponAssets[slotName] !== weapon?.assetName
       ) {
         this.scene.load.image(
           slotName,
-          assembleWeaponLocation(slot.assetName, slot.type, false),
+          assembleWeaponLocation(weapon.assetName, weapon.type, false),
         );
 
-        this.loadedAssets[slotName] = slot.assetName;
+        this.loadedWeaponAssets[slotName] = weapon.assetName;
       }
     };
 
     const slotA = gameState.playerEquipment.weapons[0];
     const slotB = gameState.playerEquipment.weapons[1];
 
-    maybeLoadSlot(slotA, "slotA");
-    maybeLoadSlot(slotB, "slotB");
+    maybeLoadSlot(slotA, "weapon-slotA");
+    maybeLoadSlot(slotB, "weapon-slotB");
+  };
 
-    // this.scene.load.image("sword", "visual/weapons/sword/dragon steel-3.png");
-    // this.scene.load.image("spear", "visual/weapons/spear/calm winds-3.png");
-    // this.scene.load.image("rod", "visual/weapons/rod/sun god-3.png");
-    // this.scene.load.image("shield", "visual/weapons/shield/steel-3.png");
-  }
+  private loadChiPowers = (gameState: GameState) => {
+    const maybeLoadChiPower = (
+      chiPower: PlayerChiPower<ChiPower> | undefined,
+      slotName: ChiPowerSlotNumber,
+    ) => {
+      if (
+        chiPower !== undefined &&
+        this.loadedChiPowers[slotName] !== chiPower.name
+      ) {
+        this.scene.load.image(
+          slotName,
+          assembleChiPowerLocation(
+            chiPower.chiElement,
+            chiPower.type,
+            chiPower.level,
+            false,
+          ),
+        );
+        this.loadedChiPowers[slotName] = chiPower.name;
+      }
+    };
+
+    const slotA = gameState.playerChiPowers[0];
+    const slotB = gameState.playerChiPowers[1];
+    const slotC = gameState.playerChiPowers[2];
+
+    maybeLoadChiPower(slotA, "chiPower-slotA");
+    maybeLoadChiPower(slotB, "chiPower-slotB");
+    maybeLoadChiPower(slotC, "chiPower-slotC");
+  };
 
   private loadVisualAssets() {
     this.loadBackground();
@@ -98,15 +145,15 @@ export class AssetManager {
   }
 
   private loadPowers() {
-    this.scene.load.image(
-      "ranged_attack",
-      "visual/powers/lightning/ranged/3.png",
-    );
-    this.scene.load.image("aura_attack", "visual/powers/lightning/aura/3.png");
-    this.scene.load.image(
-      "enforcement",
-      "visual/powers/lightning/enforcement/3.png",
-    );
+    // this.scene.load.image(
+    //   "ranged_attack",
+    //   "visual/powers/lightning/ranged/3.png",
+    // );
+    // this.scene.load.image("aura_attack", "visual/powers/lightning/aura/3.png");
+    // this.scene.load.image(
+    //   "enforcement",
+    //   "visual/powers/lightning/enforcement/3.png",
+    // );
   }
 
   private loadMonsters() {

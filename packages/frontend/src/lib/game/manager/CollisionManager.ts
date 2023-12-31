@@ -1,19 +1,19 @@
-import { AuraAttack } from "../attacks/AuraAttack";
-import { AuraAttackGroup } from "../attacks/AuraAttackGroup";
-import { RangedAttack } from "../attacks/RangedAttack";
-import { RangedAttackGroup } from "../attacks/RangedAttackGroup";
+import { AuraAttack } from "../chiPowers/AuraAttack";
+import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
+import { RangedAttack } from "../chiPowers/RangedAttack";
+import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
 import {
   RodAttackHitbox,
   RodAttackHitboxGroup,
-} from "../attacks/RodAttackHitbox";
-import { Shield } from "../attacks/Shield";
-import { ShieldGroup } from "../attacks/ShieldGroup";
-import { SpearAttack } from "../attacks/SpearAttack";
-import { SpearAttackGroup } from "../attacks/SpearAttackGroup";
+} from "../weaponAttacks/RodAttackHitbox";
+import { Shield } from "../weaponAttacks/Shield";
+import { ShieldGroup } from "../weaponAttacks/ShieldGroup";
+import { SpearAttack } from "../weaponAttacks/SpearAttack";
+import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
 import {
   SwordAttackHitbox,
   SwordAttackHitboxGroup,
-} from "../attacks/SwordAttackHitbox";
+} from "../weaponAttacks/SwordAttackHitbox";
 import { Ladders } from "../environment/Ladders";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
 import { Monster } from "../monster/Monster";

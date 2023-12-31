@@ -6,12 +6,12 @@ export class Keyboard {
   public shift: Phaser.Input.Keyboard.Key;
   public space: Phaser.Input.Keyboard.Key;
 
-  public ranged_attack: Phaser.Input.Keyboard.Key;
-  public aura_attack: Phaser.Input.Keyboard.Key;
-  public enforcement: Phaser.Input.Keyboard.Key;
+  public chiPowerSlotA: Phaser.Input.Keyboard.Key;
+  public chiPowerSlotB: Phaser.Input.Keyboard.Key;
+  public chiPowerSlotC: Phaser.Input.Keyboard.Key;
 
-  public slotA: Phaser.Input.Keyboard.Key;
-  public slotB: Phaser.Input.Keyboard.Key;
+  public weaponSlotA: Phaser.Input.Keyboard.Key;
+  public weaponSlotB: Phaser.Input.Keyboard.Key;
 
   constructor(scene: Phaser.Scene) {
     if (scene.input.keyboard == null) {
@@ -29,11 +29,11 @@ export class Keyboard {
     this.shift = cursorKeys.shift;
     this.space = cursorKeys.space;
 
-    this.ranged_attack = scene.input.keyboard.addKey("q");
-    this.aura_attack = scene.input.keyboard.addKey("w");
-    this.enforcement = scene.input.keyboard.addKey("e");
+    this.chiPowerSlotA = scene.input.keyboard.addKey("q");
+    this.chiPowerSlotB = scene.input.keyboard.addKey("w");
+    this.chiPowerSlotC = scene.input.keyboard.addKey("e");
 
-    this.slotA = scene.input.keyboard.addKey("a");
-    this.slotB = scene.input.keyboard.addKey("s");
+    this.weaponSlotA = scene.input.keyboard.addKey("a");
+    this.weaponSlotB = scene.input.keyboard.addKey("s");
   }
 }

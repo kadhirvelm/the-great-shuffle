@@ -26,7 +26,7 @@
 .barBackground {
   display: flex;
   width: 250px;
-  background: $dark-background;
+  background: $muted-font;
   border-radius: 5px;
   height: 30px;
   border: 1px solid $black;
@@ -39,16 +39,16 @@
 }
 
 .remainingHealth {
-  background: $red;
+  background: $firebrick;
   border-radius: 5px;
 }
 
 .remainingChi {
-  background: $white;
+  background: $sunlit-gold;
   border-radius: 5px;
 }
 
 .remainingStamina {
-  background: $green;
+  background: $deep-forest-green;
   border-radius: 5px;
 }

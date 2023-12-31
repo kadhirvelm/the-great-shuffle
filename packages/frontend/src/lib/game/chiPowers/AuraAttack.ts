@@ -13,8 +13,8 @@ export class AuraAttack extends Phaser.GameObjects.Sprite {
   public typedBody: Phaser.Physics.Arcade.Body;
   public auraAttackId = v4();
 
-  public constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, "aura_attack");
+  public constructor(scene: Phaser.Scene, x: number, y: number, key: string) {
+    super(scene, x, y, key);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
