@@ -15,7 +15,7 @@ export class RodAttackGroup extends Phaser.Physics.Arcade.Group {
     });
   }
 
-  public create(x: number, y: number) {
+  public create(x: number, y: number, key: string) {
     if (this.children.size >= this.maxSize) {
       return;
     }
@@ -24,6 +24,7 @@ export class RodAttackGroup extends Phaser.Physics.Arcade.Group {
       this.scene,
       x,
       y,
+      key,
       this.rodAttackHitboxGroup,
     );
     this.add(swordAttack, true);

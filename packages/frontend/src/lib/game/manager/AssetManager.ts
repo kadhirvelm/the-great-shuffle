@@ -1,14 +1,63 @@
+import {
+  GameState,
+  WeaponSlot,
+  WeaponSlotNumber,
+} from "../../store/reducer/gameState";
+import { assembleWeaponLocation } from "../../utils/assembleAssetLocation";
+import { getStore } from "../store/storeManager";
+
 export class AssetManager {
+  private loadedAssets: {
+    slotA: string | undefined;
+    slotB: string | undefined;
+  } = { slotA: undefined, slotB: undefined };
+
   public constructor(private scene: Phaser.Scene) {
     this.scene.load.setBaseURL("http://localhost:8080/");
 
     this.loadVisualAssets();
     this.loadAudioAssets();
+
+    const reduxStore = getStore();
+    reduxStore.subscribe(() => {
+      this.loadWeaponAssets(reduxStore.getState().gameState);
+    });
+
+    this.loadWeaponAssets(reduxStore.getState().gameState);
+  }
+
+  private loadWeaponAssets(gameState: GameState) {
+    const maybeLoadSlot = (
+      slot: WeaponSlot | undefined,
+      slotName: WeaponSlotNumber,
+    ) => {
+      if (
+        this.loadedAssets[slotName] !== slot?.assetName &&
+        slot !== undefined
+      ) {
+        this.scene.load.image(
+          slotName,
+          assembleWeaponLocation(slot.assetName, slot.type, false),
+        );
+
+        this.loadedAssets[slotName] = slot.assetName;
+      }
+    };
+
+    const slotA = gameState.playerEquipment.weapons[0];
+    const slotB = gameState.playerEquipment.weapons[1];
+
+    maybeLoadSlot(slotA, "slotA");
+    maybeLoadSlot(slotB, "slotB");
+
+    // this.scene.load.image("sword", "visual/weapons/sword/dragon steel-3.png");
+    // this.scene.load.image("spear", "visual/weapons/spear/calm winds-3.png");
+    // this.scene.load.image("rod", "visual/weapons/rod/sun god-3.png");
+    // this.scene.load.image("shield", "visual/weapons/shield/steel-3.png");
   }
 
   private loadVisualAssets() {
     this.loadBackground();
-    this.loadWeapon();
     this.loadMonsters();
     this.loadPlayer();
     this.loadPowers();
@@ -48,19 +97,15 @@ export class AssetManager {
     );
   }
 
-  private loadWeapon() {
-    this.scene.load.image("sword", "visual/weapons/sword/dragon steel-3.png");
-    this.scene.load.image("spear", "visual/weapons/spear/calm winds-3.png");
-    this.scene.load.image("rod", "visual/weapons/rod/sun god-3.png");
-    this.scene.load.image("shield", "visual/weapons/shield/steel-3.png");
-  }
-
   private loadPowers() {
-    this.scene.load.image("ranged_attack", "visual/powers/fire/ranged/3.png");
-    this.scene.load.image("aura_attack", "visual/powers/fire/aura/3.png");
+    this.scene.load.image(
+      "ranged_attack",
+      "visual/powers/lightning/ranged/3.png",
+    );
+    this.scene.load.image("aura_attack", "visual/powers/lightning/aura/3.png");
     this.scene.load.image(
       "enforcement",
-      "visual/powers/fire/enforcement/3.png",
+      "visual/powers/lightning/enforcement/3.png",
     );
   }
 

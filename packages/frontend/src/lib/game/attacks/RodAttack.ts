@@ -19,9 +19,10 @@ export class RodAttack extends Phaser.GameObjects.Sprite {
     scene: Phaser.Scene,
     x: number,
     y: number,
+    key: string,
     private rodAttackHitboxGroup: RodAttackHitboxGroup,
   ) {
-    super(scene, x, y, "rod");
+    super(scene, x, y, key);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);

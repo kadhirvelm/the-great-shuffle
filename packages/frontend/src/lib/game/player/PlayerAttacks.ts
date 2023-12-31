@@ -1,3 +1,6 @@
+import { Store } from "@reduxjs/toolkit";
+import { State } from "../../store/configureStore";
+import { WeaponSlotNumber } from "../../store/reducer/gameState";
 import { AuraAttack } from "../attacks/AuraAttack";
 import { RangedAttack } from "../attacks/RangedAttack";
 import { RodAttack } from "../attacks/RodAttack";
@@ -5,10 +8,15 @@ import { Shield } from "../attacks/Shield";
 import { SpearAttack } from "../attacks/SpearAttack";
 import { SwordAttack } from "../attacks/SwordAttack";
 import { Enforcement } from "../modifier/Enforcement";
+import { getStore } from "../store/storeManager";
 import { Player } from "./Player";
 
 export class PlayerAttack {
-  public constructor(private playerSprite: Player) {}
+  private reduxStore: Store<State>;
+
+  public constructor(private playerSprite: Player) {
+    this.reduxStore = getStore();
+  }
 
   public handleKeyboardInput() {
     if (
@@ -37,34 +45,40 @@ export class PlayerAttack {
 
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.sword_attack,
+        this.playerSprite.playerInteractions.keyboard.slotA,
       )
     ) {
-      this.fireSwordAttack();
+      return this.fireWeapon("slotA");
     }
 
     if (
       Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.spear_attack,
+        this.playerSprite.playerInteractions.keyboard.slotB,
       )
     ) {
-      this.fireSpearAttack();
+      return this.fireWeapon("slotB");
+    }
+  }
+
+  private fireWeapon(slotNumber: WeaponSlotNumber) {
+    const allWeaponSlot =
+      this.reduxStore.getState().gameState.playerEquipment.weapons;
+    const firedWeaponSlot = allWeaponSlot[slotNumber === "slotA" ? 0 : 1];
+    if (firedWeaponSlot == null) {
+      return;
     }
 
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.rod_attack,
-      )
-    ) {
-      this.fireRodAttack();
-    }
-
-    if (
-      Phaser.Input.Keyboard.JustDown(
-        this.playerSprite.playerInteractions.keyboard.shield,
-      )
-    ) {
-      this.fireShield();
+    switch (firedWeaponSlot.type) {
+      case "rod":
+        return this.fireRodAttack(slotNumber);
+      case "spear":
+        return this.fireSpearAttack(slotNumber);
+      case "sword":
+        return this.fireSwordAttack(slotNumber);
+      case "shield":
+        return this.fireShield(slotNumber);
+      default:
+        throw new Error(`Unknown weapon type ${firedWeaponSlot.type}`);
     }
   }
 
@@ -147,14 +161,18 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.auraAttack.consumeChi();
   }
 
-  private fireSwordAttack() {
+  private fireSwordAttack(slotNumber: WeaponSlotNumber) {
     if (!this.playerSprite.playerStatsHandler.swordAttack.canFire()) {
       this.playerSprite.noStamina();
       return;
     }
 
     const maybeSwordAttack: SwordAttack | null =
-      this.playerSprite.playerInteractions.swordAttackGroup.get();
+      this.playerSprite.playerInteractions.swordAttackGroup.get(
+        0,
+        0,
+        slotNumber,
+      );
     if (maybeSwordAttack == null) {
       return;
     }
@@ -173,14 +191,18 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.swordAttack.consumeStamina();
   }
 
-  private fireSpearAttack() {
+  private fireSpearAttack(slotNumber: WeaponSlotNumber) {
     if (!this.playerSprite.playerStatsHandler.spearAttack.canFire()) {
       this.playerSprite.noStamina();
       return;
     }
 
     const maybeSpearAttack: SpearAttack | null =
-      this.playerSprite.playerInteractions.spearAttackGroup.get();
+      this.playerSprite.playerInteractions.spearAttackGroup.get(
+        0,
+        0,
+        slotNumber,
+      );
     if (maybeSpearAttack == null) {
       return;
     }
@@ -202,14 +224,14 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.spearAttack.consumeStamina();
   }
 
-  private fireRodAttack() {
+  private fireRodAttack(slotNumber: WeaponSlotNumber) {
     if (!this.playerSprite.playerStatsHandler.rodAttack.canFire()) {
       this.playerSprite.noStamina();
       return;
     }
 
     const maybeRodAttack: RodAttack | undefined =
-      this.playerSprite.playerInteractions.rodAttackGroup.get();
+      this.playerSprite.playerInteractions.rodAttackGroup.get(0, 0, slotNumber);
     if (maybeRodAttack == null) {
       return;
     }
@@ -225,14 +247,14 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.rodAttack.consumeStamina();
   }
 
-  private fireShield() {
+  private fireShield(slotNumber: WeaponSlotNumber) {
     if (!this.playerSprite.playerStatsHandler.shield.canFire()) {
       this.playerSprite.noStamina();
       return;
     }
 
     const maybeShield: Shield | undefined =
-      this.playerSprite.playerInteractions.shieldGroup.get();
+      this.playerSprite.playerInteractions.shieldGroup.get(0, 0, slotNumber);
     if (maybeShield == null) {
       return;
     }

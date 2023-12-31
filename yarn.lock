@@ -1556,10 +1556,11 @@ __metadata:
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
     "@types/uuid": "npm:^9"
-    clsx: "npm:^2.0.0"
+    clsx: "npm:^2.1.0"
     eslint: "npm:^8.54.0"
     eslint-config-next: "npm:14.0.3"
     lodash-es: "npm:^4.17.21"
+    lucide-react: "npm:^0.303.0"
     next: "npm:14.0.3"
     phaser: "npm:^3.70.0"
     react: "npm:^18"
@@ -3432,10 +3433,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "clsx@npm:2.0.0"
-  checksum: 943766d1b02fee3538c871e56638d87f973fbc2d6291ce221215ea436fdecb9be97ad323f411839c2d52c45640c449b1a53fbfe7e8b3d529b4e263308b630c9a
+"clsx@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "clsx@npm:2.1.0"
+  checksum: 2e0ce7c3b6803d74fc8147c408f88e79245583202ac14abd9691e2aebb9f312de44270b79154320d10bb7804a9197869635d1291741084826cff20820f31542b
   languageName: node
   linkType: hard
 
@@ -6798,6 +6799,15 @@ __metadata:
   dependencies:
     yallist: "npm:^4.0.0"
   checksum: fc1fe2ee205f7c8855fa0f34c1ab0bcf14b6229e35579ec1fd1079f31d6fc8ef8eb6fd17f2f4d99788d7e339f50e047555551ebd5e434dda503696e7c6591825
+  languageName: node
+  linkType: hard
+
+"lucide-react@npm:^0.303.0":
+  version: 0.303.0
+  resolution: "lucide-react@npm:0.303.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0
+  checksum: 0a5fbe85a46cfa3b81a6e4dd77f9752c41717bd97e8ef0c5918215dc04ddc74e6fb933b5bc7e5ac4e3818cbee3a19791163df21cca0c7e5dd38a215882f0da66
   languageName: node
   linkType: hard
 

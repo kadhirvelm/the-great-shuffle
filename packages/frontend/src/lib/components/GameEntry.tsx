@@ -3,6 +3,7 @@ import { PrimaryGame } from "../game/PrimaryGame";
 import { useTowerStore } from "../store/configureStore";
 import styles from "./GameEntry.module.scss";
 import { Bars } from "./stats/Bars";
+import { Weapons } from "./equipment/Weapons";
 
 // @refresh reset
 
@@ -21,9 +22,14 @@ const GameEntry = () => {
     };
   }, [gameCanvas, store]);
 
+  // Create a UI to look at the current equipment and select different things
+  // Changing equipment dispatches redux actions changing the thing in the slot
+  // We'll need an endpoint to fetch the current catalog of equipment
+
   return (
     <div className={styles.rootContainer}>
       <Bars />
+      <Weapons />
       <div className={styles.gameContainer} ref={gameCanvas} />
     </div>
   );
