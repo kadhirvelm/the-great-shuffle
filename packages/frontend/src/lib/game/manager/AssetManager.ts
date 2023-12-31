@@ -21,64 +21,53 @@ export class AssetManager {
   }
 
   private loadPlayer() {
-    this.scene.load.spritesheet(
-      "idle",
-      "visual/player/idle-100x256-65.fixed.png",
-      {
-        frameWidth: 100,
-        frameHeight: 256,
-      },
-    );
-    this.scene.load.spritesheet(
-      "jump",
-      "visual/player/jump-205x256-25.fixed.png",
-      {
-        frameWidth: 205,
-        frameHeight: 256,
-      },
-    );
-    this.scene.load.spritesheet(
-      "run",
-      "visual/player/running-195x256-20.fixed.png",
-      {
-        frameWidth: 195,
-        frameHeight: 256,
-      },
-    );
+    this.scene.load.spritesheet("idle", "visual/player/idle-110x256-75.png", {
+      frameWidth: 110,
+      frameHeight: 256,
+    });
+    this.scene.load.spritesheet("jump", "visual/player/jump-140x256-70.png", {
+      frameWidth: 140,
+      frameHeight: 256,
+    });
+    this.scene.load.spritesheet("run", "visual/player/running-205x256-30.png", {
+      frameWidth: 205,
+      frameHeight: 256,
+    });
 
-    this.scene.load.spritesheet("dash", "visual/dash.png", {
-      frameWidth: 55,
-      frameHeight: 70,
+    this.scene.load.spritesheet("dash", "visual/player/dash-170x256-50.png", {
+      frameWidth: 170,
+      frameHeight: 256,
     });
-    this.scene.load.spritesheet("climb", "visual/climb.png", {
-      frameWidth: 55,
-      frameHeight: 70,
-    });
+    this.scene.load.spritesheet(
+      "climb",
+      "visual/player/climbing-110x256-110.png",
+      {
+        frameWidth: 110,
+        frameHeight: 256,
+      },
+    );
   }
 
   private loadWeapon() {
     this.scene.load.image("sword", "visual/weapons/sword/dragon steel-3.png");
     this.scene.load.image("spear", "visual/weapons/spear/calm winds-3.png");
     this.scene.load.image("rod", "visual/weapons/rod/sun god-3.png");
-    this.scene.load.image(
-      "shield",
-      "visual/weapons/shield/towering glacier-3.png",
-    );
+    this.scene.load.image("shield", "visual/weapons/shield/steel-3.png");
   }
 
   private loadPowers() {
-    this.scene.load.image("ranged_attack", "visual/powers/water/ranged/2.png");
-    this.scene.load.image("aura_attack", "visual/powers/water/aura/2.png");
+    this.scene.load.image("ranged_attack", "visual/powers/fire/ranged/3.png");
+    this.scene.load.image("aura_attack", "visual/powers/fire/aura/3.png");
     this.scene.load.image(
       "enforcement",
-      "visual/powers/water/enforcement/2.png",
+      "visual/powers/fire/enforcement/3.png",
     );
   }
 
   private loadMonsters() {
-    this.scene.load.image("level_1", "visual/monsters/vampire slime-1.png");
-    this.scene.load.image("level_2", "visual/monsters/vampire slime-2.png");
-    this.scene.load.image("level_3", "visual/monsters/vampire slime-3.png");
+    this.scene.load.image("level_1", "visual/monsters/sand dragon-1.png");
+    this.scene.load.image("level_2", "visual/monsters/sand dragon-2.png");
+    this.scene.load.image("level_3", "visual/monsters/sand dragon-3.png");
   }
 
   private loadAudioAssets() {
