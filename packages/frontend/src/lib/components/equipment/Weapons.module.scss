@@ -49,6 +49,13 @@
   font-size: 14px;
 }
 
+.typeLabel {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  font-size: 14px;
+}
+
 .spearKeyboardLabel {
   position: absolute;
   top: 0;
@@ -57,3 +64,10 @@
   transform: rotate(90deg);
 }
 
+.spearTypeLabel {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 14px;
+  transform: rotate(90deg);
+}

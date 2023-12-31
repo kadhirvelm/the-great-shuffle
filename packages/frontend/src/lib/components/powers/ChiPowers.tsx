@@ -53,7 +53,7 @@ export const ChiPowers = () => {
           {chiPowerSlot.type.slice(0, 1).toUpperCase()}
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={assetLocation} alt={chiPowerSlot.name} height={50} />
+        <img src={assetLocation} alt={chiPowerSlot.name} height={75} />
       </div>
     );
   };
