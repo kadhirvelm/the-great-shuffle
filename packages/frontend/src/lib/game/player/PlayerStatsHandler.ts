@@ -17,7 +17,7 @@ import {
 } from "../constants/enums";
 import { clamp, cloneDeep, mergeWith } from "lodash-es";
 import { Damage } from "../constants/enums";
-import { PushBack } from "../monster/Monster";
+import { PushBack } from "@tower/api";
 
 export interface PlayerStats {
   vitality: {

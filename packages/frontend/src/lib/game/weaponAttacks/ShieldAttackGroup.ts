@@ -1,9 +1,9 @@
-import { Shield } from "./Shield";
+import { ShieldAttack } from "./ShieldAttack";
 
-export class ShieldGroup extends Phaser.Physics.Arcade.Group {
+export class ShieldAttackGroup extends Phaser.Physics.Arcade.Group {
   public constructor(scene: Phaser.Scene) {
     super(scene.physics.world, scene, {
-      classType: Shield,
+      classType: ShieldAttack,
       maxSize: 1,
       runChildUpdate: true,
       collideWorldBounds: false,
@@ -13,6 +13,6 @@ export class ShieldGroup extends Phaser.Physics.Arcade.Group {
   }
 
   public update() {
-    this.getChildren().forEach((shield) => (shield as Shield).update());
+    this.getChildren().forEach((shield) => (shield as ShieldAttack).update());
   }
 }

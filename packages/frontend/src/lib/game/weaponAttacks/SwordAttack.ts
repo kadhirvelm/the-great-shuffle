@@ -1,12 +1,7 @@
 import { v4 } from "uuid";
 import { SwordAttackHitbox, SwordAttackHitboxGroup } from "./SwordAttackHitbox";
 import { Player } from "../player/Player";
-import { PushBack } from "../monster/Monster";
-
-export interface SwordAttackAttributes {
-  damage: number;
-  pushBack: PushBack;
-}
+import { SwordAttackAttributes } from "@tower/api";
 
 let lastFiredFrom: "top" | "bottom" = "bottom";
 

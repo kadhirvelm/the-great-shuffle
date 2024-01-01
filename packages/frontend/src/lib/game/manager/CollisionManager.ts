@@ -6,8 +6,8 @@ import {
   RodAttackHitbox,
   RodAttackHitboxGroup,
 } from "../weaponAttacks/RodAttackHitbox";
-import { Shield } from "../weaponAttacks/Shield";
-import { ShieldGroup } from "../weaponAttacks/ShieldGroup";
+import { Shield } from "../weaponAttacks/ShieldAttack";
+import { ShieldGroup } from "../weaponAttacks/ShieldAttackGroup";
 import { SpearAttack } from "../weaponAttacks/SpearAttack";
 import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
 import {

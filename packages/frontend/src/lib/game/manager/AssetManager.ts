@@ -1,9 +1,7 @@
-import { ChiPower } from "@tower/api";
-import { PlayerChiPower } from "../../store/reducer/PlayerChiPower";
+import { PlayerChiPower, PlayerWeapon } from "@tower/api";
 import {
   ChiPowerSlotNumber,
   GameState,
-  WeaponSlot,
   WeaponSlotNumber,
 } from "../../store/reducer/gameState";
 import {
@@ -49,17 +47,14 @@ export class AssetManager {
 
   private loadWeaponAssets = (gameState: GameState) => {
     const maybeLoadSlot = (
-      weapon: WeaponSlot | undefined,
+      weapon: PlayerWeapon | undefined,
       slotName: WeaponSlotNumber,
     ) => {
       if (
         weapon !== undefined &&
         this.loadedWeaponAssets[slotName] !== weapon?.assetName
       ) {
-        this.scene.load.image(
-          slotName,
-          assembleWeaponLocation(weapon.assetName, weapon.type, false),
-        );
+        this.scene.load.image(slotName, assembleWeaponLocation(weapon, false));
 
         this.loadedWeaponAssets[slotName] = weapon.assetName;
       }
@@ -74,7 +69,7 @@ export class AssetManager {
 
   private loadChiPowers = (gameState: GameState) => {
     const maybeLoadChiPower = (
-      chiPower: PlayerChiPower<ChiPower> | undefined,
+      chiPower: PlayerChiPower | undefined,
       slotName: ChiPowerSlotNumber,
     ) => {
       if (
@@ -83,12 +78,7 @@ export class AssetManager {
       ) {
         this.scene.load.image(
           slotName,
-          assembleChiPowerLocation(
-            chiPower.chiElement,
-            chiPower.type,
-            chiPower.level,
-            false,
-          ),
+          assembleChiPowerLocation(chiPower, false),
         );
         this.loadedChiPowers[slotName] = chiPower.name;
       }

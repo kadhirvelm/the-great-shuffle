@@ -1,13 +1,6 @@
-import { PushBack } from "../monster/Monster";
+import { ShieldAttributes } from "@tower/api";
 
-export interface ShieldAttributes {
-  duration: number;
-  direction: "left" | "right";
-  pushBack: PushBack;
-  scale: number;
-}
-
-export class Shield extends Phaser.GameObjects.Sprite {
+export class ShieldAttack extends Phaser.GameObjects.Sprite {
   public attributes: ShieldAttributes | undefined;
   public typedBody: Phaser.Physics.Arcade.Body;
 

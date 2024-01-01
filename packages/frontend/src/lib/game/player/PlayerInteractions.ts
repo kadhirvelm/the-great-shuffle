@@ -1,7 +1,7 @@
 import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
 import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
 import { RodAttackGroup } from "../weaponAttacks/RodAttackGroup";
-import { ShieldGroup } from "../weaponAttacks/ShieldGroup";
+import { ShieldGroup } from "../weaponAttacks/ShieldAttackGroup";
 import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
 import { SwordAttackGroup } from "../weaponAttacks/SwordAttackGroup";
 import { Keyboard } from "../keyboard/Keyboard";
