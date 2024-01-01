@@ -1,20 +1,17 @@
-import { ChiLevel, ChiPower, PlayerWeaponType } from "@tower/api";
+import { PlayerChiPower, PlayerWeapon } from "@tower/api";
 
 export function assembleWeaponLocation(
-  assetName: string,
-  assetType: PlayerWeaponType,
+  playerWeapon: PlayerWeapon,
   fullPath: boolean = true,
 ) {
-  const assetLocation = `visual/weapons/${assetType}/${assetName}.png`;
+  const assetLocation = `visual/weapons/${playerWeapon.type}/${playerWeapon.assetName}-${playerWeapon.level}.png`;
   return fullPath ? `http://localhost:8080/${assetLocation}` : assetLocation;
 }
 
 export function assembleChiPowerLocation(
-  chiElement: string,
-  type: ChiPower,
-  level: ChiLevel,
+  playerChiPower: PlayerChiPower,
   fullPath: boolean = true,
 ) {
-  const assetLocation = `visual/powers/${chiElement}/${type}/${level}.png`;
+  const assetLocation = `visual/powers/${playerChiPower.chiElement}/${playerChiPower.type}/${playerChiPower.level}.png`;
   return fullPath ? `http://localhost:8080/${assetLocation}` : assetLocation;
 }

@@ -1,6 +1,7 @@
 {
   "search.exclude": {
     "**/.yarn": true,
+    "**/*.js": true,
     "**/.pnp.*": true
   },
   "editor.formatOnSave": true,

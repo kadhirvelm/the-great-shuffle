@@ -1,22 +1,5 @@
-import { Monster, PushBack } from "./Monster";
-
-export interface MonsterStats {
-  vitality: {
-    health: {
-      current: number;
-      max: number;
-    };
-  };
-  offensiveAttributes: {
-    collisionStrength: number;
-    aggroRange: number;
-  };
-  defensiveAttributes: {
-    defense: number;
-    speed: number;
-    jump: number;
-  };
-}
+import { MonsterStats, PushBack } from "@tower/api";
+import { Monster } from "./Monster";
 
 export class MonsterStatsHandler {
   public stats: MonsterStats;

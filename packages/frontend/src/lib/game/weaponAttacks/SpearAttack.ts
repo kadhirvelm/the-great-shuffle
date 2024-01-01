@@ -1,12 +1,5 @@
+import { SpearAttackAttributes } from "@tower/api";
 import { v4 } from "uuid";
-import { PushBack } from "../monster/Monster";
-
-export interface SpearAttackAttributes {
-  damage: number;
-  range: number;
-  velocity: number;
-  pushBack: PushBack;
-}
 
 export class SpearAttack extends Phaser.GameObjects.Sprite {
   public attributes: SpearAttackAttributes | undefined;

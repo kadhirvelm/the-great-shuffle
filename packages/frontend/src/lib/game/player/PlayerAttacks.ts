@@ -7,17 +7,28 @@ import {
 import { AuraAttack } from "../chiPowers/AuraAttack";
 import { RangedAttack } from "../chiPowers/RangedAttack";
 import { RodAttack } from "../weaponAttacks/RodAttack";
-import { Shield } from "../weaponAttacks/Shield";
 import { SpearAttack } from "../weaponAttacks/SpearAttack";
 import { SwordAttack } from "../weaponAttacks/SwordAttack";
 import { Enforcement } from "../chiPowers/Enforcement";
 import { getStore } from "../store/storeManager";
 import { Player } from "./Player";
 import {
+  isRanged,
   isAura,
   isEnforcement,
-  isRanged,
-} from "../../store/reducer/PlayerChiPower";
+  RangedChiPower,
+  AuraChiPower,
+  EnforcementChiPower,
+  isRod,
+  isSpear,
+  isSword,
+  isShield,
+  Sword,
+  Shield,
+  Spear,
+  Rod,
+} from "@tower/api";
+import { ShieldAttack } from "../weaponAttacks/ShieldAttack";
 
 export class PlayerAttack {
   private reduxStore: Store<State>;
@@ -91,21 +102,24 @@ export class PlayerAttack {
     }
 
     if (isRanged(firedChiSlot)) {
-      return this.fireRangedAttack(slotNumber);
+      return this.fireRangedAttack(slotNumber, firedChiSlot);
     }
 
     if (isAura(firedChiSlot)) {
-      return this.fireAuraAttack(slotNumber);
+      return this.fireAuraAttack(slotNumber, firedChiSlot);
     }
 
     if (isEnforcement(firedChiSlot)) {
-      return this.fireEnforcement(slotNumber);
+      return this.fireEnforcement(slotNumber, firedChiSlot);
     }
 
     throw new Error(`Unknown chi power type ${firedChiSlot}`);
   }
 
-  private fireRangedAttack(slotNumber: ChiPowerSlotNumber) {
+  private fireRangedAttack(
+    slotNumber: ChiPowerSlotNumber,
+    _rangedChiPower: RangedChiPower,
+  ) {
     if (!this.playerSprite.playerStatsHandler.rangedAttack.canFire()) {
       this.playerSprite.noChi();
       return;
@@ -139,7 +153,10 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.rangedAttack.consumeChi();
   }
 
-  private fireAuraAttack(slotNumber: ChiPowerSlotNumber) {
+  private fireAuraAttack(
+    slotNumber: ChiPowerSlotNumber,
+    _auraChiPower: AuraChiPower,
+  ) {
     if (!this.playerSprite.playerStatsHandler.auraAttack.canFire()) {
       this.playerSprite.noChi();
       return;
@@ -167,7 +184,10 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.auraAttack.consumeChi();
   }
 
-  private fireEnforcement(slotNumber: ChiPowerSlotNumber) {
+  private fireEnforcement(
+    slotNumber: ChiPowerSlotNumber,
+    _enforcement: EnforcementChiPower,
+  ) {
     if (!this.playerSprite.playerStatsHandler.enforcement.canFire()) {
       this.playerSprite.noChi();
       return;
@@ -205,21 +225,26 @@ export class PlayerAttack {
       return;
     }
 
-    switch (firedWeaponSlot.type) {
-      case "rod":
-        return this.fireRodAttack(slotNumber);
-      case "spear":
-        return this.fireSpearAttack(slotNumber);
-      case "sword":
-        return this.fireSwordAttack(slotNumber);
-      case "shield":
-        return this.fireShield(slotNumber);
-      default:
-        throw new Error(`Unknown weapon type ${firedWeaponSlot.type}`);
+    if (isSword(firedWeaponSlot)) {
+      return this.fireSwordAttack(slotNumber, firedWeaponSlot);
     }
+
+    if (isRod(firedWeaponSlot)) {
+      return this.fireRodAttack(slotNumber, firedWeaponSlot);
+    }
+
+    if (isSpear(firedWeaponSlot)) {
+      return this.fireSpearAttack(slotNumber, firedWeaponSlot);
+    }
+
+    if (isShield(firedWeaponSlot)) {
+      return this.fireShield(slotNumber, firedWeaponSlot);
+    }
+
+    throw new Error(`Unknown weapon type ${firedWeaponSlot}`);
   }
 
-  private fireSwordAttack(slotNumber: WeaponSlotNumber) {
+  private fireSwordAttack(slotNumber: WeaponSlotNumber, _swordWeapon: Sword) {
     if (!this.playerSprite.playerStatsHandler.swordAttack.canFire()) {
       this.playerSprite.noStamina();
       return;
@@ -249,7 +274,7 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.swordAttack.consumeStamina();
   }
 
-  private fireSpearAttack(slotNumber: WeaponSlotNumber) {
+  private fireSpearAttack(slotNumber: WeaponSlotNumber, _spearWeapon: Spear) {
     if (!this.playerSprite.playerStatsHandler.spearAttack.canFire()) {
       this.playerSprite.noStamina();
       return;
@@ -282,7 +307,7 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.spearAttack.consumeStamina();
   }
 
-  private fireRodAttack(slotNumber: WeaponSlotNumber) {
+  private fireRodAttack(slotNumber: WeaponSlotNumber, _rodAttack: Rod) {
     if (!this.playerSprite.playerStatsHandler.rodAttack.canFire()) {
       this.playerSprite.noStamina();
       return;
@@ -305,13 +330,13 @@ export class PlayerAttack {
     this.playerSprite.playerStatsHandler.rodAttack.consumeStamina();
   }
 
-  private fireShield(slotNumber: WeaponSlotNumber) {
+  private fireShield(slotNumber: WeaponSlotNumber, _shield: Shield) {
     if (!this.playerSprite.playerStatsHandler.shield.canFire()) {
       this.playerSprite.noStamina();
       return;
     }
 
-    const maybeShield: Shield | undefined =
+    const maybeShield: ShieldAttack | undefined =
       this.playerSprite.playerInteractions.shieldGroup.get(0, 0, slotNumber);
     if (maybeShield == null) {
       return;

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChiPower, PlayerWeaponType } from "@tower/api";
-import { PlayerChiPower } from "./PlayerChiPower";
+import { PlayerChiPower, PlayerWeapon } from "@tower/api";
+import { Movement } from "../../game/constants/enums";
 
 export type GameStage = "tutorial";
 
@@ -15,12 +15,6 @@ export interface PlayerStats {
   stamina: SinglePlayerStat;
 }
 
-export interface WeaponSlot {
-  name: string;
-  assetName: string;
-  type: PlayerWeaponType;
-}
-
 export type WeaponSlotNumber = "weapon-slotA" | "weapon-slotB";
 
 export type ChiPowerSlotNumber =
@@ -29,7 +23,7 @@ export type ChiPowerSlotNumber =
   | "chiPower-slotC";
 
 export interface PlayerEquipment {
-  weapons: [WeaponSlot | undefined, WeaponSlot | undefined];
+  weapons: [PlayerWeapon | undefined, PlayerWeapon | undefined];
 }
 
 export interface GameState {
@@ -37,9 +31,9 @@ export interface GameState {
   player: PlayerStats;
   playerEquipment: PlayerEquipment;
   playerChiPowers: [
-    PlayerChiPower<ChiPower> | undefined,
-    PlayerChiPower<ChiPower> | undefined,
-    PlayerChiPower<ChiPower> | undefined,
+    PlayerChiPower | undefined,
+    PlayerChiPower | undefined,
+    PlayerChiPower | undefined,
   ];
 }
 
@@ -62,31 +56,82 @@ const initialState: GameState = {
   playerEquipment: {
     weapons: [
       {
-        name: "Darkness 1",
-        assetName: "darkness-1",
+        attributes: {
+          damage: 10,
+          pushBack: {
+            duration: 0,
+            velocity: 0,
+          },
+        },
+        name: "Darkness",
+        assetName: "darkness",
+        level: "1",
         type: "rod",
       },
       {
-        name: "Calm Winds 1",
-        assetName: "calm winds-1",
+        attributes: {
+          damage: 10,
+          pushBack: {
+            duration: 0,
+            velocity: 0,
+          },
+          range: 1000,
+          velocity: Movement.player_projectile_x,
+        },
+        name: "Calm Winds",
+        assetName: "calm winds",
+        level: "1",
         type: "spear",
       },
     ],
   },
   playerChiPowers: [
     {
+      attributes: {
+        damage: 100,
+        duration: 100,
+        pushBack: {
+          duration: 0,
+          velocity: 0,
+        },
+        scale: 1.5,
+      },
       name: "Water",
       chiElement: "water",
       level: "2",
       type: "aura",
     },
     {
+      attributes: {
+        damage: 10,
+        pushBack: {
+          duration: 0,
+          velocity: 0,
+        },
+        range: 1000,
+        velocity: Movement.player_projectile_x,
+      },
       name: "Fire",
       chiElement: "fire",
       level: "3",
       type: "ranged",
     },
     {
+      attributes: {
+        duration: 10000,
+        enforcement: {
+          defensiveAttributes: {
+            defense: 10,
+            recovery: 10,
+            speed: 50,
+          },
+          offensiveAttributes: {
+            chiFocus: 25,
+            efficiency: 50,
+            weaponStrength: 25,
+          },
+        },
+      },
       name: "Lightning",
       chiElement: "lightning",
       level: "1",
@@ -153,7 +198,7 @@ const gameStateSlice = createSlice({
     updateWeapon: (
       state,
       action: PayloadAction<{
-        weapon: WeaponSlot | undefined;
+        weapon: PlayerWeapon | undefined;
         slotNumber: WeaponSlotNumber;
       }>,
     ) => {
@@ -163,7 +208,7 @@ const gameStateSlice = createSlice({
     updateChiPower: (
       state,
       action: PayloadAction<{
-        chiPower: PlayerChiPower<ChiPower>;
+        chiPower: PlayerChiPower | undefined;
         slotNumber: ChiPowerSlotNumber;
       }>,
     ) => {

@@ -29,7 +29,7 @@ export enum Damage {
 export enum Distance {
   player_projectile = 500,
   player_spear_x = 300,
-  player_dash = 240,
+  player_dash = 500,
 }
 
 export enum Gravity {
@@ -39,7 +39,7 @@ export enum Gravity {
 
 export enum Movement {
   player_x = Gravity.generic * 2,
-  player_dash_x = Gravity.generic * 4,
+  player_dash_x = Gravity.generic * 6,
   player_y = Gravity.playerY * 0.4,
   player_projectile_x = Gravity.generic * 5,
   player_spear_attack_x = Gravity.generic * 4,

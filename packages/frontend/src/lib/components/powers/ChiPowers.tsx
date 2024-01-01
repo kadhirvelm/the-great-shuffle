@@ -1,11 +1,10 @@
+import { PlayerChiPower } from "@tower/api";
+import clsx from "clsx";
 import { CircleOffIcon } from "lucide-react";
 import { useTowerSelector } from "../../store/configureStore";
-import { PlayerChiPower } from "../../store/reducer/PlayerChiPower";
-import { assembleChiPowerLocation } from "../../utils/assembleAssetLocation";
-import { ChiPower } from "@tower/api";
-import styles from "./ChiPowers.module.scss";
-import clsx from "clsx";
 import { ChiPowerSlotNumber } from "../../store/reducer/gameState";
+import { assembleChiPowerLocation } from "../../utils/assembleAssetLocation";
+import styles from "./ChiPowers.module.scss";
 
 export const ChiPowers = () => {
   const [slotA, slotB, slotC] = useTowerSelector(
@@ -14,7 +13,7 @@ export const ChiPowers = () => {
 
   const renderSlot = (
     slotNumber: ChiPowerSlotNumber,
-    chiPowerSlot: PlayerChiPower<ChiPower> | undefined,
+    chiPowerSlot: PlayerChiPower | undefined,
   ) => {
     if (chiPowerSlot === undefined) {
       return (
@@ -24,11 +23,7 @@ export const ChiPowers = () => {
       );
     }
 
-    const assetLocation = assembleChiPowerLocation(
-      chiPowerSlot.chiElement,
-      chiPowerSlot.type,
-      chiPowerSlot.level,
-    );
+    const assetLocation = assembleChiPowerLocation(chiPowerSlot);
 
     const toKeyboard = (() => {
       if (slotNumber === "chiPower-slotA") {

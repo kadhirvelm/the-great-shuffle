@@ -1,3 +1,4 @@
+import { PushBack } from "@tower/api";
 import { DisplayStats } from "../display/DisplayStats";
 import { Player } from "../player/Player";
 import { MonsterStatsHandler } from "./MonsterStatsHandler";
@@ -5,11 +6,6 @@ import { MonsterTypeHandler, MonsterTypes } from "./MonsterType";
 
 export interface MonsterInteraction {
   player: Player;
-}
-
-export interface PushBack {
-  velocity: number;
-  duration: number;
 }
 
 export class Monster extends Phaser.GameObjects.Sprite {

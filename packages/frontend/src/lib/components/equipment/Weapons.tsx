@@ -1,9 +1,10 @@
 import { useTowerSelector } from "../../store/configureStore";
-import { WeaponSlot, WeaponSlotNumber } from "../../store/reducer/gameState";
+import { WeaponSlotNumber } from "../../store/reducer/gameState";
 import { assembleWeaponLocation } from "../../utils/assembleAssetLocation";
 import styles from "./Weapons.module.scss";
 import { CircleOffIcon } from "lucide-react";
 import clsx from "clsx";
+import { PlayerWeapon } from "@tower/api";
 
 export const Weapons = () => {
   const [slotA, slotB] = useTowerSelector(
@@ -12,7 +13,7 @@ export const Weapons = () => {
 
   const renderSlot = (
     slotNumber: WeaponSlotNumber,
-    weaponSlot: WeaponSlot | undefined,
+    weaponSlot: PlayerWeapon | undefined,
   ) => {
     if (weaponSlot === undefined) {
       return (
@@ -52,10 +53,7 @@ export const Weapons = () => {
       }
     })();
 
-    const assetLocation = assembleWeaponLocation(
-      weaponSlot.assetName,
-      weaponSlot.type,
-    );
+    const assetLocation = assembleWeaponLocation(weaponSlot);
 
     if (weaponSlot.type === "spear") {
       return (

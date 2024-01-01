@@ -1,11 +1,4 @@
-import { PushBack } from "../monster/Monster";
-
-export interface RangedAttackAttributes {
-  damage: number;
-  range: number;
-  velocity: number;
-  pushBack: PushBack;
-}
+import { RangedAttackAttributes } from "@tower/api";
 
 export class RangedAttack extends Phaser.GameObjects.Sprite {
   public attributes: RangedAttackAttributes | undefined;
