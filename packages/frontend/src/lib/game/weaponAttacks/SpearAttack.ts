@@ -21,7 +21,7 @@ export class SpearAttack extends Phaser.GameObjects.Sprite {
 
     this.setActive(false);
     this.setVisible(false);
-    this.setScale(1);
+    this.setScale(0.5);
   }
 
   public fire(

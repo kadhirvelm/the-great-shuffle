@@ -71,33 +71,45 @@ export class Player extends Phaser.GameObjects.Sprite {
   private setAnimations() {
     this.anims.create({
       key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 3 }),
-      frameRate: 2,
+      frames: this.anims.generateFrameNumbers("idle", { start: 0, end: 9 }),
+      frameRate: 5,
       repeat: -1,
     });
     this.anims.create({
       key: "jump",
-      frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 3 }),
-      frameRate: 10,
+      frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 2 }),
+      frameRate: 3,
       repeat: -1,
     });
     this.anims.create({
       key: "run",
-      frames: this.anims.generateFrameNumbers("run", { start: 0, end: 8 }),
-      frameRate: 5,
+      frames: this.anims.generateFrameNumbers("run", { start: 0, end: 7 }),
+      frameRate: 12,
       repeat: -1,
     });
 
     this.anims.create({
       key: "dash",
       frames: this.anims.generateFrameNumbers("dash", { start: 0, end: 6 }),
-      frameRate: 10,
+      frameRate: 3,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "climb_up",
+      frames: this.anims.generateFrameNumbers("climb", { start: 0, end: 3 }),
+      frameRate: 3,
       repeat: -1,
     });
     this.anims.create({
-      key: "climb",
-      frames: this.anims.generateFrameNumbers("climb", { start: 0, end: 3 }),
-      frameRate: 5,
+      key: "climb_stay",
+      frames: this.anims.generateFrameNumbers("climb", { start: 1, end: 1 }),
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "climb_down",
+      frames: this.anims.generateFrameNumbers("climb", { start: 3, end: 0 }),
+      frameRate: 3,
       repeat: -1,
     });
   }

@@ -4,32 +4,30 @@ export class PlayerMovement {
   public constructor(private playerSprite: Player) {}
 
   public handleClimbingMovement() {
-    if (this.playerSprite.playerInteractions.keyboard.up.isDown) {
-      this.playerSprite.typedBody.setVelocityY(
-        -this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
-      );
-    } else if (this.playerSprite.playerInteractions.keyboard.down.isDown) {
-      this.playerSprite.typedBody.setVelocityY(
-        this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
-      );
-    } else {
-      this.playerSprite.typedBody.setVelocityY(0);
-    }
-
-    if (
-      this.playerSprite.playerInteractions.keyboard.left.isDown ||
-      this.playerSprite.playerInteractions.keyboard.right.isDown
-    ) {
-      this.playerSprite.isClimbing = false;
-    } else if (this.playerSprite.playerInteractions.keyboard.space.isDown) {
+    if (this.playerSprite.playerInteractions.keyboard.space.isDown) {
       this.playerSprite.isClimbing = false;
       this.playerSprite.typedBody.setVelocityY(
         -this.playerSprite.playerStatsHandler.movement.movementVelocityY(),
       );
-    } else {
-      this.playerSprite.anims.play("climb", true);
-      this.playerSprite.typedBody.setVelocityX(0);
+      return;
     }
+
+    if (this.playerSprite.playerInteractions.keyboard.up.isDown) {
+      this.playerSprite.typedBody.setVelocityY(
+        -this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
+      );
+      this.playerSprite.anims.play("climb_up", true);
+    } else if (this.playerSprite.playerInteractions.keyboard.down.isDown) {
+      this.playerSprite.typedBody.setVelocityY(
+        this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
+      );
+      this.playerSprite.anims.play("climb_down", true);
+    } else {
+      this.playerSprite.typedBody.setVelocityY(0);
+      this.playerSprite.anims.play("climb_stay", true);
+    }
+
+    this.playerSprite.typedBody.setVelocityX(0);
   }
 
   public updateOtherMovements() {

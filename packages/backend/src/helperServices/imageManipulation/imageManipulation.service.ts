@@ -3,15 +3,16 @@ import { readFileSync } from "fs";
 import * as sharp from "sharp";
 import * as _ from "lodash";
 
-const ORIGINAL_WIDTH = 256;
+const ORIGINAL_WIDTH = 192;
 
-const INPUT_NAME = "climbing";
+const INPUT_NAME = "dash";
 
-const LEFT = 110;
-const TOP = 0;
-const WIDTH = 110;
+const LEFT = 55;
+const TOP = 10;
+const BOTTOM = 35;
+const WIDTH = 75;
 
-const FRAME_NUMBER = 1;
+const FRAME_NUMBER = 2;
 
 @Injectable()
 export class ImageManipulationService {
@@ -27,7 +28,7 @@ export class ImageManipulationService {
 
     const outputImage = sharp({
       create: {
-        height: ORIGINAL_WIDTH - TOP,
+        height: ORIGINAL_WIDTH - TOP - BOTTOM,
         width: WIDTH * totalFrames,
         channels: 4,
         background: { r: 0, g: 0, b: 0, alpha: 0 },
@@ -47,7 +48,7 @@ export class ImageManipulationService {
       frame.extract({
         left: LEFT,
         top: TOP,
-        height: ORIGINAL_WIDTH - TOP,
+        height: ORIGINAL_WIDTH - TOP - BOTTOM,
         width: WIDTH,
       });
 
@@ -62,11 +63,11 @@ export class ImageManipulationService {
       .composite(compositeFrames)
       .toFile(
         `./src/helperServices/imageManipulation/${INPUT_NAME}-${WIDTH}x${
-          ORIGINAL_WIDTH - TOP
+          ORIGINAL_WIDTH - TOP - BOTTOM
         }-${LEFT}.fixed.png`,
       );
 
-    return { width: WIDTH, height: ORIGINAL_WIDTH - TOP };
+    return { width: WIDTH, height: ORIGINAL_WIDTH - TOP - BOTTOM };
   }
 
   public async determineIdealSize() {
@@ -86,7 +87,7 @@ export class ImageManipulationService {
       .extract({
         left: LEFT,
         top: TOP,
-        height: ORIGINAL_WIDTH - TOP,
+        height: ORIGINAL_WIDTH - TOP - BOTTOM,
         width: WIDTH,
       });
 
@@ -94,6 +95,6 @@ export class ImageManipulationService {
       `./src/helperServices/imageManipulation/${INPUT_NAME}.trimmed.png`,
     );
 
-    return { LEFT, TOP, WIDTH };
+    return { LEFT, TOP, BOTTOM, WIDTH };
   }
 }
