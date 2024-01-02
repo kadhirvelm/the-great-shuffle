@@ -3,8 +3,8 @@ import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
 import { Ladders } from "./Ladders";
-import { Wall, Walls } from "./Walls";
 import { PassablePlatform } from "./PassablePlatform";
+import { Wall, Walls } from "./Walls";
 
 export interface EnvironmentInteractions {
   player: Player;
@@ -23,7 +23,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   ) {
     super(scene.physics.world, scene);
 
-    this.background = scene.add.image(0, 0, "tree").setOrigin(0, 0).setScale(3);
+    this.background = scene.add.image(0, 0, "tree").setOrigin(0, 0).setScale(2);
 
     scene.physics.world.setBounds(
       0,
@@ -33,6 +33,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
     );
 
     this.createPlatforms();
+    this.createPassablePlatforms();
     this.createLadders();
     this.createWalls();
     this.spawnMonsters();
@@ -47,6 +48,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
         this.background.displayHeight - 30,
         this.background.displayWidth,
       ],
+      [1525, 1500, 1050],
     ];
 
     for (const platform of platforms) {
@@ -55,33 +57,34 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
       bottom.displayHeight = 40;
       bottom.refreshBody();
     }
+  }
 
+  private createPassablePlatforms() {
+    // x, y, width
     this.environmentInteractions.passablePlatform.createPassablePlatforms([
-      [1387, 2600, 2000],
+      [1485, 990, 1000],
     ]);
   }
 
   private createLadders() {
     // x, y, width, height
-    const ladders: [number, number, number, number][] = [
-      [310, 2800, 100, 600],
-      [2471, 2800, 100, 600],
-    ];
-    this.environmentInteractions.ladders.createLadders(ladders);
+    this.environmentInteractions.ladders.createLadders([
+      [1900, 1225, 100, 510],
+    ]);
   }
 
   private createWalls() {
     const walls: Wall[] = [
       {
-        x: 15,
-        y: this.background.displayHeight - 300,
-        height: 600,
+        x: 1000,
+        y: 1500,
+        height: 1000,
         width: 30,
       },
       {
-        x: this.background.displayWidth - 15,
-        y: this.background.displayHeight - 300,
-        height: 600,
+        x: 700,
+        y: 1200,
+        height: 1200,
         width: 30,
       },
     ];
@@ -90,15 +93,9 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
 
   public spawnMonsters() {
     const locations: [number, number][] = [
-      [1292, 1800],
-      [1563, 1800],
-      [1435, 1800],
-      // [1003, 1800],
-      // [743, 1800],
-      // [2061, 1800],
-      // [1738, 1800],
-      // [1142, 1800],
-      // [889, 1800],
+      [1400, 1400],
+      [1500, 1400],
+      [1600, 1400],
     ];
 
     let delay = 0;
@@ -106,15 +103,9 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
       this.scene.time.delayedCall(delay, () => {
         const location = locations[locationIndex];
         this.environmentInteractions.monsterGroup.add(
-          new Monster(
-            this.scene,
-            location[0],
-            location[1],
-            `level_${(locationIndex % 3) + 1}` as "level_1",
-            {
-              player: this.environmentInteractions.player,
-            },
-          ),
+          new Monster(this.scene, location[0], location[1], "level_1", {
+            player: this.environmentInteractions.player,
+          }),
         );
       });
       delay += 1000;
@@ -122,6 +113,6 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   }
 
   private spawnPlayer() {
-    this.environmentInteractions.player.spawnPlayer(200, 2500);
+    this.environmentInteractions.player.spawnPlayer(200, 1900);
   }
 }
