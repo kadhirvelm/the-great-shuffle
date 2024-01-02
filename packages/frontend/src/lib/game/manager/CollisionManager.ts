@@ -1,8 +1,10 @@
+import { inRange, noop } from "lodash-es";
 import { AuraAttack } from "../chiPowers/AuraAttack";
 import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
 import { RangedAttack } from "../chiPowers/RangedAttack";
 import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
 import { Ladders } from "../environment/Ladders";
+import { PassablePlatform } from "../environment/PassablePlatform";
 import { TreeEnvironment } from "../environment/TreeEnvironment";
 import { Walls } from "../environment/Walls";
 import { Monster } from "../monster/Monster";
@@ -25,6 +27,7 @@ export interface InteractingObjects {
   environment: TreeEnvironment;
   ladders: Ladders;
   walls: Walls;
+  passablePlatform: PassablePlatform;
   player: Player;
   monsterGroup: MonsterGroup;
   rangedAttacks: RangedAttackGroup;
@@ -64,6 +67,54 @@ export class CollisionManager {
     );
 
     this.scene.physics.add.collider(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.walls,
+    );
+
+    this.scene.physics.add.overlap(
+      this.interactingObjects.player,
+      this.interactingObjects.ladders,
+      (player, ladder) => {
+        const typedPlayer: Player = player as Player;
+        typedPlayer.updateClosestLadder(ladder as Phaser.GameObjects.Sprite);
+      },
+      (player, ladder) => {
+        const typedPlayer = player as Player;
+        const typedLadder = ladder as Phaser.GameObjects.Sprite;
+
+        return inRange(
+          typedPlayer.x,
+          typedLadder.x - typedLadder.x * 0.1,
+          typedLadder.x + typedLadder.x * 0.1,
+        );
+      },
+    );
+
+    this.scene.physics.add.collider(
+      this.interactingObjects.player,
+      this.interactingObjects.passablePlatform,
+      noop,
+      (player, platform) => {
+        const typedPlayer = player as Player;
+
+        if (typedPlayer.playerInteractions.keyboard.down.isDown) {
+          return false;
+        }
+
+        const typedPlatform = platform as Phaser.GameObjects.Sprite;
+
+        const playerBottom = typedPlayer.getBounds().bottom ?? 0;
+        const platformTop = typedPlatform.getTopCenter().y ?? 0;
+
+        return playerBottom <= platformTop;
+      },
+    );
+    this.scene.physics.add.collider(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.passablePlatform,
+    );
+
+    this.scene.physics.add.collider(
       this.interactingObjects.player,
       this.interactingObjects.walls,
       (player, wall) => {
@@ -87,19 +138,6 @@ export class CollisionManager {
           typedPlayer.typedBody.velocity.x < 0 ? "left" : "right";
 
         return true;
-      },
-    );
-    this.scene.physics.add.collider(
-      this.interactingObjects.monsterGroup,
-      this.interactingObjects.walls,
-    );
-
-    this.scene.physics.add.overlap(
-      this.interactingObjects.player,
-      this.interactingObjects.ladders,
-      (player, ladder) => {
-        const typedPlayer: Player = player as Player;
-        typedPlayer.updateClosestLadder(ladder as Phaser.GameObjects.Sprite);
       },
     );
   }

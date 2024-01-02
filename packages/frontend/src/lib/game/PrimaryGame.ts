@@ -23,6 +23,7 @@ import { MonsterGroup } from "./monster/MonsterGroup";
 import { Player } from "./player/Player";
 import { removeStore, setStore } from "./store/storeManager";
 import { Walls } from "./environment/Walls";
+import { PassablePlatform } from "./environment/PassablePlatform";
 
 export class PrimaryGame {
   private game: Game;
@@ -102,10 +103,12 @@ class TutorialScene extends Scene {
 
     const ladders = new Ladders(this);
     const walls = new Walls(this);
+    const passablePlatform = new PassablePlatform(this);
     const environment = new TreeEnvironment(this, {
       player: this.player,
       ladders: ladders,
       walls: walls,
+      passablePlatform: passablePlatform,
       monsterGroup: this.monsterGroup,
     });
 
@@ -115,6 +118,7 @@ class TutorialScene extends Scene {
       environment: environment,
       ladders: ladders,
       walls: walls,
+      passablePlatform: passablePlatform,
       rangedAttacks: this.rangedAttackGroup,
       auraAttacks: this.auraAttackGroup,
       swordAttackHitbox: this.swordAttackHitbox,

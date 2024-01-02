@@ -4,11 +4,13 @@ import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
 import { Ladders } from "./Ladders";
 import { Wall, Walls } from "./Walls";
+import { PassablePlatform } from "./PassablePlatform";
 
 export interface EnvironmentInteractions {
   player: Player;
   ladders: Ladders;
   walls: Walls;
+  passablePlatform: PassablePlatform;
   monsterGroup: MonsterGroup;
 }
 
@@ -45,7 +47,6 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
         this.background.displayHeight - 30,
         this.background.displayWidth,
       ],
-      [1387, 2600, 2000],
     ];
 
     for (const platform of platforms) {
@@ -54,6 +55,10 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
       bottom.displayHeight = 40;
       bottom.refreshBody();
     }
+
+    this.environmentInteractions.passablePlatform.createPassablePlatforms([
+      [1387, 2600, 2000],
+    ]);
   }
 
   private createLadders() {
