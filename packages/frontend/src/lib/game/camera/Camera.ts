@@ -9,7 +9,7 @@ export class Camera {
       background.displayWidth,
       background.displayHeight,
     );
-    this.scene.cameras.main.setZoom(1.25);
+    this.scene.cameras.main.setZoom(1.75);
   }
 
   public followPlayer(player: Phaser.GameObjects.Sprite) {

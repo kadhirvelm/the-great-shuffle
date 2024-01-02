@@ -97,7 +97,6 @@ export class AssetManager {
     this.loadBackground();
     this.loadMonsters();
     this.loadPlayer();
-    this.loadPowers();
   }
 
   private loadBackground() {
@@ -107,43 +106,27 @@ export class AssetManager {
   }
 
   private loadPlayer() {
-    this.scene.load.spritesheet("idle", "visual/player/idle-110x256-75.png", {
+    this.scene.load.spritesheet("idle", "visual/player/idle-100x147-45.png", {
+      frameWidth: 100,
+      frameHeight: 147,
+    });
+    this.scene.load.spritesheet("jump", "visual/player/jump-110x147-35.png", {
       frameWidth: 110,
-      frameHeight: 256,
+      frameHeight: 147,
     });
-    this.scene.load.spritesheet("jump", "visual/player/jump-140x256-70.png", {
-      frameWidth: 140,
-      frameHeight: 256,
-    });
-    this.scene.load.spritesheet("run", "visual/player/running-205x256-30.png", {
-      frameWidth: 205,
-      frameHeight: 256,
+    this.scene.load.spritesheet("run", "visual/player/run-120x147-30.png", {
+      frameWidth: 120,
+      frameHeight: 147,
     });
 
-    this.scene.load.spritesheet("dash", "visual/player/dash-170x256-50.png", {
-      frameWidth: 170,
-      frameHeight: 256,
+    this.scene.load.spritesheet("dash", "visual/player/dash-98x147-0.png", {
+      frameWidth: 98,
+      frameHeight: 147,
     });
-    this.scene.load.spritesheet(
-      "climb",
-      "visual/player/climbing-110x256-110.png",
-      {
-        frameWidth: 110,
-        frameHeight: 256,
-      },
-    );
-  }
-
-  private loadPowers() {
-    // this.scene.load.image(
-    //   "ranged_attack",
-    //   "visual/powers/lightning/ranged/3.png",
-    // );
-    // this.scene.load.image("aura_attack", "visual/powers/lightning/aura/3.png");
-    // this.scene.load.image(
-    //   "enforcement",
-    //   "visual/powers/lightning/enforcement/3.png",
-    // );
+    this.scene.load.spritesheet("climb", "visual/player/climb-75x147-55.png", {
+      frameWidth: 75,
+      frameHeight: 147,
+    });
   }
 
   private loadMonsters() {

@@ -37,8 +37,8 @@ export class ShieldAttack extends Phaser.GameObjects.Sprite {
         at: 0,
         tween: {
           targets: this,
-          alpha: { from: 0, to: 1 },
-          scale: { from: 0, to: 1 },
+          alpha: { from: 0, to: 0.5 },
+          scale: { from: 0, to: 0.5 },
           duration: 150,
         },
       },
