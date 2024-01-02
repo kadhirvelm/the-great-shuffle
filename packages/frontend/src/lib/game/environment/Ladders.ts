@@ -10,8 +10,8 @@ export class Ladders extends Phaser.Physics.Arcade.StaticGroup {
 
       newLadder.displayHeight = height;
       newLadder.displayWidth = width;
-      newLadder.setSize(width, height);
       newLadder.setVisible(false);
+      newLadder.refreshBody();
 
       this.scene.add.tileSprite(x, y, width, height, "ladder");
     }
