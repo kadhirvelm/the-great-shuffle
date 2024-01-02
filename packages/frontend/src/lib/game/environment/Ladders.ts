@@ -3,9 +3,17 @@ export class Ladders extends Phaser.Physics.Arcade.StaticGroup {
     super(scene.physics.world, scene);
   }
 
-  public createLadders(ladders: [number, number][]) {
+  public createLadders(ladders: [number, number, number, number][]) {
     for (const ladder of ladders) {
-      this.create(ladder[0], ladder[1], "ladder");
+      const [x, y, width, height] = ladder;
+      const newLadder = this.create(x, y);
+
+      newLadder.displayHeight = height;
+      newLadder.displayWidth = width;
+      newLadder.setSize(width, height);
+      newLadder.setVisible(false);
+
+      this.scene.add.tileSprite(x, y, width, height, "ladder");
     }
   }
 }

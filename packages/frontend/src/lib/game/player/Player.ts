@@ -101,7 +101,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.anims.create({
       key: "climb_up",
       frames: this.anims.generateFrameNumbers("climb", { start: 0, end: 3 }),
-      frameRate: 3,
+      frameRate: 10,
       repeat: -1,
     });
     this.anims.create({
@@ -112,7 +112,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.anims.create({
       key: "climb_down",
       frames: this.anims.generateFrameNumbers("climb", { start: 3, end: 0 }),
-      frameRate: 3,
+      frameRate: 10,
       repeat: -1,
     });
 
