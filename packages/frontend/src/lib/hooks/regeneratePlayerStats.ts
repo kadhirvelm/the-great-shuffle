@@ -21,25 +21,25 @@ export function useRegeneratePlayerStats() {
 
     dispatch(updateHealth(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [health.current === health.max]);
+  }, [health.current, health.max]);
 
   const regenerateChi = useCallback(() => {
-    if (chi.current === 100) {
+    if (chi.current === chi.max) {
       return;
     }
 
     dispatch(updateChi(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chi.current === chi.max]);
+  }, [chi.current, chi.max]);
 
   const regenerateStamina = useCallback(() => {
-    if (stamina.current === 100) {
+    if (stamina.current === stamina.max) {
       return;
     }
 
     dispatch(updateStamina(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stamina.current === stamina.max]);
+  }, [stamina.current, stamina.max]);
 
   useEffect(() => {
     if (existingPid.current !== undefined) {

@@ -5,12 +5,12 @@ import * as _ from "lodash";
 
 const ORIGINAL_WIDTH = 192;
 
-const INPUT_NAME = "dash";
+const INPUT_NAME = "wall_hang";
 
-const LEFT = 55;
-const TOP = 10;
-const BOTTOM = 35;
-const WIDTH = 75;
+const LEFT = 45;
+const TOP = 25;
+const BOTTOM = 20;
+const WIDTH = 83;
 
 const FRAME_NUMBER = 2;
 

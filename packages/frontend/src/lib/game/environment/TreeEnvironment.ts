@@ -3,10 +3,12 @@ import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
 import { Ladders } from "./Ladders";
+import { Wall, Walls } from "./Walls";
 
 export interface EnvironmentInteractions {
   player: Player;
   ladders: Ladders;
+  walls: Walls;
   monsterGroup: MonsterGroup;
 }
 
@@ -30,6 +32,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
 
     this.createPlatforms();
     this.createLadders();
+    this.createWalls();
     this.spawnMonsters();
     this.spawnPlayer();
   }
@@ -67,6 +70,24 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
         "ladder",
       );
     }
+  }
+
+  private createWalls() {
+    const walls: Wall[] = [
+      {
+        x: 15,
+        y: this.background.displayHeight - 300,
+        height: 600,
+        width: 30,
+      },
+      {
+        x: this.background.displayWidth - 15,
+        y: this.background.displayHeight - 300,
+        height: 600,
+        width: 30,
+      },
+    ];
+    this.environmentInteractions.walls.createWalls(walls);
   }
 
   public spawnMonsters() {

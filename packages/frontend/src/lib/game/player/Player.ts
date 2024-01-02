@@ -33,6 +33,9 @@ export class Player extends Phaser.GameObjects.Sprite {
   public canClimb = false;
   public isClimbing = false;
 
+  public playerDirection: "left" | "right" | undefined = undefined;
+  public hangingOnWallState: "on-left" | "on-right" | undefined = undefined;
+
   public constructor(
     scene: Phaser.Scene,
     public playerInteractions: PlayerInteractions,
@@ -62,7 +65,7 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private initializePhysics() {
-    this.typedBody.setBounce(0.05);
+    // this.typedBody.setBounce(0.05);
     this.typedBody.setCollideWorldBounds(true);
 
     this.typedBody.setGravityY(Gravity.playerY);
@@ -110,6 +113,25 @@ export class Player extends Phaser.GameObjects.Sprite {
       key: "climb_down",
       frames: this.anims.generateFrameNumbers("climb", { start: 3, end: 0 }),
       frameRate: 3,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "wall_hang",
+      frames: this.anims.generateFrameNumbers("wall_hang", {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 3,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "wall_slide",
+      frames: this.anims.generateFrameNumbers("wall_slide", {
+        start: 0,
+        end: 2,
+      }),
+      frameRate: 4,
       repeat: -1,
     });
   }
@@ -176,6 +198,10 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     if (this.isClimbing && this.canClimb) {
       return this.playerMovement.handleClimbingMovement();
+    }
+
+    if (this.hangingOnWallState !== undefined) {
+      return this.playerMovement.handleWallHangMovement();
     }
 
     this.playerAttack.handleKeyboardInput();

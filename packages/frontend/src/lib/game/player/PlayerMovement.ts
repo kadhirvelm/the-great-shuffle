@@ -30,6 +30,41 @@ export class PlayerMovement {
     this.playerSprite.typedBody.setVelocityX(0);
   }
 
+  public handleWallHangMovement() {
+    if (this.playerSprite.playerInteractions.keyboard.space.isDown) {
+      const direction =
+        this.playerSprite.hangingOnWallState === "on-left" ? 1 : -1;
+      this.playerSprite.typedBody.setVelocityY(
+        -this.playerSprite.playerStatsHandler.movement.movementVelocityY(),
+      );
+      this.playerSprite.typedBody.setVelocityX(
+        direction *
+          this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
+      );
+      this.playerSprite.setFlipX(direction === -1);
+      this.playerSprite.hangingOnWallState = undefined;
+      return;
+    }
+
+    if (this.playerSprite.hangingOnWallState === "on-left") {
+      this.playerSprite.setFlipX(true);
+    } else {
+      this.playerSprite.setFlipX(false);
+    }
+
+    if (this.playerSprite.playerInteractions.keyboard.down.isDown) {
+      this.playerSprite.typedBody.setVelocityY(
+        this.playerSprite.playerStatsHandler.movement.wallSlideVelocityY(),
+      );
+      this.playerSprite.anims.play("wall_slide", true);
+    } else {
+      this.playerSprite.typedBody.setVelocityY(0);
+      this.playerSprite.anims.play("wall_hang", true);
+    }
+
+    this.playerSprite.typedBody.setVelocityX(0);
+  }
+
   public updateOtherMovements() {
     const maybeDashing = this.handleMaybeDashing();
     if (maybeDashing !== undefined) {

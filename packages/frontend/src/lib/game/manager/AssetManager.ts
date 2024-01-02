@@ -103,6 +103,7 @@ export class AssetManager {
     this.scene.load.image("tree", "visual/tree.jpg");
     this.scene.load.image("platform_texture", "visual/platform_texture.jpg");
     this.scene.load.image("ladder", "visual/ladder.png");
+    this.scene.load.image("wall", "visual/wall.png");
   }
 
   private loadPlayer() {
@@ -127,6 +128,22 @@ export class AssetManager {
       frameWidth: 75,
       frameHeight: 147,
     });
+    this.scene.load.spritesheet(
+      "wall_hang",
+      "visual/player/wall_hang-83x147-45.png",
+      {
+        frameWidth: 83,
+        frameHeight: 147,
+      },
+    );
+    this.scene.load.spritesheet(
+      "wall_slide",
+      "visual/player/wall_slide-83x147-40.png",
+      {
+        frameWidth: 83,
+        frameHeight: 147,
+      },
+    );
   }
 
   private loadMonsters() {

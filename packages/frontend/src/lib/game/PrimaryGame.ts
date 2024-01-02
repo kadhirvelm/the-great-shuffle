@@ -22,6 +22,7 @@ import { EnforcementGroup } from "./chiPowers/EnforcementGroup";
 import { MonsterGroup } from "./monster/MonsterGroup";
 import { Player } from "./player/Player";
 import { removeStore, setStore } from "./store/storeManager";
+import { Walls } from "./environment/Walls";
 
 export class PrimaryGame {
   private game: Game;
@@ -100,9 +101,11 @@ class TutorialScene extends Scene {
     this.monsterGroup = new MonsterGroup(this);
 
     const ladders = new Ladders(this);
+    const walls = new Walls(this);
     const environment = new TreeEnvironment(this, {
       player: this.player,
       ladders: ladders,
+      walls: walls,
       monsterGroup: this.monsterGroup,
     });
 
@@ -111,6 +114,7 @@ class TutorialScene extends Scene {
       monsterGroup: this.monsterGroup,
       environment: environment,
       ladders: ladders,
+      walls: walls,
       rangedAttacks: this.rangedAttackGroup,
       auraAttacks: this.auraAttackGroup,
       swordAttackHitbox: this.swordAttackHitbox,
