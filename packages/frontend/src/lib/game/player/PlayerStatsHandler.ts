@@ -157,10 +157,13 @@ export class PlayerStatsHandler {
     ) => {
       const intendedDiretion = direction === "left" ? -1 : 1;
       const deltaInSpeed =
-        Math.abs(currentSpeed + this.getSpeedModifier()) * 0.1;
+        Math.abs(currentSpeed + this.getSpeedModifier()) * 0.5;
       const finalDelta = intendedDiretion * clamp(deltaInSpeed, 0, 2.5);
 
       return currentSpeed + finalDelta;
+    },
+    wallSlideVelocityY: () => {
+      return (Movement.player_y + this.getSpeedModifier()) / 2;
     },
   };
 

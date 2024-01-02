@@ -2,33 +2,35 @@ import { AuraAttack } from "../chiPowers/AuraAttack";
 import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
 import { RangedAttack } from "../chiPowers/RangedAttack";
 import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
+import { Ladders } from "../environment/Ladders";
+import { TreeEnvironment } from "../environment/TreeEnvironment";
+import { Walls } from "../environment/Walls";
+import { Monster } from "../monster/Monster";
+import { MonsterGroup } from "../monster/MonsterGroup";
+import { Player } from "../player/Player";
 import {
   RodAttackHitbox,
   RodAttackHitboxGroup,
 } from "../weaponAttacks/RodAttackHitbox";
-import { Shield } from "../weaponAttacks/ShieldAttack";
-import { ShieldGroup } from "../weaponAttacks/ShieldAttackGroup";
+import { ShieldAttack } from "../weaponAttacks/ShieldAttack";
+import { ShieldAttackGroup } from "../weaponAttacks/ShieldAttackGroup";
 import { SpearAttack } from "../weaponAttacks/SpearAttack";
 import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
 import {
   SwordAttackHitbox,
   SwordAttackHitboxGroup,
 } from "../weaponAttacks/SwordAttackHitbox";
-import { Ladders } from "../environment/Ladders";
-import { TreeEnvironment } from "../environment/TreeEnvironment";
-import { Monster } from "../monster/Monster";
-import { MonsterGroup } from "../monster/MonsterGroup";
-import { Player } from "../player/Player";
 
 export interface InteractingObjects {
   environment: TreeEnvironment;
   ladders: Ladders;
+  walls: Walls;
   player: Player;
   monsterGroup: MonsterGroup;
   rangedAttacks: RangedAttackGroup;
   auraAttacks: AuraAttackGroup;
   swordAttackHitbox: SwordAttackHitboxGroup;
-  shieldGroup: ShieldGroup;
+  shieldGroup: ShieldAttackGroup;
   spearAttackGroup: SpearAttackGroup;
   rodAttackHitbox: RodAttackHitboxGroup;
 }
@@ -38,7 +40,7 @@ export class CollisionManager {
     private scene: Phaser.Scene,
     private interactingObjects: InteractingObjects,
   ) {
-    this.addPlatform();
+    this.addEnvironment();
     this.addPlayerAndMonster();
 
     this.addRangedAttacks();
@@ -51,7 +53,7 @@ export class CollisionManager {
     this.addShield();
   }
 
-  private addPlatform() {
+  private addEnvironment() {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
       this.interactingObjects.environment,
@@ -59,6 +61,37 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
       this.interactingObjects.environment,
+    );
+
+    this.scene.physics.add.collider(
+      this.interactingObjects.player,
+      this.interactingObjects.walls,
+      (player, wall) => {
+        const typedPlayer = player as Player;
+        typedPlayer.hangingOnWallState =
+          typedPlayer.playerDirection === "left" ? "on-left" : "on-right";
+
+        const typedWall = wall as Phaser.GameObjects.Sprite;
+
+        // The player isn't lining up cleanly with the wall, so we need to adjust their position a bit.
+        const direction = typedPlayer.playerDirection === "left" ? -1 : 1;
+        typedPlayer.typedBody.x = typedWall.x + direction * 5;
+      },
+      (player) => {
+        const typedPlayer = player as Player;
+        if (typedPlayer.typedBody.velocity.x === 0) {
+          return false;
+        }
+
+        typedPlayer.playerDirection =
+          typedPlayer.typedBody.velocity.x < 0 ? "left" : "right";
+
+        return true;
+      },
+    );
+    this.scene.physics.add.collider(
+      this.interactingObjects.monsterGroup,
+      this.interactingObjects.walls,
     );
 
     this.scene.physics.add.overlap(
@@ -294,7 +327,7 @@ export class CollisionManager {
       this.interactingObjects.shieldGroup,
       (monster, shield) => {
         const typedMonster = monster as Monster;
-        const typedShield = shield as Shield;
+        const typedShield = shield as ShieldAttack;
 
         typedMonster.pushBack(
           {
