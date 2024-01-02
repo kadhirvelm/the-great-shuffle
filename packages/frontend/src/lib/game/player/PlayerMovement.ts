@@ -173,6 +173,8 @@ export class PlayerMovement {
       this.playerSprite.canClimb
     ) {
       this.playerSprite.isClimbing = true;
+      this.playerSprite.x =
+        this.playerSprite.closestLadder?.x ?? this.playerSprite.x;
     }
   }
 

@@ -82,11 +82,7 @@ export class CollisionManager {
         const typedPlayer = player as Player;
         const typedLadder = ladder as Phaser.GameObjects.Sprite;
 
-        return inRange(
-          typedPlayer.x,
-          typedLadder.x - typedLadder.x * 0.1,
-          typedLadder.x + typedLadder.x * 0.1,
-        );
+        return inRange(typedPlayer.x, typedLadder.x - 20, typedLadder.x + 20);
       },
     );
 
@@ -117,21 +113,32 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
       this.interactingObjects.walls,
-      (player, wall) => {
+      (player) => {
         const typedPlayer = player as Player;
+        if (typedPlayer.playerDirection === undefined) {
+          return;
+        }
+
         typedPlayer.hangingOnWallState =
           typedPlayer.playerDirection === "left" ? "on-left" : "on-right";
 
-        const typedWall = wall as Phaser.GameObjects.Sprite;
-
         // The player isn't lining up cleanly with the wall, so we need to adjust their position a bit.
         const direction = typedPlayer.playerDirection === "left" ? -1 : 1;
-        typedPlayer.typedBody.x = typedWall.x + direction * 5;
+        typedPlayer.typedBody.x = typedPlayer.typedBody.x + direction * 15;
       },
-      (player) => {
+      (player, wall) => {
         const typedPlayer = player as Player;
         if (typedPlayer.typedBody.velocity.x === 0) {
           return false;
+        }
+
+        const typedWall = wall as Phaser.GameObjects.Sprite;
+        if (
+          (typedWall.getBottomCenter().y ?? 0) <
+          (typedPlayer.getTopCenter().y ?? 0)
+        ) {
+          typedPlayer.playerDirection = undefined;
+          return true;
         }
 
         typedPlayer.playerDirection =
