@@ -57,19 +57,12 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   }
 
   private createLadders() {
-    // x, y, width
-    const ladders: [number, number][] = [
-      [310, 2800],
-      [2471, 2800],
+    // x, y, width, height
+    const ladders: [number, number, number, number][] = [
+      [310, 2800, 100, 600],
+      [2471, 2800, 100, 600],
     ];
-
-    for (const ladder of ladders) {
-      this.environmentInteractions.ladders.create(
-        ladder[0],
-        ladder[1],
-        "ladder",
-      );
-    }
+    this.environmentInteractions.ladders.createLadders(ladders);
   }
 
   private createWalls() {
