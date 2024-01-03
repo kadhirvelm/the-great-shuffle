@@ -32,10 +32,10 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
       this.background.displayHeight,
     );
 
-    this.createPlatforms();
     this.createPassablePlatforms();
     this.createLadders();
     this.createWalls();
+    this.createPlatforms();
     this.spawnMonsters();
     this.spawnPlayer();
   }
@@ -48,7 +48,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
         this.background.displayHeight - 30,
         this.background.displayWidth,
       ],
-      [1525, 1500, 1050],
+      [1530, 1500, 1035],
     ];
 
     for (const platform of platforms) {
