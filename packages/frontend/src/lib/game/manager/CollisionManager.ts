@@ -1,4 +1,4 @@
-import { inRange, noop } from "lodash-es";
+import { inRange } from "lodash-es";
 import { AuraAttack } from "../chiPowers/AuraAttack";
 import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
 import { RangedAttack } from "../chiPowers/RangedAttack";
@@ -22,6 +22,8 @@ import {
   SwordAttackHitbox,
   SwordAttackHitboxGroup,
 } from "../weaponAttacks/SwordAttackHitbox";
+
+const MINIMUM_WALL_CLEARANCE = 10;
 
 export interface InteractingObjects {
   environment: TreeEnvironment;
@@ -131,6 +133,16 @@ export class CollisionManager {
         }
 
         const typedWall = wall as Phaser.GameObjects.Sprite;
+
+        if (
+          Math.abs(
+            (typedPlayer.getBottomCenter().y ?? 0) -
+              (typedWall.getBottomCenter().y ?? 0),
+          ) <= MINIMUM_WALL_CLEARANCE
+        ) {
+          return;
+        }
+
         typedPlayer.hangingOnWall = typedWall;
 
         if (typedPlayer.playerDirection === "left") {
@@ -140,15 +152,6 @@ export class CollisionManager {
           typedPlayer.x =
             (typedWall.getLeftCenter().x ?? 0) - typedPlayer.width / 3;
         }
-
-        // The player isn't lining up cleanly with the wall, so we need to adjust their position a bit.
-        // const direction = typedPlayer.playerDirection === "left" ? -1 : 1;
-        // console.log(typedWall.x, typedWall.getBounds());
-        // const wallBounds = typedWall.getBounds();
-        // typedPlayer.typedBody.x =
-        //   typedPlayer.playerDirection === "left"
-        //     ? wallBounds.right
-        //     : wallBounds.left;
       },
       (player, wall) => {
         const typedPlayer = player as Player;
@@ -166,9 +169,38 @@ export class CollisionManager {
         }
 
         typedPlayer.playerDirection =
-          typedPlayer.typedBody.velocity.x < 0 ? "left" : "right";
+          typedPlayer.typedBody.velocity.x <= 0 ? "left" : "right";
 
         return true;
+      },
+    );
+
+    // This prevents the player from dashing through walls
+    this.scene.physics.add.overlap(
+      this.interactingObjects.player,
+      this.interactingObjects.walls,
+      (player, wall) => {
+        const typedPlayer = player as Player;
+        if (
+          typedPlayer.playerDirection === undefined ||
+          typedPlayer.hangingOnWall === undefined
+        ) {
+          return;
+        }
+
+        const typedWall = wall as Phaser.GameObjects.Sprite;
+
+        if (typedPlayer.playerDirection === "left") {
+          typedPlayer.x = Math.max(
+            typedPlayer.x,
+            typedWall.getRightCenter().x ?? 0,
+          );
+        } else {
+          typedPlayer.x = Math.min(
+            typedPlayer.x,
+            typedWall.getLeftCenter().x ?? 0,
+          );
+        }
       },
     );
   }

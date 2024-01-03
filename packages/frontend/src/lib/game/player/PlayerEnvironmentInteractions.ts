@@ -9,11 +9,7 @@ export class PlayerEnvironmentInteractions {
   }
 
   private handleUpdatingGravity() {
-    if (
-      this.playerSprite.isClimbing ||
-      this.playerSprite.currentState?.type === "dashing" // ||
-      // this.playerSprite.hangingOnWall !== undefined
-    ) {
+    if (this.playerSprite.isClimbing) {
       this.playerSprite.typedBody.setAllowGravity(false);
     } else {
       this.playerSprite.typedBody.setAllowGravity(true);
