@@ -29,6 +29,7 @@ export class PlayerMovement {
       this.playerSprite.typedBody.setVelocityY(
         -this.playerSprite.playerStatsHandler.movement.movementVelocityY(),
       );
+      this.lastJump = 0;
       return;
     }
 
@@ -62,6 +63,8 @@ export class PlayerMovement {
       );
       this.playerSprite.setFlipX(direction === -1);
       this.playerSprite.hangingOnWall = undefined;
+      this.playerSprite.playerDirection = undefined;
+      this.lastJump = 0;
       return;
     }
 
@@ -92,6 +95,7 @@ export class PlayerMovement {
 
     if (hasOverShotWall || hasSlippedFromWall || hasSlippedAboveWall) {
       this.playerSprite.hangingOnWall = undefined;
+      this.playerSprite.playerDirection = undefined;
       return;
     }
 
@@ -151,6 +155,22 @@ export class PlayerMovement {
         this.playerSprite.typedBody.velocity.x * 0.995,
       );
     }
+  }
+
+  public handleDashing(dashingState: DashingState) {
+    this.playerSprite.anims.play("dash", true);
+
+    const direction = dashingState.direction === "left" ? -1 : 1;
+    const dashSpeed = this.playerSprite.playerStatsHandler.dash.dashSpeed();
+    this.playerSprite.typedBody.setVelocityX(direction * dashSpeed);
+    dashingState.currentDashDistance +=
+      dashSpeed / this.playerSprite.scene.game.loop.actualFps;
+
+    if (dashingState.currentDashDistance < dashingState.totalDashDistance) {
+      return;
+    }
+
+    this.playerSprite.currentState = undefined;
   }
 
   private handleMaybeDashing() {

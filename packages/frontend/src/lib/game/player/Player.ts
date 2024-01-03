@@ -195,7 +195,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.playerEnvironmentInteractions.update();
 
     if (this.currentState?.type === "dashing") {
-      return this.handleDashing(this.currentState);
+      return this.playerMovement.handleDashing(this.currentState);
     }
 
     this.playerMovement.registerKeyboardInput();
@@ -210,22 +210,6 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     this.playerAttack.handleKeyboardInput();
     this.playerMovement.updateOtherMovements();
-  }
-
-  private handleDashing(dashingState: DashingState) {
-    this.anims.play("dash", true);
-
-    const direction = dashingState.direction === "left" ? -1 : 1;
-    const dashSpeed = this.playerStatsHandler.dash.dashSpeed();
-    this.typedBody.setVelocityX(direction * dashSpeed);
-    dashingState.currentDashDistance +=
-      dashSpeed / this.scene.game.loop.actualFps;
-
-    if (dashingState.currentDashDistance < dashingState.totalDashDistance) {
-      return;
-    }
-
-    this.currentState = undefined;
   }
 
   public noChi() {

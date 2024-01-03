@@ -79,13 +79,13 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
         x: 1000,
         y: 1500,
         height: 1000,
-        width: 30,
+        width: 60,
       },
       {
         x: 700,
         y: 1200,
         height: 1200,
-        width: 30,
+        width: 60,
       },
     ];
     this.environmentInteractions.walls.createWalls(walls);
