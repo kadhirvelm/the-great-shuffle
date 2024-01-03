@@ -60,6 +60,12 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
       this.interactingObjects.environment,
+      (player) => {
+        const typedPlayer = player as Player;
+        typedPlayer.hangingOnWall = undefined;
+
+        typedPlayer.lastTouchedPlatform = this.scene.time.now;
+      },
     );
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
@@ -89,7 +95,12 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
       this.interactingObjects.passablePlatform,
-      noop,
+      (player) => {
+        const typedPlayer = player as Player;
+        typedPlayer.hangingOnWall = undefined;
+
+        typedPlayer.lastTouchedPlatform = this.scene.time.now;
+      },
       (player, platform) => {
         const typedPlayer = player as Player;
 
@@ -113,18 +124,31 @@ export class CollisionManager {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
       this.interactingObjects.walls,
-      (player) => {
+      (player, wall) => {
         const typedPlayer = player as Player;
         if (typedPlayer.playerDirection === undefined) {
           return;
         }
 
-        typedPlayer.hangingOnWallState =
-          typedPlayer.playerDirection === "left" ? "on-left" : "on-right";
+        const typedWall = wall as Phaser.GameObjects.Sprite;
+        typedPlayer.hangingOnWall = typedWall;
+
+        if (typedPlayer.playerDirection === "left") {
+          typedPlayer.x =
+            (typedWall.getRightCenter().x ?? 0) + typedPlayer.width / 3;
+        } else {
+          typedPlayer.x =
+            (typedWall.getLeftCenter().x ?? 0) - typedPlayer.width / 3;
+        }
 
         // The player isn't lining up cleanly with the wall, so we need to adjust their position a bit.
-        const direction = typedPlayer.playerDirection === "left" ? -1 : 1;
-        typedPlayer.typedBody.x = typedPlayer.typedBody.x + direction * 15;
+        // const direction = typedPlayer.playerDirection === "left" ? -1 : 1;
+        // console.log(typedWall.x, typedWall.getBounds());
+        // const wallBounds = typedWall.getBounds();
+        // typedPlayer.typedBody.x =
+        //   typedPlayer.playerDirection === "left"
+        //     ? wallBounds.right
+        //     : wallBounds.left;
       },
       (player, wall) => {
         const typedPlayer = player as Player;

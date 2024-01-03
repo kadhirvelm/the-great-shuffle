@@ -1,10 +1,30 @@
 import { DashingState, Player } from "./Player";
 
+const COYOTE_TIME_IN_MS = 300;
+const JUMP_DELAY_IN_MS = 300;
+
 export class PlayerMovement {
+  private lastJump = 0;
+
   public constructor(private playerSprite: Player) {}
 
+  public registerKeyboardInput() {
+    if (
+      Phaser.Input.Keyboard.JustDown(
+        this.playerSprite.playerInteractions.keyboard.space,
+      )
+    ) {
+      this.lastJump = this.playerSprite.scene.time.now;
+    }
+  }
+
+  private isValidJump() {
+    // We can give a little bit of a jump buffer to the player so they can time their jumps a tad off
+    return this.playerSprite.scene.time.now - this.lastJump < JUMP_DELAY_IN_MS;
+  }
+
   public handleClimbingMovement() {
-    if (this.playerSprite.playerInteractions.keyboard.space.isDown) {
+    if (this.isValidJump()) {
       this.playerSprite.isClimbing = false;
       this.playerSprite.typedBody.setVelocityY(
         -this.playerSprite.playerStatsHandler.movement.movementVelocityY(),
@@ -31,9 +51,8 @@ export class PlayerMovement {
   }
 
   public handleWallHangMovement() {
-    if (this.playerSprite.playerInteractions.keyboard.space.isDown) {
-      const direction =
-        this.playerSprite.hangingOnWallState === "on-left" ? 1 : -1;
+    if (this.isValidJump()) {
+      const direction = this.playerSprite.playerDirection === "left" ? 1 : -1;
       this.playerSprite.typedBody.setVelocityY(
         -this.playerSprite.playerStatsHandler.movement.movementVelocityY(),
       );
@@ -42,11 +61,41 @@ export class PlayerMovement {
           this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
       );
       this.playerSprite.setFlipX(direction === -1);
-      this.playerSprite.hangingOnWallState = undefined;
+      this.playerSprite.hangingOnWall = undefined;
       return;
     }
 
-    if (this.playerSprite.hangingOnWallState === "on-left") {
+    if (this.playerSprite.hangingOnWall === undefined) {
+      return;
+    }
+
+    const hasOverShotWall = (() => {
+      if (this.playerSprite.playerDirection === "left") {
+        return (
+          (this.playerSprite.getLeftCenter().x ?? 0) <
+          (this.playerSprite.hangingOnWall.getLeftCenter().x ?? 0)
+        );
+      }
+
+      return (
+        (this.playerSprite.getRightCenter().x ?? 0) >
+        (this.playerSprite.hangingOnWall.getRightCenter().x ?? 0)
+      );
+    })();
+
+    const hasSlippedFromWall =
+      (this.playerSprite.hangingOnWall.getBottomCenter().y ?? 0) <
+      (this.playerSprite.getTopCenter().y ?? 0);
+    const hasSlippedAboveWall =
+      (this.playerSprite.hangingOnWall.getTopCenter().y ?? 0) >
+      (this.playerSprite.getBottomCenter().y ?? 0);
+
+    if (hasOverShotWall || hasSlippedFromWall || hasSlippedAboveWall) {
+      this.playerSprite.hangingOnWall = undefined;
+      return;
+    }
+
+    if (this.playerSprite.playerDirection === "left") {
       this.playerSprite.setFlipX(true);
     } else {
       this.playerSprite.setFlipX(false);
@@ -71,12 +120,13 @@ export class PlayerMovement {
       return;
     }
 
+    this.handleEnvironmentInteractions();
+
     if (!this.playerSprite.typedBody.touching.down) {
       return this.handleAirborneMovement();
     }
 
     this.handleGroundMovement();
-    this.handleEnvironmentInteractions();
   }
 
   private handleAirborneMovement() {
@@ -179,13 +229,22 @@ export class PlayerMovement {
   }
 
   private handleEnvironmentInteractions() {
-    if (
-      this.playerSprite.playerInteractions.keyboard.space.isDown &&
-      this.playerSprite.typedBody.touching.down
-    ) {
+    if (this.playerSprite.typedBody.velocity.y < 0) {
+      return;
+    }
+
+    // We can give a little bit of buffer to the player so they can jump a bit after the platform
+    const isValidTouchingDown =
+      this.playerSprite.typedBody.touching.down ||
+      this.playerSprite.scene.time.now -
+        (this.playerSprite.lastTouchedPlatform ?? 0) <
+        COYOTE_TIME_IN_MS;
+
+    if (this.isValidJump() && isValidTouchingDown) {
       this.playerSprite.typedBody.setVelocityY(
         -this.playerSprite.playerStatsHandler.movement.movementVelocityY(),
       );
+      this.lastJump = 0;
     }
   }
 }

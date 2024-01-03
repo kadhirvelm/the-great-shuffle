@@ -29,12 +29,14 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   public isFlashing = false;
 
+  public lastTouchedPlatform: number | undefined = undefined;
+
   public closestLadder: Phaser.GameObjects.Sprite | undefined;
   public canClimb = false;
   public isClimbing = false;
 
   public playerDirection: "left" | "right" | undefined = undefined;
-  public hangingOnWallState: "on-left" | "on-right" | undefined = undefined;
+  public hangingOnWall: Phaser.GameObjects.Sprite | undefined = undefined;
 
   public constructor(
     scene: Phaser.Scene,
@@ -196,11 +198,13 @@ export class Player extends Phaser.GameObjects.Sprite {
       return this.handleDashing(this.currentState);
     }
 
+    this.playerMovement.registerKeyboardInput();
+
     if (this.isClimbing && this.canClimb) {
       return this.playerMovement.handleClimbingMovement();
     }
 
-    if (this.hangingOnWallState !== undefined) {
+    if (this.hangingOnWall !== undefined) {
       return this.playerMovement.handleWallHangMovement();
     }
 
