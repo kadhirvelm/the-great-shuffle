@@ -48,7 +48,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
         this.background.displayHeight - 30,
         this.background.displayWidth,
       ],
-      [1530, 1500, 1035],
+      [1540, 1500, 1030],
     ];
 
     for (const platform of platforms) {
@@ -62,7 +62,8 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   private createPassablePlatforms() {
     // x, y, width
     this.environmentInteractions.passablePlatform.createPassablePlatforms([
-      [1485, 990, 1000],
+      [1510, 1010, 1080],
+      [1310, 590, 1500],
     ]);
   }
 
@@ -70,6 +71,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
     // x, y, width, height
     this.environmentInteractions.ladders.createLadders([
       [1900, 1225, 100, 510],
+      [2000, 750, 100, 510],
     ]);
   }
 

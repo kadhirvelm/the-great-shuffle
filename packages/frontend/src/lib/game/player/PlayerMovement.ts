@@ -62,6 +62,7 @@ export class PlayerMovement {
           this.playerSprite.playerStatsHandler.movement.movementVelocityX(),
       );
       this.playerSprite.setFlipX(direction === -1);
+
       this.playerSprite.hangingOnWall = undefined;
       this.playerSprite.playerDirection = undefined;
       this.lastJump = 0;
