@@ -154,9 +154,13 @@ export class CollisionManager {
         }
       },
       (player, wall) => {
+        // This is a bit complex, but the player collides with the wall once more when they jump off of it, so we need to ignore that
+        // Or continually evaluate which direction the player is going on. Unfortunately experiments to use the player's x, y position
+        // didn't work as reliably as just checking for their x velocity
+
         const typedPlayer = player as Player;
         if (typedPlayer.typedBody.velocity.x === 0) {
-          return false;
+          return true;
         }
 
         const typedWall = wall as Phaser.GameObjects.Sprite;
