@@ -1,11 +1,21 @@
-import { MonsterStats, PushBack } from "@tower/api";
+import {
+  DEFAULT_MONSTER_STATS,
+  MonsterStats,
+  OngoingStatusEffect,
+  PushBack,
+  RecursivePartial,
+} from "@tower/api";
 import { Monster } from "./Monster";
+import { cloneDeep, compact } from "lodash-es";
 
 export class MonsterStatsHandler {
   public stats: MonsterStats;
+  public affectedStats: {
+    [statusEffectName: string]: RecursivePartial<MonsterStats>;
+  } = {};
 
   public constructor(private monster: Monster) {
-    this.stats = this.monster.monsterTypeHandler.getBaseStats();
+    this.stats = cloneDeep(this.monster.monsterTypeHandler.getBaseStats());
   }
 
   public takeDamage(damage: number) {
@@ -15,6 +25,8 @@ export class MonsterStatsHandler {
       this.stats.vitality.health.current - finalDamage,
       0,
     );
+
+    this.monster.flashOrDestroy();
   }
 
   public isAlive() {
@@ -22,27 +34,78 @@ export class MonsterStatsHandler {
   }
 
   public knockBack({ duration, velocity }: PushBack) {
-    const finalDuration =
-      (duration * this.stats.defensiveAttributes.defense) / 100;
-    const finalVelocity =
-      (velocity * this.stats.defensiveAttributes.defense) / 100;
+    const finalDefense = Math.min(
+      this.stats.defensiveAttributes.defense -
+        this._getDeltaInStats("defensiveAttributes").defense,
+      0,
+    );
+    const finalDuration = (duration * finalDefense) / 100;
+    const finalVelocity = (velocity * finalDefense) / 100;
 
     return { finalDuration, finalVelocity };
   }
 
   public getCollisionStrength() {
-    return this.stats.offensiveAttributes.collisionStrength;
+    return Math.min(
+      this.stats.offensiveAttributes.collisionStrength -
+        this._getDeltaInStats("offensiveAttributes").collisionStrength,
+      0,
+    );
   }
 
   public getSpeedX() {
-    return this.stats.defensiveAttributes.speed;
+    return Math.min(
+      this.stats.defensiveAttributes.speed -
+        this._getDeltaInStats("defensiveAttributes").speed,
+      0,
+    );
   }
 
   public getSpeedY() {
-    return this.stats.defensiveAttributes.jump;
+    return (
+      this.stats.defensiveAttributes.jump -
+        this._getDeltaInStats("defensiveAttributes").jump,
+      0
+    );
   }
 
   public getAggroRange() {
-    return this.stats.offensiveAttributes.aggroRange;
+    return (
+      this.stats.offensiveAttributes.aggroRange -
+        this._getDeltaInStats("offensiveAttributes").aggroRange,
+      0
+    );
+  }
+
+  public applyStatusEffect(statusEffect: OngoingStatusEffect) {
+    const deltaInStats = statusEffect.application.effect(this, statusEffect);
+
+    if (deltaInStats.vitality?.health?.current !== undefined) {
+      this.takeDamage(deltaInStats.vitality.health.current);
+    }
+
+    this.affectedStats[statusEffect.name] = deltaInStats;
+  }
+
+  public removeStatusEffect(statusEffect: OngoingStatusEffect) {
+    delete this.affectedStats[statusEffect.name];
+  }
+
+  public _getDeltaInStats<Key extends keyof MonsterStats>(
+    key: Key,
+  ): MonsterStats[Key] {
+    const defaultStatsForKey = cloneDeep(DEFAULT_MONSTER_STATS[key]);
+    const allRelevantValues = compact(
+      Object.values(this.affectedStats).map((stats) => stats[key]),
+    );
+
+    for (const relevantValues of allRelevantValues) {
+      for (const key of Object.keys(relevantValues ?? {})) {
+        (defaultStatsForKey as any)[key] +=
+          (relevantValues as any | undefined)?.[key as any] ?? 0;
+      }
+    }
+
+    return defaultStatsForKey;
   }
 }

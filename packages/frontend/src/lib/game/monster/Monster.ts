@@ -3,6 +3,7 @@ import { DisplayStats } from "../display/DisplayStats";
 import { Player } from "../player/Player";
 import { MonsterStatsHandler } from "./MonsterStatsHandler";
 import { MonsterTypeHandler, MonsterTypes } from "./MonsterType";
+import { StatusEffectHandler } from "../statusEffect/MonsterStatusEffectHandler";
 
 export interface MonsterInteraction {
   player: Player;
@@ -14,6 +15,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
   public monsterTypeHandler: MonsterTypeHandler;
   public monsterStatsHandler: MonsterStatsHandler;
+  public statusEffectHandler: StatusEffectHandler;
 
   public auraAttackTracker: { [auraAttackId: string]: number } = {};
   public swordAttackTracker: { [swordAttackId: string]: true } = {};
@@ -45,6 +47,10 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
     this.monsterTypeHandler = new MonsterTypeHandler(scene, this);
     this.monsterStatsHandler = new MonsterStatsHandler(this);
+    this.statusEffectHandler = new StatusEffectHandler(
+      this.scene,
+      this.monsterStatsHandler,
+    );
 
     this.displayStats = new DisplayStats(this, {
       health: this.monsterStatsHandler.stats.vitality.health,
@@ -75,6 +81,7 @@ export class Monster extends Phaser.GameObjects.Sprite {
 
   public update() {
     this.displayStats.update();
+    this.statusEffectHandler.update();
 
     if (!this.isAlive()) {
       this.typedBody.setVelocity(0, 0);
@@ -119,7 +126,9 @@ export class Monster extends Phaser.GameObjects.Sprite {
     }
 
     this.monsterStatsHandler.takeDamage(damage);
+  }
 
+  public flashOrDestroy() {
     if (!this.monsterStatsHandler.isAlive()) {
       return this.fadeOutAndDestroy();
     }

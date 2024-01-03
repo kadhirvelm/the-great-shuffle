@@ -4,5 +4,6 @@ export * from "./implementation";
 export * from "./monsterStats";
 export * from "./playerStats";
 export * from "./service";
+export * from "./statusEffect";
 export * from "./utils";
 export * from "./weaponTypes";
