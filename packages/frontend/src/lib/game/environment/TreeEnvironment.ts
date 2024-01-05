@@ -96,8 +96,8 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   public spawnMonsters() {
     const locations: [number, number][] = [
       [1400, 1400],
-      [1500, 1400],
-      [1600, 1400],
+      // [1500, 1400],
+      // [1600, 1400],
     ];
 
     let delay = 0;
