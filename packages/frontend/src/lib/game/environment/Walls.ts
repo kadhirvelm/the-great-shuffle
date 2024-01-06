@@ -12,11 +12,19 @@ export class Walls extends Phaser.Physics.Arcade.StaticGroup {
 
   public createWalls(walls: Wall[]) {
     for (const wall of walls) {
-      const newWall = this.create(wall.x, wall.y, "wall");
-      newWall.setSize(wall.width, wall.height);
+      const newWall = this.create(wall.x, wall.y);
       newWall.displayWidth = wall.width;
       newWall.displayHeight = wall.height;
+      newWall.setVisible(false);
       newWall.refreshBody();
+
+      this.scene.add.tileSprite(
+        wall.x,
+        wall.y,
+        wall.width,
+        wall.height,
+        "wall",
+      );
     }
   }
 }

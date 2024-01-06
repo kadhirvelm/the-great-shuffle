@@ -14,12 +14,7 @@ export class SwordAttackHitbox extends Phaser.Physics.Arcade.Sprite {
     swordAttackAttributes: SwordAttackHitboxAttributes,
     public swordAttackDetails: SwordAttack,
   ) {
-    super(
-      scene,
-      swordAttackAttributes.x,
-      swordAttackAttributes.y,
-      "platform_texture",
-    );
+    super(scene, swordAttackAttributes.x, swordAttackAttributes.y, "platform");
 
     this.setVisible(false);
 
