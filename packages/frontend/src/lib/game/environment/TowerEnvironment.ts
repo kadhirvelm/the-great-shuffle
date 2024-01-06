@@ -1,7 +1,7 @@
 import { range } from "lodash-es";
 import { Monster } from "../monster/Monster";
-import { Wall } from "./Walls";
-import { EnvironmentInteractions } from "./EnvironmentInteractions";
+import { Wall } from "../environmentInteractions/Walls";
+import { EnvironmentInteractions } from "../environmentInteractions/EnvironmentInteractions";
 
 export class TowerEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   public background: Phaser.GameObjects.Image;
@@ -98,6 +98,6 @@ export class TowerEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   }
 
   private spawnPlayer() {
-    this.environmentInteractions.player.spawnPlayer(200, 1700);
+    this.environmentInteractions.player.spawnPlayer(200, 1925);
   }
 }

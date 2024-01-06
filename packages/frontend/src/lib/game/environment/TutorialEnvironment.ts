@@ -1,8 +1,15 @@
-import { EnvironmentInteractions } from "./EnvironmentInteractions";
-import { Wall } from "./Walls";
+import { Store } from "@reduxjs/toolkit";
+import { EnvironmentInteractions } from "../environmentInteractions/EnvironmentInteractions";
+import { Wall } from "../environmentInteractions/Walls";
+import { TOWER_SCENE_KEY } from "../scenes/TowerScene";
+import { State } from "../../store/configureStore";
+import { getStore } from "../store/storeManager";
+import { updateGameStage } from "../../store/reducer/gameState";
 
 export class TutorialEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   public background: Phaser.GameObjects.Image;
+
+  private store: Store<State>;
 
   public constructor(
     scene: Phaser.Scene,
@@ -22,10 +29,13 @@ export class TutorialEnvironment extends Phaser.Physics.Arcade.StaticGroup {
       this.background.displayHeight,
     );
 
+    this.store = getStore();
+
     this.createPlatforms();
     this.createWalls();
     this.createLadders();
     this.createPassablePlatform();
+    this.createDoor();
     this.spawnPlayer();
   }
 
@@ -79,6 +89,18 @@ export class TutorialEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   private createPassablePlatform() {
     this.environmentInteractions.passablePlatform.createPassablePlatforms([
       [1125, 1725, 1000],
+    ]);
+  }
+
+  private createDoor() {
+    this.environmentInteractions.doors.createDoors([
+      [
+        1725,
+        1360,
+        () => {
+          this.store.dispatch(updateGameStage(TOWER_SCENE_KEY));
+        },
+      ],
     ]);
   }
 

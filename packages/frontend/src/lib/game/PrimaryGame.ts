@@ -11,9 +11,11 @@ import { TowerScene } from "./scenes/TowerScene";
 export class PrimaryGame {
   private game: Game;
 
+  private currentStage: string;
+
   constructor(
     private parent: HTMLElement,
-    store: Store<State>,
+    private store: Store<State>,
   ) {
     setStore(store);
 
@@ -30,6 +32,18 @@ export class PrimaryGame {
       },
       backgroundColor: "#000",
       scene: [TutorialScene, TowerScene],
+    });
+
+    this.currentStage = store.getState().gameState.stage;
+    this.game.scene.start(this.currentStage);
+    this.store.subscribe(() => {
+      const maybeNewStage = this.store.getState().gameState.stage;
+      if (maybeNewStage === this.currentStage) {
+        return;
+      }
+
+      this.currentStage = maybeNewStage;
+      this.game.scene.start(this.currentStage);
     });
   }
 

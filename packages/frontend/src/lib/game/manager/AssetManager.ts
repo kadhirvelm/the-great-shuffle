@@ -108,6 +108,7 @@ export class AssetManager {
     );
     this.scene.load.image("ladder", "visual/environment/ladder.png");
     this.scene.load.image("wall", "visual/environment/wall.png");
+    this.scene.load.image("door", "visual/environment/door.png");
   }
 
   private loadPlayer() {

@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PlayerChiPower, PlayerWeapon } from "@tower/api";
 import { Movement } from "../../game/constants/enums";
+import { TUTORIAL_SCENE_KEY } from "../../game/scenes/TutorialScene";
+import { TOWER_SCENE_KEY } from "../../game/scenes/TowerScene";
 
-export type GameStage = "tutorial";
+export type GameStage = typeof TUTORIAL_SCENE_KEY | typeof TOWER_SCENE_KEY;
 
 export interface SinglePlayerStat {
   current: number;
@@ -38,7 +40,7 @@ export interface GameState {
 }
 
 const initialState: GameState = {
-  stage: "tutorial",
+  stage: "TutorialScene",
   player: {
     health: {
       current: Infinity,
@@ -224,6 +226,9 @@ const gameStateSlice = createSlice({
         state.playerChiPowers[2] = action.payload.chiPower;
       }
     },
+    updateGameStage: (state, action: PayloadAction<GameStage>) => {
+      state.stage = action.payload;
+    },
   },
 });
 
@@ -234,6 +239,7 @@ export const {
   updateChi,
   updateMaximums,
   updateWeapon,
+  updateGameStage,
   updateChiPower,
 } = gameStateSlice.actions;
 

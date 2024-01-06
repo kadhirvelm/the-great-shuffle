@@ -3,10 +3,10 @@ import { AuraAttack } from "../chiPowers/AuraAttack";
 import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
 import { RangedAttack } from "../chiPowers/RangedAttack";
 import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
-import { Ladders } from "../environment/Ladders";
-import { PassablePlatform } from "../environment/PassablePlatform";
-import { Platform } from "../environment/Platform";
-import { Walls } from "../environment/Walls";
+import { Ladders } from "../environmentInteractions/Ladders";
+import { PassablePlatform } from "../environmentInteractions/PassablePlatform";
+import { Platform } from "../environmentInteractions/Platform";
+import { Walls } from "../environmentInteractions/Walls";
 import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
 import { Player } from "../player/Player";
@@ -22,12 +22,14 @@ import {
   SwordAttackHitbox,
   SwordAttackHitboxGroup,
 } from "../weaponAttacks/SwordAttackHitbox";
+import { Door, Doors } from "../environmentInteractions/Doors";
 
 const MINIMUM_WALL_CLEARANCE = 10;
 
 export interface InteractingObjects {
   platform: Platform;
   ladders: Ladders;
+  doors: Doors;
   walls: Walls;
   passablePlatform: PassablePlatform;
   player: Player;
@@ -205,6 +207,15 @@ export class CollisionManager {
             typedWall.getLeftCenter().x ?? 0,
           );
         }
+      },
+    );
+
+    this.scene.physics.add.overlap(
+      this.interactingObjects.player,
+      this.interactingObjects.doors,
+      (player, door) => {
+        const typedPlayer = player as Player;
+        typedPlayer.lastInteractableDoor = door as Door;
       },
     );
   }
