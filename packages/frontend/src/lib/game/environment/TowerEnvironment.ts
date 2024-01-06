@@ -30,6 +30,23 @@ export class TowerEnvironment extends Phaser.Physics.Arcade.StaticGroup {
     this.createWalls();
     this.spawnMonsters();
     this.spawnPlayer();
+
+    const cover = this.scene.add.rectangle(
+      0,
+      0,
+      this.background.displayWidth,
+      this.background.displayHeight,
+      0x000000,
+    );
+    cover.setOrigin(0, 0);
+    cover.setAlpha(1);
+
+    this.scene.tweens.add({
+      targets: cover,
+      alpha: 0,
+      duration: 1000,
+      ease: "Power2",
+    });
   }
 
   private createPlatforms() {

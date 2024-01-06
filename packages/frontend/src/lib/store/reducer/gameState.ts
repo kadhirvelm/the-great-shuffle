@@ -40,7 +40,7 @@ export interface GameState {
 }
 
 const initialState: GameState = {
-  stage: "TutorialScene",
+  stage: "TowerScene",
   player: {
     health: {
       current: Infinity,
