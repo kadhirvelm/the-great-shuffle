@@ -8,11 +8,16 @@ import {
 import { Monster } from "./Monster";
 import { cloneDeep, compact } from "lodash-es";
 
+export interface AffectedStats {
+  [statusEffectName: string]: {
+    deltaInStats: RecursivePartial<MonsterStats>;
+    statusEffect: OngoingStatusEffect;
+  };
+}
+
 export class MonsterStatsHandler {
   public stats: MonsterStats;
-  public affectedStats: {
-    [statusEffectName: string]: RecursivePartial<MonsterStats>;
-  } = {};
+  public affectedStats: AffectedStats = {};
 
   public constructor(private monster: Monster) {
     this.stats = cloneDeep(this.monster.monsterTypeHandler.getBaseStats());
@@ -84,7 +89,7 @@ export class MonsterStatsHandler {
       this.takeDamage(deltaInStats.vitality.health.current);
     }
 
-    this.affectedStats[statusEffect.name] = deltaInStats;
+    this.affectedStats[statusEffect.name] = { deltaInStats, statusEffect };
   }
 
   public removeStatusEffect(statusEffect: OngoingStatusEffect) {
@@ -96,7 +101,7 @@ export class MonsterStatsHandler {
   ): MonsterStats[Key] {
     const defaultStatsForKey = cloneDeep(DEFAULT_MONSTER_STATS[key]);
     const allRelevantValues = compact(
-      Object.values(this.affectedStats).map((stats) => stats[key]),
+      Object.values(this.affectedStats).map((stats) => stats.deltaInStats[key]),
     );
 
     for (const relevantValues of allRelevantValues) {

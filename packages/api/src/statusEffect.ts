@@ -37,6 +37,7 @@ export interface StatusEffect {
   duration: number;
   appliesEvery: number;
   application: ApplicationEffect;
+  effectAsset: string;
 }
 
 export interface OngoingStatusEffect extends StatusEffect {

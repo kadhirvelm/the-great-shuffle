@@ -95,8 +95,9 @@ export class AssetManager {
 
   private loadVisualAssets() {
     this.loadBackground();
-    this.loadMonsters();
     this.loadPlayer();
+    this.loadMonsters();
+    this.loadStatusEffects();
   }
 
   private loadBackground() {
@@ -150,6 +151,14 @@ export class AssetManager {
     this.scene.load.image("level_1", "visual/monsters/sand dragon-1.png");
     this.scene.load.image("level_2", "visual/monsters/sand dragon-2.png");
     this.scene.load.image("level_3", "visual/monsters/sand dragon-3.png");
+  }
+
+  private loadStatusEffects() {
+    this.scene.load.image("burning", "visual/status-effects/burning.png");
+    this.scene.load.image("frozen", "visual/status-effects/frozen.png");
+    this.scene.load.image("poison", "visual/status-effects/poison.png");
+    this.scene.load.image("slowed", "visual/status-effects/slowed.png");
+    this.scene.load.image("void", "visual/status-effects/void.png");
   }
 
   private loadAudioAssets() {
