@@ -5,11 +5,11 @@ import * as _ from "lodash";
 
 const ORIGINAL_WIDTH = 192;
 
-const INPUT_NAME = "wall_hang";
+const INPUT_NAME = "wall_slide";
 
-const LEFT = 45;
-const TOP = 25;
-const BOTTOM = 20;
+const LEFT = 40;
+const TOP = 40;
+const BOTTOM = 5;
 const WIDTH = 83;
 
 const FRAME_NUMBER = 2;

@@ -101,8 +101,6 @@ export class AssetManager {
   }
 
   private loadEnvironment() {
-    // this.scene.load.image("tower", "visual/environment/tower.png");
-    // this.scene.load.image("tree", "visual/environment/tree.jpg");
     this.scene.load.image("platform", "visual/environment/platform.png");
     this.scene.load.image(
       "passable_platform",
@@ -126,8 +124,8 @@ export class AssetManager {
       frameHeight: 147,
     });
 
-    this.scene.load.spritesheet("dash", "visual/player/dash-98x147-0.png", {
-      frameWidth: 98,
+    this.scene.load.spritesheet("dash", "visual/player/dash-100x147-0.png", {
+      frameWidth: 100,
       frameHeight: 147,
     });
     this.scene.load.spritesheet("climb", "visual/player/climb-75x147-55.png", {

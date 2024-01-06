@@ -60,8 +60,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.setActive(false);
     this.setVisible(false);
 
-    this.setTint(0xeadbcb);
-
     this.initializePhysics();
     this.setAnimations();
   }
@@ -95,8 +93,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     this.anims.create({
       key: "dash",
-      frames: this.anims.generateFrameNumbers("dash", { start: 0, end: 6 }),
-      frameRate: 3,
+      frames: this.anims.generateFrameNumbers("dash", { start: 0, end: 2 }),
+      frameRate: 4,
       repeat: -1,
     });
 
@@ -136,12 +134,6 @@ export class Player extends Phaser.GameObjects.Sprite {
       frameRate: 4,
       repeat: -1,
     });
-  }
-
-  public clearTint() {
-    this.setTint(0xeadbcb);
-
-    return this;
   }
 
   public spawnPlayer(x: number, y: number) {
