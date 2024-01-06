@@ -1,31 +1,27 @@
 import { Camera } from "../camera/Camera";
-import { TutorialEnvironment } from "../environment/TutorialEnvironment";
+import { TowerEnvironment } from "../environment/TowerEnvironment";
 import { BaseScene } from "./BaseScene";
 
-export class TutorialScene extends BaseScene {
+export class TowerScene extends BaseScene {
   public constructor() {
-    super("TutorialScene");
+    super("TowerScene");
   }
 
   public preload() {
     super.preload();
 
-    this.load.image("entrance", "visual/background/entrance.png");
+    this.load.image("tower", "visual/background/tower.png");
   }
 
   public create() {
     super.create();
 
-    const environment = new TutorialEnvironment(
+    const environment = new TowerEnvironment(
       this,
       this.environmentInteractions!,
     );
 
     const camera = new Camera(this, environment.background);
     camera.followPlayer(this.player!);
-  }
-
-  public update() {
-    super.update();
   }
 }

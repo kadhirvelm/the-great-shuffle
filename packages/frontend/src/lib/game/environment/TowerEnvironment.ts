@@ -98,6 +98,6 @@ export class TowerEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   }
 
   private spawnPlayer() {
-    this.environmentInteractions.player.spawnPlayer(1600, 1400);
+    this.environmentInteractions.player.spawnPlayer(200, 1700);
   }
 }
