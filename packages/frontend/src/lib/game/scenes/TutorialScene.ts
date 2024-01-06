@@ -2,9 +2,11 @@ import { Camera } from "../camera/Camera";
 import { TutorialEnvironment } from "../environment/TutorialEnvironment";
 import { BaseScene } from "./BaseScene";
 
+export const TUTORIAL_SCENE_KEY = "TutorialScene" as const;
+
 export class TutorialScene extends BaseScene {
   public constructor() {
-    super("TutorialScene");
+    super(TUTORIAL_SCENE_KEY);
   }
 
   public preload() {

@@ -2,9 +2,11 @@ import { Camera } from "../camera/Camera";
 import { TowerEnvironment } from "../environment/TowerEnvironment";
 import { BaseScene } from "./BaseScene";
 
+export const TOWER_SCENE_KEY = "TowerScene" as const;
+
 export class TowerScene extends BaseScene {
   public constructor() {
-    super("TowerScene");
+    super(TOWER_SCENE_KEY);
   }
 
   public preload() {

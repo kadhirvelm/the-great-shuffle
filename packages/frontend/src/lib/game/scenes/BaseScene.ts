@@ -2,11 +2,11 @@ import { Scene } from "phaser";
 import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
 import { EnforcementGroup } from "../chiPowers/EnforcementGroup";
 import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
-import { EnvironmentInteractions } from "../environment/EnvironmentInteractions";
-import { Ladders } from "../environment/Ladders";
-import { PassablePlatform } from "../environment/PassablePlatform";
-import { Platform } from "../environment/Platform";
-import { Walls } from "../environment/Walls";
+import { EnvironmentInteractions } from "../environmentInteractions/EnvironmentInteractions";
+import { Ladders } from "../environmentInteractions/Ladders";
+import { PassablePlatform } from "../environmentInteractions/PassablePlatform";
+import { Platform } from "../environmentInteractions/Platform";
+import { Walls } from "../environmentInteractions/Walls";
 import { Keyboard } from "../keyboard/Keyboard";
 import { AssetManager } from "../manager/AssetManager";
 import { CollisionManager } from "../manager/CollisionManager";
@@ -18,6 +18,7 @@ import { ShieldAttackGroup } from "../weaponAttacks/ShieldAttackGroup";
 import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
 import { SwordAttackGroup } from "../weaponAttacks/SwordAttackGroup";
 import { SwordAttackHitboxGroup } from "../weaponAttacks/SwordAttackHitbox";
+import { Doors } from "../environmentInteractions/Doors";
 
 export class BaseScene extends Scene {
   public player: Player | undefined;
@@ -70,10 +71,12 @@ export class BaseScene extends Scene {
     const walls = new Walls(this);
     const platform = new Platform(this);
     const passablePlatform = new PassablePlatform(this);
+    const doors = new Doors(this);
 
     this.environmentInteractions = {
       player: this.player,
       ladders: ladders,
+      doors: doors,
       walls: walls,
       platform: platform,
       passablePlatform: passablePlatform,
@@ -84,6 +87,7 @@ export class BaseScene extends Scene {
       player: this.player,
       monsterGroup: this.monsterGroup,
       platform: platform,
+      doors: doors,
       ladders: ladders,
       walls: walls,
       passablePlatform: passablePlatform,

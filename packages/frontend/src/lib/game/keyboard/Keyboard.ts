@@ -5,6 +5,7 @@ export class Keyboard {
   public right: Phaser.Input.Keyboard.Key;
   public shift: Phaser.Input.Keyboard.Key;
   public space: Phaser.Input.Keyboard.Key;
+  public enter: Phaser.Input.Keyboard.Key;
 
   public chiPowerSlotA: Phaser.Input.Keyboard.Key;
   public chiPowerSlotB: Phaser.Input.Keyboard.Key;
@@ -28,6 +29,7 @@ export class Keyboard {
     this.right = cursorKeys.right;
     this.shift = cursorKeys.shift;
     this.space = cursorKeys.space;
+    this.enter = scene.input.keyboard.addKey("enter");
 
     this.chiPowerSlotA = scene.input.keyboard.addKey("q");
     this.chiPowerSlotB = scene.input.keyboard.addKey("w");
