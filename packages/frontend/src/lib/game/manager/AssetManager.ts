@@ -94,17 +94,22 @@ export class AssetManager {
   };
 
   private loadVisualAssets() {
-    this.loadBackground();
+    this.loadEnvironment();
     this.loadPlayer();
     this.loadMonsters();
     this.loadStatusEffects();
   }
 
-  private loadBackground() {
-    this.scene.load.image("tree", "visual/tree.jpg");
-    this.scene.load.image("platform_texture", "visual/platform_texture.jpg");
-    this.scene.load.image("ladder", "visual/ladder.png");
-    this.scene.load.image("wall", "visual/wall.png");
+  private loadEnvironment() {
+    // this.scene.load.image("tower", "visual/environment/tower.png");
+    // this.scene.load.image("tree", "visual/environment/tree.jpg");
+    this.scene.load.image("platform", "visual/environment/platform.png");
+    this.scene.load.image(
+      "passable_platform",
+      "visual/environment/passable_platform.png",
+    );
+    this.scene.load.image("ladder", "visual/environment/ladder.png");
+    this.scene.load.image("wall", "visual/environment/wall.png");
   }
 
   private loadPlayer() {

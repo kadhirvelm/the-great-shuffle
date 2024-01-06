@@ -5,7 +5,7 @@ import { RangedAttack } from "../chiPowers/RangedAttack";
 import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
 import { Ladders } from "../environment/Ladders";
 import { PassablePlatform } from "../environment/PassablePlatform";
-import { TreeEnvironment } from "../environment/TreeEnvironment";
+import { Platform } from "../environment/Platform";
 import { Walls } from "../environment/Walls";
 import { Monster } from "../monster/Monster";
 import { MonsterGroup } from "../monster/MonsterGroup";
@@ -26,7 +26,7 @@ import {
 const MINIMUM_WALL_CLEARANCE = 10;
 
 export interface InteractingObjects {
-  environment: TreeEnvironment;
+  platform: Platform;
   ladders: Ladders;
   walls: Walls;
   passablePlatform: PassablePlatform;
@@ -61,7 +61,7 @@ export class CollisionManager {
   private addEnvironment() {
     this.scene.physics.add.collider(
       this.interactingObjects.player,
-      this.interactingObjects.environment,
+      this.interactingObjects.platform,
       (player) => {
         const typedPlayer = player as Player;
         typedPlayer.hangingOnWall = undefined;
@@ -71,7 +71,7 @@ export class CollisionManager {
     );
     this.scene.physics.add.collider(
       this.interactingObjects.monsterGroup,
-      this.interactingObjects.environment,
+      this.interactingObjects.platform,
     );
 
     this.scene.physics.add.collider(

@@ -1,20 +1,9 @@
 import { range } from "lodash-es";
 import { Monster } from "../monster/Monster";
-import { MonsterGroup } from "../monster/MonsterGroup";
-import { Player } from "../player/Player";
-import { Ladders } from "./Ladders";
-import { PassablePlatform } from "./PassablePlatform";
-import { Wall, Walls } from "./Walls";
+import { Wall } from "./Walls";
+import { EnvironmentInteractions } from "./EnvironmentInteractions";
 
-export interface EnvironmentInteractions {
-  player: Player;
-  ladders: Ladders;
-  walls: Walls;
-  passablePlatform: PassablePlatform;
-  monsterGroup: MonsterGroup;
-}
-
-export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
+export class TowerEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   public background: Phaser.GameObjects.Image;
 
   public constructor(
@@ -23,7 +12,10 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   ) {
     super(scene.physics.world, scene);
 
-    this.background = scene.add.image(0, 0, "tree").setOrigin(0, 0).setScale(2);
+    this.background = scene.add
+      .image(0, 0, "tower")
+      .setOrigin(0, 0)
+      .setScale(2);
 
     scene.physics.world.setBounds(
       0,
@@ -34,8 +26,8 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
 
     this.createPassablePlatforms();
     this.createLadders();
-    this.createWalls();
     this.createPlatforms();
+    this.createWalls();
     this.spawnMonsters();
     this.spawnPlayer();
   }
@@ -51,12 +43,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
       [1540, 1500, 1030],
     ];
 
-    for (const platform of platforms) {
-      const bottom = this.create(platform[0], platform[1], "platform_texture");
-      bottom.displayWidth = platform[2];
-      bottom.displayHeight = 40;
-      bottom.refreshBody();
-    }
+    this.environmentInteractions.platform.createPlatform(platforms);
   }
 
   private createPassablePlatforms() {
@@ -94,11 +81,7 @@ export class TreeEnvironment extends Phaser.Physics.Arcade.StaticGroup {
   }
 
   public spawnMonsters() {
-    const locations: [number, number][] = [
-      [1400, 1400],
-      // [1500, 1400],
-      // [1600, 1400],
-    ];
+    const locations: [number, number][] = [[1400, 1400]];
 
     let delay = 0;
     for (const locationIndex of range(locations.length)) {

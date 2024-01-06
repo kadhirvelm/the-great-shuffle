@@ -14,12 +14,7 @@ export class RodAttackHitbox extends Phaser.Physics.Arcade.Sprite {
     rodAttackAttributes: RodAttackHitboxAttributes,
     public rodAttackDetails: RodAttack,
   ) {
-    super(
-      scene,
-      rodAttackAttributes.x,
-      rodAttackAttributes.y,
-      "platform_texture",
-    );
+    super(scene, rodAttackAttributes.x, rodAttackAttributes.y, "platform");
 
     this.setVisible(false);
     this.setActive(false);
