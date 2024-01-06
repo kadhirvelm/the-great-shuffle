@@ -65,7 +65,6 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   private initializePhysics() {
-    // this.typedBody.setBounce(0.05);
     this.typedBody.setCollideWorldBounds(true);
 
     this.typedBody.setGravityY(Gravity.playerY);

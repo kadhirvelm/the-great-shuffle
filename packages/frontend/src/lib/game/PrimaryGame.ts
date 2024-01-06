@@ -6,6 +6,7 @@ import { State } from "../store/configureStore";
 import { Gravity } from "./constants/enums";
 import { TutorialScene } from "./scenes/TutorialScene";
 import { removeStore, setStore } from "./store/storeManager";
+import { TowerScene } from "./scenes/TowerScene";
 
 export class PrimaryGame {
   private game: Game;
@@ -28,7 +29,7 @@ export class PrimaryGame {
         },
       },
       backgroundColor: "#000",
-      scene: TutorialScene,
+      scene: [TutorialScene, TowerScene],
     });
   }
 
