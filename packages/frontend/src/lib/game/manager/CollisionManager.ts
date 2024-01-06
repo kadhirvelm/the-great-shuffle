@@ -23,6 +23,10 @@ import {
   SwordAttackHitboxGroup,
 } from "../weaponAttacks/SwordAttackHitbox";
 import { Door, Doors } from "../environmentInteractions/Doors";
+import {
+  NPC,
+  NonPlayerCharacters,
+} from "../environmentInteractions/NonPlayerCharacters";
 
 const MINIMUM_WALL_CLEARANCE = 10;
 
@@ -36,6 +40,7 @@ export interface InteractingObjects {
   monsterGroup: MonsterGroup;
   rangedAttacks: RangedAttackGroup;
   auraAttacks: AuraAttackGroup;
+  nonPlayerCharacters: NonPlayerCharacters;
   swordAttackHitbox: SwordAttackHitboxGroup;
   shieldGroup: ShieldAttackGroup;
   spearAttackGroup: SpearAttackGroup;
@@ -215,7 +220,16 @@ export class CollisionManager {
       this.interactingObjects.doors,
       (player, door) => {
         const typedPlayer = player as Player;
-        typedPlayer.lastInteractableDoor = door as Door;
+        typedPlayer.lastInteractable = door as Door;
+      },
+    );
+
+    this.scene.physics.add.overlap(
+      this.interactingObjects.player,
+      this.interactingObjects.nonPlayerCharacters,
+      (player, npc) => {
+        const typedPlayer = player as Player;
+        typedPlayer.lastInteractable = npc as NPC;
       },
     );
   }

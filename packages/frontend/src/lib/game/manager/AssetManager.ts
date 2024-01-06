@@ -98,6 +98,7 @@ export class AssetManager {
     this.loadPlayer();
     this.loadMonsters();
     this.loadStatusEffects();
+    this.loadNPCs();
   }
 
   private loadEnvironment() {
@@ -163,6 +164,10 @@ export class AssetManager {
     this.scene.load.image("poison", "visual/status-effects/poison.png");
     this.scene.load.image("slowed", "visual/status-effects/slowed.png");
     this.scene.load.image("void", "visual/status-effects/void.png");
+  }
+
+  private loadNPCs() {
+    this.scene.load.image("weapons", "visual/npcs/weapons.png");
   }
 
   private loadAudioAssets() {
