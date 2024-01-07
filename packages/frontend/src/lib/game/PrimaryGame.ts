@@ -16,7 +16,7 @@ export class PrimaryGame {
 
   constructor(
     private parent: HTMLElement,
-    private store: Store<State>,
+    store: Store<State>,
   ) {
     setStore(store);
 
@@ -32,20 +32,11 @@ export class PrimaryGame {
         },
       },
       backgroundColor: "#000",
-      scene: [TutorialScene, WeaponsScene, TowerScene],
+      scene: [TowerScene, TutorialScene, WeaponsScene],
     });
 
     this.currentStage = store.getState().gameState.stage;
     this.game.scene.start(this.currentStage);
-    this.store.subscribe(() => {
-      const maybeNewStage = this.store.getState().gameState.stage;
-      if (maybeNewStage === this.currentStage) {
-        return;
-      }
-
-      this.currentStage = maybeNewStage;
-      this.game.scene.start(this.currentStage);
-    });
   }
 
   public destroyGame() {
