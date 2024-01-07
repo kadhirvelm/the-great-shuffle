@@ -26,6 +26,8 @@ export class AssetManager {
     "chiPower-slotC": undefined,
   };
 
+  private unsubscribeRedux: () => void;
+
   public constructor(private scene: Phaser.Scene) {
     this.scene.load.setBaseURL("http://localhost:8080/");
 
@@ -33,7 +35,7 @@ export class AssetManager {
     this.loadAudioAssets();
 
     const reduxStore = getStore();
-    reduxStore.subscribe(() => {
+    this.unsubscribeRedux = reduxStore.subscribe(() => {
       const { gameState } = reduxStore.getState();
 
       this.loadWeaponAssets(gameState);
@@ -173,5 +175,9 @@ export class AssetManager {
   private loadAudioAssets() {
     this.scene.load.audio("ranged_attack", "audio/ranged_attack.mp3");
     this.scene.load.audio("dash", "audio/dash.mp3");
+  }
+
+  public unsubscribe() {
+    this.unsubscribeRedux();
   }
 }

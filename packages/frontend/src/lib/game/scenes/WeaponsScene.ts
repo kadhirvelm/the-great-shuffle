@@ -5,6 +5,8 @@ import { BaseScene } from "./BaseScene";
 export const WEAPONS_SCENE_KEY = "WeaponsScene" as const;
 
 export class WeaponsScene extends BaseScene {
+  public active = false;
+
   public constructor() {
     super(WEAPONS_SCENE_KEY);
   }

@@ -2,8 +2,10 @@ import { Scene } from "phaser";
 import { AuraAttackGroup } from "../chiPowers/AuraAttackGroup";
 import { EnforcementGroup } from "../chiPowers/EnforcementGroup";
 import { RangedAttackGroup } from "../chiPowers/RangedAttackGroup";
+import { Doors } from "../environmentInteractions/Doors";
 import { EnvironmentInteractions } from "../environmentInteractions/EnvironmentInteractions";
 import { Ladders } from "../environmentInteractions/Ladders";
+import { NonPlayerCharacters } from "../environmentInteractions/NonPlayerCharacters";
 import { PassablePlatform } from "../environmentInteractions/PassablePlatform";
 import { Platform } from "../environmentInteractions/Platform";
 import { Walls } from "../environmentInteractions/Walls";
@@ -18,10 +20,12 @@ import { ShieldAttackGroup } from "../weaponAttacks/ShieldAttackGroup";
 import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
 import { SwordAttackGroup } from "../weaponAttacks/SwordAttackGroup";
 import { SwordAttackHitboxGroup } from "../weaponAttacks/SwordAttackHitbox";
-import { Doors } from "../environmentInteractions/Doors";
-import { NonPlayerCharacters } from "../environmentInteractions/NonPlayerCharacters";
+import { getStore } from "../store/storeManager";
 
 export class BaseScene extends Scene {
+  private assetManager: AssetManager | undefined;
+  private unsubscribeRedux: (() => void) | undefined;
+
   public player: Player | undefined;
   public monsterGroup: MonsterGroup | undefined;
 
@@ -39,7 +43,20 @@ export class BaseScene extends Scene {
   public enforcementGroup: EnforcementGroup | undefined;
 
   public preload() {
-    new AssetManager(this);
+    this.assetManager = new AssetManager(this);
+
+    const store = getStore();
+    this.unsubscribeRedux = store.subscribe(() => {
+      const newState = store.getState();
+      if (this.scene.key !== newState.gameState.stage) {
+        return;
+      }
+
+      // console.log(this.scene.scene, newState.gameState.stage);
+
+      // this.scene.stop(this.scene.key);
+      // this.scene.start(newState.gameState.stage);
+    });
   }
 
   public create() {
@@ -128,5 +145,10 @@ export class BaseScene extends Scene {
     this.spearAttackGroup.update();
     this.rodAttackGroup.update();
     this.enforcementGroup.update();
+  }
+
+  public shutdown() {
+    this.unsubscribeRedux?.();
+    this.assetManager?.unsubscribe();
   }
 }

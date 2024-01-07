@@ -5,6 +5,8 @@ import { BaseScene } from "./BaseScene";
 export const TUTORIAL_SCENE_KEY = "TutorialScene" as const;
 
 export class TutorialScene extends BaseScene {
+  public active = false;
+
   public constructor() {
     super(TUTORIAL_SCENE_KEY);
   }
