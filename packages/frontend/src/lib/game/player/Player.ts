@@ -1,5 +1,5 @@
 import { Gravity } from "../constants/enums";
-import { Door } from "../environmentInteractions/Doors";
+import { Interactable } from "../environmentInteractions/Interactable";
 import { PlayerAttack } from "./PlayerAttacks";
 import { PlayerEnvironmentInteractions } from "./PlayerEnvironmentInteractions";
 import { PlayerInteractions } from "./PlayerInteractions";
@@ -39,7 +39,7 @@ export class Player extends Phaser.GameObjects.Sprite {
   public playerDirection: "left" | "right" | undefined = undefined;
   public hangingOnWall: Phaser.GameObjects.Sprite | undefined = undefined;
 
-  public lastInteractableDoor: Door | undefined;
+  public lastInteractable: Interactable | undefined;
 
   public constructor(
     scene: Phaser.Scene,

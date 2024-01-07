@@ -3,8 +3,12 @@ import { PlayerChiPower, PlayerWeapon } from "@tower/api";
 import { Movement } from "../../game/constants/enums";
 import { TUTORIAL_SCENE_KEY } from "../../game/scenes/TutorialScene";
 import { TOWER_SCENE_KEY } from "../../game/scenes/TowerScene";
+import { WEAPONS_SCENE_KEY } from "../../game/scenes/WeaponsScene";
 
-export type GameStage = typeof TUTORIAL_SCENE_KEY | typeof TOWER_SCENE_KEY;
+export type GameStage =
+  | typeof TUTORIAL_SCENE_KEY
+  | typeof WEAPONS_SCENE_KEY
+  | typeof TOWER_SCENE_KEY;
 
 export interface SinglePlayerStat {
   current: number;
@@ -40,7 +44,7 @@ export interface GameState {
 }
 
 const initialState: GameState = {
-  stage: "TowerScene",
+  stage: "WeaponsScene",
   player: {
     health: {
       current: Infinity,

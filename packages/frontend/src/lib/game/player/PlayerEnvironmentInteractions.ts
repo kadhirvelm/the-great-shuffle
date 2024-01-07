@@ -6,7 +6,7 @@ export class PlayerEnvironmentInteractions {
   public update() {
     this.handleUpdatingGravity();
     this.updateCanClimbStatus();
-    this.maybeInteractWithDoor();
+    this.maybeInteractable();
   }
 
   private handleUpdatingGravity() {
@@ -32,27 +32,27 @@ export class PlayerEnvironmentInteractions {
     }
   }
 
-  private maybeInteractWithDoor() {
-    if (this.playerSprite.lastInteractableDoor === undefined) {
+  private maybeInteractable() {
+    if (this.playerSprite.lastInteractable === undefined) {
       return;
     }
 
     if (
       !Phaser.Geom.Intersects.RectangleToRectangle(
         this.playerSprite.getBounds(),
-        this.playerSprite.lastInteractableDoor.getBounds(),
+        this.playerSprite.lastInteractable.getBounds(),
       )
     ) {
-      this.playerSprite.lastInteractableDoor = undefined;
+      this.playerSprite.lastInteractable = undefined;
     }
 
     if (
       Phaser.Input.Keyboard.JustDown(
         this.playerSprite.playerInteractions.keyboard.enter,
       ) &&
-      this.playerSprite.lastInteractableDoor !== undefined
+      this.playerSprite.lastInteractable !== undefined
     ) {
-      this.playerSprite.lastInteractableDoor.onInteraction();
+      this.playerSprite.lastInteractable.onInteraction();
     }
   }
 }

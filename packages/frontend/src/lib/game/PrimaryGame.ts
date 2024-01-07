@@ -7,6 +7,7 @@ import { Gravity } from "./constants/enums";
 import { TutorialScene } from "./scenes/TutorialScene";
 import { removeStore, setStore } from "./store/storeManager";
 import { TowerScene } from "./scenes/TowerScene";
+import { WeaponsScene } from "./scenes/WeaponsScene";
 
 export class PrimaryGame {
   private game: Game;
@@ -31,7 +32,7 @@ export class PrimaryGame {
         },
       },
       backgroundColor: "#000",
-      scene: [TutorialScene, TowerScene],
+      scene: [TutorialScene, WeaponsScene, TowerScene],
     });
 
     this.currentStage = store.getState().gameState.stage;

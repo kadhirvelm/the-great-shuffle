@@ -19,6 +19,7 @@ import { SpearAttackGroup } from "../weaponAttacks/SpearAttackGroup";
 import { SwordAttackGroup } from "../weaponAttacks/SwordAttackGroup";
 import { SwordAttackHitboxGroup } from "../weaponAttacks/SwordAttackHitbox";
 import { Doors } from "../environmentInteractions/Doors";
+import { NonPlayerCharacters } from "../environmentInteractions/NonPlayerCharacters";
 
 export class BaseScene extends Scene {
   public player: Player | undefined;
@@ -72,6 +73,7 @@ export class BaseScene extends Scene {
     const platform = new Platform(this);
     const passablePlatform = new PassablePlatform(this);
     const doors = new Doors(this);
+    const npcs = new NonPlayerCharacters(this);
 
     this.environmentInteractions = {
       player: this.player,
@@ -79,6 +81,7 @@ export class BaseScene extends Scene {
       doors: doors,
       walls: walls,
       platform: platform,
+      nonPlayerCharacters: npcs,
       passablePlatform: passablePlatform,
       monsterGroup: this.monsterGroup,
     };
@@ -89,6 +92,7 @@ export class BaseScene extends Scene {
       platform: platform,
       doors: doors,
       ladders: ladders,
+      nonPlayerCharacters: npcs,
       walls: walls,
       passablePlatform: passablePlatform,
       rangedAttacks: this.rangedAttackGroup,
